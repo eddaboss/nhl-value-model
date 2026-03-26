@@ -1,0 +1,5698 @@
+{
+  "fetched_at": "2026-03-26T10:13:41.676098+00:00",
+  "contracts": {
+    "8480448": null,
+    "8480039": null,
+    "8477492": {
+      "cap_hit": 12600000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8477494": {
+      "cap_hit": 4000000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475754": {
+      "cap_hit": 7500000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8477476": {
+      "cap_hit": 4500000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8481186": null,
+    "8476918": null,
+    "8479398": {
+      "cap_hit": 5000000,
+      "length_of_contract": 7,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 6
+    },
+    "8476455": {
+      "cap_hit": 7000000,
+      "length_of_contract": 8,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 5
+    },
+    "8481641": {
+      "cap_hit": 1250000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479525": {
+      "cap_hit": 4000000,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8480835": {
+      "cap_hit": 1725000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480069": {
+      "cap_hit": 9000000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8484258": null,
+    "8477501": {
+      "cap_hit": 6125000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8473446": null,
+    "8479324": {
+      "cap_hit": 4500000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8473994": {
+      "cap_hit": 1000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8482145": {
+      "cap_hit": 950000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8474149": {
+      "cap_hit": 1000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476312": null,
+    "8479387": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475168": {
+      "cap_hit": 4500000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8475798": {
+      "cap_hit": 7000000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8478038": {
+      "cap_hit": 7250000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8480027": {
+      "cap_hit": 7750000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8478420": {
+      "cap_hit": 12000000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8478406": {
+      "cap_hit": 5250000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8475809": null,
+    "8480840": {
+      "cap_hit": 825000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476278": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475794": {
+      "cap_hit": 9850000,
+      "length_of_contract": 8,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 7
+    },
+    "8478449": {
+      "cap_hit": 8450000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8476856": null,
+    "8476879": {
+      "cap_hit": 4500000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8481581": null,
+    "8482740": {
+      "cap_hit": 8400000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8476902": {
+      "cap_hit": 5250000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8474090": {
+      "cap_hit": 800000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479193": {
+      "cap_hit": 1000000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8479979": {
+      "cap_hit": 8250000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8478427": {
+      "cap_hit": 9750000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8483425": {
+      "cap_hit": 918333,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482809": null,
+    "8479351": {
+      "cap_hit": 2100000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480036": {
+      "cap_hit": 8450000,
+      "length_of_contract": 8,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 5
+    },
+    "8482093": {
+      "cap_hit": 7420087,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8477478": {
+      "cap_hit": 2000000,
+      "length_of_contract": 6,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 2
+    },
+    "8475791": {
+      "cap_hit": 3166667,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8480878": {
+      "cap_hit": 1250000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8480829": {
+      "cap_hit": 4820000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8480762": {
+      "cap_hit": 1700000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8478458": {
+      "cap_hit": 1500000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8473533": {
+      "cap_hit": 2900000,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8480950": {
+      "cap_hit": 3250000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482702": null,
+    "8484929": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480830": {
+      "cap_hit": 7750000,
+      "length_of_contract": 8,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 5
+    },
+    "8476873": {
+      "cap_hit": 800000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478970": {
+      "cap_hit": 3000000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8476906": {
+      "cap_hit": 3200000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482666": {
+      "cap_hit": 916667,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8476921": {
+      "cap_hit": 3050000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8479370": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8475200": {
+      "cap_hit": 6500000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476958": {
+      "cap_hit": 6396062,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8480336": {
+      "cap_hit": 3600000,
+      "length_of_contract": 5,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 2
+    },
+    "8484145": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8482100": {
+      "cap_hit": 925000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482659": null,
+    "8470613": {
+      "cap_hit": 1000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481522": {
+      "cap_hit": 1450000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482895": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478043": {
+      "cap_hit": 2000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480802": {
+      "cap_hit": 5000000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8480883": null,
+    "8475883": {
+      "cap_hit": 2750000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481611": {
+      "cap_hit": 2000000,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8479388": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480064": null,
+    "8482097": {
+      "cap_hit": 3375000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8478413": {
+      "cap_hit": 4000000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479420": {
+      "cap_hit": 7142857,
+      "length_of_contract": 7,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 3
+    },
+    "8477949": {
+      "cap_hit": 4750000,
+      "length_of_contract": 7,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 7
+    },
+    "8480879": null,
+    "8475722": {
+      "cap_hit": 4750000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8481524": {
+      "cap_hit": 6250000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479359": {
+      "cap_hit": 1350000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480839": {
+      "cap_hit": 11000000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8480891": {
+      "cap_hit": 1400000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482671": {
+      "cap_hit": 8350000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8473503": {
+      "cap_hit": 850000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8474715": null,
+    "8480196": {
+      "cap_hit": 900000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477416": {
+      "cap_hit": 5400000,
+      "length_of_contract": 5,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 5
+    },
+    "8482070": {
+      "cap_hit": 800000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482201": {
+      "cap_hit": 1200000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480807": {
+      "cap_hit": 4285714,
+      "length_of_contract": 7,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 3
+    },
+    "8479542": {
+      "cap_hit": 6500000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8480045": {
+      "cap_hit": 4750000,
+      "length_of_contract": 5,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 2
+    },
+    "8478519": {
+      "cap_hit": 6250000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8479982": {
+      "cap_hit": 2200000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476453": {
+      "cap_hit": 9500000,
+      "length_of_contract": 8,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 7
+    },
+    "8476878": {
+      "cap_hit": 850000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8476822": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8482929": null,
+    "8475167": {
+      "cap_hit": 8000000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8477404": {
+      "cap_hit": 9000000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8476826": {
+      "cap_hit": 2333333,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8482655": null,
+    "8480246": null,
+    "8477426": {
+      "cap_hit": 3150000,
+      "length_of_contract": 7,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 4
+    },
+    "8478010": {
+      "cap_hit": 9500000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8478178": {
+      "cap_hit": 975000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478416": {
+      "cap_hit": 5200000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8476883": {
+      "cap_hit": 9500000,
+      "length_of_contract": 8,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 6
+    },
+    "8481557": null,
+    "8478493": null,
+    "8474151": null,
+    "8475220": {
+      "cap_hit": 4000000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8477451": {
+      "cap_hit": 4000000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8477992": {
+      "cap_hit": 1250000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480259": null,
+    "8476329": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8478864": null,
+    "8483499": {
+      "cap_hit": 886666,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8479638": {
+      "cap_hit": 1500000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8474679": {
+      "cap_hit": 3250000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8483452": {
+      "cap_hit": 865833,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482079": {
+      "cap_hit": 5000000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8476994": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8475765": {
+      "cap_hit": 4750000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8475692": {
+      "cap_hit": 4125000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8484798": {
+      "cap_hit": 966667,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8475149": {
+      "cap_hit": 800000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476913": null,
+    "8478136": null,
+    "8474716": {
+      "cap_hit": 7575000,
+      "length_of_contract": 7,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 6
+    },
+    "8478508": {
+      "cap_hit": 3500000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8476463": {
+      "cap_hit": 6000000,
+      "length_of_contract": 7,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 5
+    },
+    "8474567": {
+      "cap_hit": 1250000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482781": {
+      "cap_hit": 863334,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8480075": {
+      "cap_hit": 812500,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482122": {
+      "cap_hit": 8500000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8482661": {
+      "cap_hit": 2200000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475750": null,
+    "8476981": {
+      "cap_hit": 5500000,
+      "length_of_contract": 7,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 6
+    },
+    "8476469": {
+      "cap_hit": 2500000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8481540": {
+      "cap_hit": 7850000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8481523": {
+      "cap_hit": 3362500,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8484984": {
+      "cap_hit": 940833,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8470594": null,
+    "8478133": {
+      "cap_hit": 2850000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8475848": {
+      "cap_hit": 6500000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8479339": {
+      "cap_hit": 8700000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8479406": null,
+    "8479543": {
+      "cap_hit": 812500,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8483515": {
+      "cap_hit": 7600000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8480018": {
+      "cap_hit": 7875000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8478851": {
+      "cap_hit": 3750000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8480865": {
+      "cap_hit": 9500000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8482087": {
+      "cap_hit": 5550000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8483457": null,
+    "8476875": null,
+    "8477989": null,
+    "8475233": null,
+    "8481593": {
+      "cap_hit": 1412500,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482964": {
+      "cap_hit": 1300000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8481618": {
+      "cap_hit": 2900000,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8482487": {
+      "cap_hit": 965000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8478470": null,
+    "8479987": {
+      "cap_hit": 5500000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8482177": {
+      "cap_hit": 925000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479999": {
+      "cap_hit": 5750000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8478401": {
+      "cap_hit": 4750000,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8477496": {
+      "cap_hit": 7750000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8477956": {
+      "cap_hit": 11250000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8481556": {
+      "cap_hit": 900000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8480035": {
+      "cap_hit": 3000000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8479369": {
+      "cap_hit": 2750000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8480355": {
+      "cap_hit": 1566667,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8476854": {
+      "cap_hit": 6500000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8482511": {
+      "cap_hit": 3200000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479325": {
+      "cap_hit": 9500000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8481043": {
+      "cap_hit": 1000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8478450": {
+      "cap_hit": 1000000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480880": null,
+    "8477507": {
+      "cap_hit": 5000000,
+      "length_of_contract": 6,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 2
+    },
+    "8476914": {
+      "cap_hit": 4000000,
+      "length_of_contract": 5,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 3
+    },
+    "8480280": {
+      "cap_hit": 8250000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8479944": null,
+    "8482475": null,
+    "8475745": {
+      "cap_hit": 5250000,
+      "length_of_contract": 6,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 6
+    },
+    "8479941": {
+      "cap_hit": 1800000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8484166": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8482660": {
+      "cap_hit": 1800000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8478099": null,
+    "8476374": {
+      "cap_hit": 1850000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480893": {
+      "cap_hit": 3850000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8479671": {
+      "cap_hit": 3000000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8478432": null,
+    "8476867": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482705": {
+      "cap_hit": 2250000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8474037": null,
+    "8481716": null,
+    "8485469": {
+      "cap_hit": 923750,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8476432": {
+      "cap_hit": 3750000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8479316": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477497": {
+      "cap_hit": 5500000,
+      "length_of_contract": 5,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 2
+    },
+    "8479371": {
+      "cap_hit": 4125000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8480887": {
+      "cap_hit": 825000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8478500": {
+      "cap_hit": 8500000,
+      "length_of_contract": 7,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 1
+    },
+    "8476923": {
+      "cap_hit": 6250000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8477425": {
+      "cap_hit": 2500000,
+      "length_of_contract": 6,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 3
+    },
+    "8478460": {
+      "cap_hit": 9583333,
+      "length_of_contract": 6,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 4
+    },
+    "8481161": {
+      "cap_hit": 975000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8478007": {
+      "cap_hit": 5400000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8478569": {
+      "cap_hit": 2000000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8471675": {
+      "cap_hit": 8700000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480980": {
+      "cap_hit": 1100000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8471677": null,
+    "8478046": {
+      "cap_hit": 2250000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8483487": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8471215": {
+      "cap_hit": 6100000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8475790": {
+      "cap_hit": 4000000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8478438": null,
+    "8477435": {
+      "cap_hit": 4500000,
+      "length_of_contract": 6,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 3
+    },
+    "8476483": {
+      "cap_hit": 5000000,
+      "length_of_contract": 6,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 4
+    },
+    "8475763": {
+      "cap_hit": 7142857,
+      "length_of_contract": 7,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 7
+    },
+    "8475810": {
+      "cap_hit": 5125000,
+      "length_of_contract": 6,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 4
+    },
+    "8477365": {
+      "cap_hit": 3333333,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8481481": null,
+    "8478147": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476891": {
+      "cap_hit": 1000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476442": null,
+    "8480058": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8474578": {
+      "cap_hit": 11500000,
+      "length_of_contract": 8,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 7
+    },
+    "8481577": {
+      "cap_hit": 1750000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481609": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478854": {
+      "cap_hit": 900000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8471724": {
+      "cap_hit": 6100000,
+      "length_of_contract": 6,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 4
+    },
+    "8477465": {
+      "cap_hit": 5375000,
+      "length_of_contract": 5,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 3
+    },
+    "8477968": null,
+    "8478020": {
+      "cap_hit": 2600000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8480208": {
+      "cap_hit": 4975000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8482674": {
+      "cap_hit": 863334,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8481528": {
+      "cap_hit": 7100000,
+      "length_of_contract": 7,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 3
+    },
+    "8476393": {
+      "cap_hit": 825000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8478874": {
+      "cap_hit": 2000000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8473512": {
+      "cap_hit": 2000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8483579": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8480890": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479772": {
+      "cap_hit": 775000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8474102": {
+      "cap_hit": 4000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8481065": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482092": {
+      "cap_hit": 3250000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8483676": {
+      "cap_hit": 950000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8481596": null,
+    "8478146": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481133": {
+      "cap_hit": 812500,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482116": null,
+    "8479516": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480801": {
+      "cap_hit": 8223565,
+      "length_of_contract": 7,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 5
+    },
+    "8478173": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480188": {
+      "cap_hit": 4275000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8478469": {
+      "cap_hit": 8000000,
+      "length_of_contract": 8,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 6
+    },
+    "8474612": {
+      "cap_hit": 1000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8475324": {
+      "cap_hit": 4050000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8482131": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8482105": {
+      "cap_hit": 8050000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8484759": {
+      "cap_hit": 942500,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8481606": {
+      "cap_hit": 1500000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8483683": {
+      "cap_hit": 803334,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482245": null,
+    "8478502": {
+      "cap_hit": 875000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476341": {
+      "cap_hit": 2250000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8481544": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478445": {
+      "cap_hit": 9150000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8476999": {
+      "cap_hit": 8250000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8482095": {
+      "cap_hit": 1600000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8484321": {
+      "cap_hit": 875000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482447": {
+      "cap_hit": 1050000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477407": {
+      "cap_hit": 3500000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8478115": {
+      "cap_hit": 3000000,
+      "length_of_contract": 7,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 3
+    },
+    "8483553": {
+      "cap_hit": 900000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481601": {
+      "cap_hit": 3625000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8477500": {
+      "cap_hit": 8500000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8482476": {
+      "cap_hit": 1100000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475231": {
+      "cap_hit": 2500000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8481237": {
+      "cap_hit": 775000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8477392": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8475151": {
+      "cap_hit": 4750000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8484958": {
+      "cap_hit": 2250000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480871": {
+      "cap_hit": 850000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477950": {
+      "cap_hit": 1750000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476429": {
+      "cap_hit": 3500000,
+      "length_of_contract": 7,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 3
+    },
+    "8475314": {
+      "cap_hit": 7000000,
+      "length_of_contract": 7,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 7
+    },
+    "8481059": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8474709": null,
+    "8477506": {
+      "cap_hit": 6150000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8476422": {
+      "cap_hit": 1100000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476419": null,
+    "8473575": {
+      "cap_hit": 2750000,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8481013": {
+      "cap_hit": 1825000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477456": null,
+    "8476917": {
+      "cap_hit": 5750000,
+      "length_of_contract": 8,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 5
+    },
+    "8477429": {
+      "cap_hit": 5625000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8479337": {
+      "cap_hit": 7875000,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8477405": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8474141": {
+      "cap_hit": 3000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481014": {
+      "cap_hit": 6250000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8483464": {
+      "cap_hit": 886666,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8477946": {
+      "cap_hit": 8700000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8478009": {
+      "cap_hit": 8250000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8482802": {
+      "cap_hit": 905833,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8479992": {
+      "cap_hit": 3200000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8475279": null,
+    "8482762": {
+      "cap_hit": 894167,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8476979": {
+      "cap_hit": 2000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8475718": {
+      "cap_hit": 3400000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8481607": {
+      "cap_hit": 1125000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8473507": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481542": {
+      "cap_hit": 8550000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8475660": {
+      "cap_hit": 2500000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482078": {
+      "cap_hit": 8075000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8476434": {
+      "cap_hit": 6400000,
+      "length_of_contract": 8,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 7
+    },
+    "8477353": null,
+    "8484153": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8475225": null,
+    "8483445": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8478021": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8478424": {
+      "cap_hit": 787500,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8477527": {
+      "cap_hit": 1100000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8473986": {
+      "cap_hit": 6250000,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8479312": {
+      "cap_hit": 1500000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480806": {
+      "cap_hit": 1300000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482745": {
+      "cap_hit": 7000000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8476458": {
+      "cap_hit": 5000000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8480068": null,
+    "8478873": {
+      "cap_hit": 7000000,
+      "length_of_contract": 7,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 3
+    },
+    "8485512": null,
+    "8478366": {
+      "cap_hit": 4571189,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8481517": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477952": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8475184": {
+      "cap_hit": 6500000,
+      "length_of_contract": 7,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 6
+    },
+    "8476934": null,
+    "8478430": null,
+    "8481563": {
+      "cap_hit": 1100000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475462": {
+      "cap_hit": 4000000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8481605": null,
+    "8482178": {
+      "cap_hit": 925000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8483490": {
+      "cap_hit": 918333,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8476885": {
+      "cap_hit": 8000000,
+      "length_of_contract": 7,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 7
+    },
+    "8482803": {
+      "cap_hit": 844167,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8475852": {
+      "cap_hit": 4250000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8481553": {
+      "cap_hit": 1500000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480220": {
+      "cap_hit": 4000000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8485483": {
+      "cap_hit": 975000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8476461": {
+      "cap_hit": 7750000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8475235": {
+      "cap_hit": 1750000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8482159": {
+      "cap_hit": 3750000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8477903": {
+      "cap_hit": 2400000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480843": {
+      "cap_hit": 6500000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8478439": {
+      "cap_hit": 8750000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8484387": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8481592": {
+      "cap_hit": 775000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8483461": {
+      "cap_hit": 921667,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8480015": {
+      "cap_hit": 6200000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8481533": {
+      "cap_hit": 5750000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8475176": {
+      "cap_hit": 6250000,
+      "length_of_contract": 8,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 7
+    },
+    "8477499": {
+      "cap_hit": 5100000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8477948": {
+      "cap_hit": 6250000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8481546": null,
+    "8481178": null,
+    "8481035": {
+      "cap_hit": 1450000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482783": null,
+    "8478905": {
+      "cap_hit": 3275000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8479619": null,
+    "8475760": {
+      "cap_hit": 1750000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482142": {
+      "cap_hit": 2300000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8483431": null,
+    "8478474": {
+      "cap_hit": 4300000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8482699": {
+      "cap_hit": 7142875,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8476372": {
+      "cap_hit": 2700000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8480849": {
+      "cap_hit": 2650000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8477021": {
+      "cap_hit": 3000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479343": {
+      "cap_hit": 7150000,
+      "length_of_contract": 8,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 6
+    },
+    "8481711": {
+      "cap_hit": 3425000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8480855": {
+      "cap_hit": 4250000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8477070": null,
+    "8477951": null,
+    "8478831": {
+      "cap_hit": 2000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8474145": null,
+    "8480084": {
+      "cap_hit": 800000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8480434": {
+      "cap_hit": 6000000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8478507": {
+      "cap_hit": 4400000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8476874": {
+      "cap_hit": 3500000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8478971": {
+      "cap_hit": 1950000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8479410": {
+      "cap_hit": 8500000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8478872": {
+      "cap_hit": 4750000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8473563": null,
+    "8478463": {
+      "cap_hit": 2750000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475343": {
+      "cap_hit": 3000000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8474013": {
+      "cap_hit": 2800000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479400": {
+      "cap_hit": 8500000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8479520": {
+      "cap_hit": 1850000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8483573": null,
+    "8484186": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8478233": {
+      "cap_hit": 3600000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8481580": {
+      "cap_hit": 2100000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8471698": null,
+    "8471214": {
+      "cap_hit": 9500000,
+      "length_of_contract": 5,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 5
+    },
+    "8481656": {
+      "cap_hit": 3375000,
+      "length_of_contract": 5,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 2
+    },
+    "8480823": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8478440": {
+      "cap_hit": 5000000,
+      "length_of_contract": 5,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 3
+    },
+    "8474590": {
+      "cap_hit": 8000000,
+      "length_of_contract": 8,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 8
+    },
+    "8480990": {
+      "cap_hit": 1600000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8474189": {
+      "cap_hit": 1250000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477947": {
+      "cap_hit": 1900000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8480873": {
+      "cap_hit": 4600000,
+      "length_of_contract": 5,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 2
+    },
+    "8476880": {
+      "cap_hit": 6500000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8477845": null,
+    "8479292": {
+      "cap_hit": 3000000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8479390": {
+      "cap_hit": 1500000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480796": null,
+    "8478042": {
+      "cap_hit": 4000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8479345": {
+      "cap_hit": 9000000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8477015": {
+      "cap_hit": 3000000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8477934": {
+      "cap_hit": 14000000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8475795": {
+      "cap_hit": 800000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8478911": {
+      "cap_hit": 5750000,
+      "length_of_contract": 6,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 2
+    },
+    "8479365": {
+      "cap_hit": 3850000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8480468": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8474641": {
+      "cap_hit": 3000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478402": null,
+    "8477406": {
+      "cap_hit": 1450000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8475786": {
+      "cap_hit": 5500000,
+      "length_of_contract": 7,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 5
+    },
+    "8479368": {
+      "cap_hit": 1000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8477953": {
+      "cap_hit": 1300000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476454": {
+      "cap_hit": 5125000,
+      "length_of_contract": 8,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 5
+    },
+    "8470621": {
+      "cap_hit": 2000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481491": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8480313": {
+      "cap_hit": 5850000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8481617": null,
+    "8483512": null,
+    "8475784": null,
+    "8477384": null,
+    "8480803": {
+      "cap_hit": 10500000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8475218": null,
+    "8480834": {
+      "cap_hit": 1300000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475906": {
+      "cap_hit": 4000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476967": {
+      "cap_hit": 2750000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8477498": {
+      "cap_hit": 9250000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8479442": {
+      "cap_hit": 787500,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478013": null,
+    "8478585": null,
+    "8479973": {
+      "cap_hit": 2600000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8479341": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8477964": {
+      "cap_hit": 5000000,
+      "length_of_contract": 5,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 3
+    },
+    "8481604": {
+      "cap_hit": 1835000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478403": null,
+    "8476881": {
+      "cap_hit": 8137500,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8480885": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479353": {
+      "cap_hit": 2500000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8482125": {
+      "cap_hit": 837539,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476448": {
+      "cap_hit": 5900000,
+      "length_of_contract": 8,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 7
+    },
+    "8475717": {
+      "cap_hit": 1000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480007": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476871": {
+      "cap_hit": 1000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8478462": {
+      "cap_hit": 3000000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8476438": {
+      "cap_hit": 2000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479550": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8476925": {
+      "cap_hit": 2857143,
+      "length_of_contract": 7,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 7
+    },
+    "8478434": {
+      "cap_hit": 2500000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8481534": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8475191": {
+      "cap_hit": 2000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8475913": {
+      "cap_hit": 9500000,
+      "length_of_contract": 8,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 7
+    },
+    "8477018": {
+      "cap_hit": 975000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8481527": null,
+    "8478109": {
+      "cap_hit": 1575000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8478468": {
+      "cap_hit": 2000000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8481655": {
+      "cap_hit": 825000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8475188": {
+      "cap_hit": 3650000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8482141": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8474565": {
+      "cap_hit": 8800000,
+      "length_of_contract": 7,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 6
+    },
+    "8477447": {
+      "cap_hit": 7425000,
+      "length_of_contract": 7,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 1
+    },
+    "8480727": {
+      "cap_hit": 2750000,
+      "length_of_contract": 6,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 4
+    },
+    "8478499": {
+      "cap_hit": 6250000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8477462": null,
+    "8482761": {
+      "cap_hit": 840000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8478396": {
+      "cap_hit": 7350000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8478062": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8478047": {
+      "cap_hit": 4500000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8482146": {
+      "cap_hit": 3000000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482742": null,
+    "8476887": {
+      "cap_hit": 8500000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8475287": {
+      "cap_hit": 3150000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8476539": {
+      "cap_hit": 5500000,
+      "length_of_contract": 5,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 2
+    },
+    "8478492": null,
+    "8477446": {
+      "cap_hit": 900000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8475158": null,
+    "8482062": {
+      "cap_hit": 1000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8474564": {
+      "cap_hit": 8000000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8481033": {
+      "cap_hit": 875000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8484241": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482111": {
+      "cap_hit": 1150000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8483565": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8477971": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479980": {
+      "cap_hit": 5500000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8474600": {
+      "cap_hit": 9059000,
+      "length_of_contract": 8,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 6
+    },
+    "8477851": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482482": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476869": {
+      "cap_hit": 7000000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8477424": {
+      "cap_hit": 7740000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8481720": null,
+    "8477503": {
+      "cap_hit": 3750000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8477944": null,
+    "8482130": null,
+    "8480995": {
+      "cap_hit": 1550000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475714": {
+      "cap_hit": 2100000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8476872": {
+      "cap_hit": 3000000,
+      "length_of_contract": 5,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 5
+    },
+    "8480144": {
+      "cap_hit": 1100000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8482720": {
+      "cap_hit": 7750000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8478904": {
+      "cap_hit": 1350000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8478483": null,
+    "8479318": {
+      "cap_hit": 13250000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8481020": null,
+    "8479423": null,
+    "8477939": {
+      "cap_hit": 11500000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8481147": null,
+    "8474157": null,
+    "8484901": {
+      "cap_hit": 875000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8471817": {
+      "cap_hit": 1350000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8481582": {
+      "cap_hit": 1825000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8475166": {
+      "cap_hit": 4389280,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8482634": null,
+    "8476988": {
+      "cap_hit": 1250000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8482259": {
+      "cap_hit": 1350000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478443": {
+      "cap_hit": 4100000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8475171": {
+      "cap_hit": 3500000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8475825": null,
+    "8476931": {
+      "cap_hit": 4513102,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8481614": null,
+    "8481122": {
+      "cap_hit": 1350000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8477541": {
+      "cap_hit": 812500,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479026": {
+      "cap_hit": 850000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476853": {
+      "cap_hit": 7500000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8482158": null,
+    "8483546": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475690": null,
+    "8482515": null,
+    "8482174": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8483710": {
+      "cap_hit": 841667,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8476932": null,
+    "8476899": {
+      "cap_hit": 1000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479361": {
+      "cap_hit": 3666667,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8479414": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479407": {
+      "cap_hit": 7875000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8481032": {
+      "cap_hit": 775000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8475413": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8481518": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481570": {
+      "cap_hit": 825000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479996": {
+      "cap_hit": 2500000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8483531": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482635": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8481559": {
+      "cap_hit": 8000000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8480002": {
+      "cap_hit": 7250000,
+      "length_of_contract": 7,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 6
+    },
+    "8477508": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481594": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8483397": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8478414": {
+      "cap_hit": 8800000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8477073": {
+      "cap_hit": 1150000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8476474": {
+      "cap_hit": 2750000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8476292": {
+      "cap_hit": 6000000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8478466": null,
+    "8475193": null,
+    "8483429": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8479395": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8475455": {
+      "cap_hit": 4000000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8475208": {
+      "cap_hit": 4000000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8476462": {
+      "cap_hit": 9000000,
+      "length_of_contract": 7,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 5
+    },
+    "8482684": {
+      "cap_hit": 9000000,
+      "length_of_contract": 7,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 1
+    },
+    "8480192": {
+      "cap_hit": 4000000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8483495": {
+      "cap_hit": 918333,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8482110": {
+      "cap_hit": 4000000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8478399": {
+      "cap_hit": 3400000,
+      "length_of_contract": 5,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 3
+    },
+    "8482873": {
+      "cap_hit": 836667,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8482076": null,
+    "8478841": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8474596": {
+      "cap_hit": 1800000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8483659": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8482124": {
+      "cap_hit": 6250000,
+      "length_of_contract": 5,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 2
+    },
+    "8474593": null,
+    "8476479": {
+      "cap_hit": 5500000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8477488": {
+      "cap_hit": 5500000,
+      "length_of_contract": 6,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 2
+    },
+    "8477998": {
+      "cap_hit": 3500000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482726": null,
+    "8477960": null,
+    "8479661": {
+      "cap_hit": 3400000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8483808": {
+      "cap_hit": 4300000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8471685": {
+      "cap_hit": 7000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482155": {
+      "cap_hit": 4100000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8473453": null,
+    "8482408": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8479675": {
+      "cap_hit": 4200000,
+      "length_of_contract": 5,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 3
+    },
+    "8480021": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8480851": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8477942": {
+      "cap_hit": 7875000,
+      "length_of_contract": 7,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 4
+    },
+    "8481532": {
+      "cap_hit": 775000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8479998": {
+      "cap_hit": 4125000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8483406": null,
+    "8482730": {
+      "cap_hit": 863334,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8477335": {
+      "cap_hit": 1100000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8474563": {
+      "cap_hit": 11000000,
+      "length_of_contract": 8,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 7
+    },
+    "8482748": {
+      "cap_hit": 845000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8478882": {
+      "cap_hit": 7000000,
+      "length_of_contract": 7,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 1
+    },
+    "8478452": {
+      "cap_hit": 900000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8477831": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8484857": {
+      "cap_hit": 845833,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8479421": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8475311": {
+      "cap_hit": 5250000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8479496": {
+      "cap_hit": 1000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477493": {
+      "cap_hit": 10000000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8480003": {
+      "cap_hit": 1500000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479981": null,
+    "8478421": null,
+    "8480185": {
+      "cap_hit": 3000000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482113": {
+      "cap_hit": 5000000,
+      "length_of_contract": 6,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 2
+    },
+    "8473419": {
+      "cap_hit": 5250000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8477931": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477933": {
+      "cap_hit": 8625000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8476441": {
+      "cap_hit": 3850000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8482713": null,
+    "8478542": {
+      "cap_hit": 3000000,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8481477": {
+      "cap_hit": 2000000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479314": {
+      "cap_hit": 9500000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8477409": {
+      "cap_hit": 7000000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8477935": {
+      "cap_hit": 8000000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8484304": null,
+    "8478055": {
+      "cap_hit": 5750000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8477932": {
+      "cap_hit": 6100000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8477495": {
+      "cap_hit": 9500000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8475179": {
+      "cap_hit": 1150000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8477034": {
+      "cap_hit": 800000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8478859": null,
+    "8477220": {
+      "cap_hit": 3500000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8475683": {
+      "cap_hit": 10000000,
+      "length_of_contract": 7,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 7
+    },
+    "8480193": {
+      "cap_hit": 1050000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477970": {
+      "cap_hit": 1500000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8482665": null,
+    "8474586": null,
+    "8479591": {
+      "cap_hit": 1450000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8477919": {
+      "cap_hit": 2100000,
+      "length_of_contract": 5,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 3
+    },
+    "8477401": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8477955": {
+      "cap_hit": 5000000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8478975": {
+      "cap_hit": 4500000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8481554": {
+      "cap_hit": 4525000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8481789": {
+      "cap_hit": 1250000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476905": {
+      "cap_hit": 6250000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8475768": {
+      "cap_hit": 5500000,
+      "length_of_contract": 5,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 5
+    },
+    "8480009": {
+      "cap_hit": 3475000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8483524": {
+      "cap_hit": 886666,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8478407": {
+      "cap_hit": 7350000,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8482858": {
+      "cap_hit": 2050000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479372": null,
+    "8479985": {
+      "cap_hit": 890000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8477986": {
+      "cap_hit": 7142857,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8476457": {
+      "cap_hit": 5250000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8478916": null,
+    "8476467": {
+      "cap_hit": 4600000,
+      "length_of_contract": 5,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 5
+    },
+    "8475831": {
+      "cap_hit": 5900000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8479994": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478891": {
+      "cap_hit": 2900000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8480289": {
+      "cap_hit": 1850000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8478398": null,
+    "8477940": {
+      "cap_hit": 8500000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8484135": {
+      "cap_hit": 812500,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8481019": {
+      "cap_hit": 835000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480845": null,
+    "8480113": {
+      "cap_hit": 3666666,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8476392": null,
+    "8482149": {
+      "cap_hit": 3250000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8475799": {
+      "cap_hit": 4000000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8479972": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476952": {
+      "cap_hit": 850000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479293": {
+      "cap_hit": 2500000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8476460": {
+      "cap_hit": 8500000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8480014": {
+      "cap_hit": 7500000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8484242": {
+      "cap_hit": 918333,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8476480": {
+      "cap_hit": 3000000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8477938": {
+      "cap_hit": 950000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8479639": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481572": {
+      "cap_hit": 800000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8476525": {
+      "cap_hit": 1500000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480145": {
+      "cap_hit": 7000000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8482192": {
+      "cap_hit": 812500,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8477504": {
+      "cap_hit": 6250000,
+      "length_of_contract": 8,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 6
+    },
+    "8483510": {
+      "cap_hit": 815000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8480049": {
+      "cap_hit": 5750000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8474568": {
+      "cap_hit": 2750000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8479378": {
+      "cap_hit": 1250000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8476331": {
+      "cap_hit": 4900000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8477480": {
+      "cap_hit": 825000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8476904": null,
+    "8484801": {
+      "cap_hit": 975000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482133": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8476945": {
+      "cap_hit": 8500000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8474053": {
+      "cap_hit": 8000000,
+      "length_of_contract": 8,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 7
+    },
+    "8482667": null,
+    "8480848": null,
+    "8476624": {
+      "cap_hit": 3641667,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8479393": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479336": {
+      "cap_hit": 1800000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8484227": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8483481": null,
+    "8480011": null,
+    "8475726": {
+      "cap_hit": 6000000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8481042": null,
+    "8477505": null,
+    "8479576": {
+      "cap_hit": 2000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8479983": {
+      "cap_hit": 3250000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8480043": {
+      "cap_hit": 3000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482166": {
+      "cap_hit": 1000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8484312": null,
+    "8481567": {
+      "cap_hit": 1000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480172": null,
+    "8480382": null,
+    "8482737": {
+      "cap_hit": 863334,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8477402": {
+      "cap_hit": 8000000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8476889": {
+      "cap_hit": 2000000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8482077": {
+      "cap_hit": 2290457,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478472": {
+      "cap_hit": 900000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479385": {
+      "cap_hit": 8125000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8483516": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482089": {
+      "cap_hit": 3750000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475170": {
+      "cap_hit": 6500000,
+      "length_of_contract": 8,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 6
+    },
+    "8476897": {
+      "cap_hit": 1500000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480074": null,
+    "8480023": {
+      "cap_hit": 8125000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8480281": null,
+    "8477573": null,
+    "8475753": {
+      "cap_hit": 6500000,
+      "length_of_contract": 7,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 6
+    },
+    "8481598": null,
+    "8474150": null,
+    "8475764": null,
+    "8481006": {
+      "cap_hit": 925000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476892": {
+      "cap_hit": 6500000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8475181": {
+      "cap_hit": 4000000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8480981": {
+      "cap_hit": 3400000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476412": {
+      "cap_hit": 6000000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8476399": {
+      "cap_hit": 4900000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8470600": null,
+    "8480028": {
+      "cap_hit": 4375000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482679": {
+      "cap_hit": 6500000,
+      "length_of_contract": 7,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 1
+    },
+    "8482516": {
+      "cap_hit": 800000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8480797": {
+      "cap_hit": 5000000,
+      "length_of_contract": 6,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 4
+    },
+    "8476456": {
+      "cap_hit": 10500000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8475172": {
+      "cap_hit": 7000000,
+      "length_of_contract": 7,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 4
+    },
+    "8479066": {
+      "cap_hit": 2000000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8477993": {
+      "cap_hit": 900000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477511": {
+      "cap_hit": 2500000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481028": null,
+    "8479291": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8484234": {
+      "cap_hit": 923333,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8481068": {
+      "cap_hit": 5750000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8482074": {
+      "cap_hit": 3775000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8480860": {
+      "cap_hit": 5350000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8478397": {
+      "cap_hit": 4550000,
+      "length_of_contract": 6,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 6
+    },
+    "8479402": {
+      "cap_hit": 1750000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482624": {
+      "cap_hit": 1250000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8477810": {
+      "cap_hit": 1750000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8484768": {
+      "cap_hit": 942500,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8482470": {
+      "cap_hit": 775000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8477346": {
+      "cap_hit": 6250000,
+      "length_of_contract": 8,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 3
+    },
+    "8478435": {
+      "cap_hit": 3350000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8481692": null,
+    "8484144": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8477479": {
+      "cap_hit": 5500000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8477444": {
+      "cap_hit": 5500000,
+      "length_of_contract": 5,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 4
+    },
+    "8481167": {
+      "cap_hit": 1187500,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8477450": {
+      "cap_hit": 4250000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8477987": {
+      "cap_hit": 4000000,
+      "length_of_contract": 4,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 1
+    },
+    "8473422": {
+      "cap_hit": 4500000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8483450": {
+      "cap_hit": 950000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8480798": {
+      "cap_hit": 1200000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8484197": {
+      "cap_hit": 941667,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8481624": {
+      "cap_hit": 4750000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8483493": null,
+    "8482172": {
+      "cap_hit": 900000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482117": {
+      "cap_hit": 1200000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8484783": {
+      "cap_hit": 975000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8481806": {
+      "cap_hit": 900000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482176": {
+      "cap_hit": 1700000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476882": {
+      "cap_hit": 5400000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8474166": null,
+    "8476473": {
+      "cap_hit": 4400000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8483506": {
+      "cap_hit": 941667,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8474034": null,
+    "8481568": {
+      "cap_hit": 4600000,
+      "length_of_contract": 6,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 2
+    },
+    "8481519": null,
+    "8482821": {
+      "cap_hit": 2750000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8482132": {
+      "cap_hit": 867500,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8477380": {
+      "cap_hit": 787500,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8475842": {
+      "cap_hit": 1000000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8482157": null,
+    "8481726": {
+      "cap_hit": 975000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8476468": null,
+    "8481560": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8482109": {
+      "cap_hit": 7450000,
+      "length_of_contract": 7,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 1
+    },
+    "8482747": {
+      "cap_hit": 863333,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8478550": null,
+    "8477979": {
+      "cap_hit": 775000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8481704": {
+      "cap_hit": 1250000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8484210": {
+      "cap_hit": 941667,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8476389": {
+      "cap_hit": 5625000,
+      "length_of_contract": 7,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 4
+    },
+    "8478840": null,
+    "8476459": {
+      "cap_hit": 8500000,
+      "length_of_contract": 8,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 4
+    },
+    "8475177": null,
+    "8479323": {
+      "cap_hit": 9500000,
+      "length_of_contract": 7,
+      "expiry_year": 2029,
+      "expiry_status": "UFA",
+      "years_left": 3,
+      "year_of_contract": 4
+    },
+    "8481708": null,
+    "8480817": null,
+    "8482073": {
+      "cap_hit": 2200000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8482460": {
+      "cap_hit": 975000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8471734": {
+      "cap_hit": 1550000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8477369": {
+      "cap_hit": 3250000,
+      "length_of_contract": 3,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 3
+    },
+    "8478048": {
+      "cap_hit": 11500000,
+      "length_of_contract": 8,
+      "expiry_year": 2033,
+      "expiry_status": "UFA",
+      "years_left": 7,
+      "year_of_contract": 1
+    },
+    "8482496": {
+      "cap_hit": 825000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8476927": {
+      "cap_hit": 1800000,
+      "length_of_contract": 2,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 2
+    },
+    "8478444": {
+      "cap_hit": 7250000,
+      "length_of_contract": 7,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 1
+    },
+    "8480078": {
+      "cap_hit": 4437500,
+      "length_of_contract": 4,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 3
+    },
+    "8478498": {
+      "cap_hit": 5500000,
+      "length_of_contract": 7,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 2
+    },
+    "8475169": {
+      "cap_hit": 5125000,
+      "length_of_contract": 4,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 4
+    },
+    "8478856": null,
+    "8478057": {
+      "cap_hit": 3250000,
+      "length_of_contract": 4,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 2
+    },
+    "8481535": {
+      "cap_hit": 3000000,
+      "length_of_contract": 3,
+      "expiry_year": 2028,
+      "expiry_status": "UFA",
+      "years_left": 2,
+      "year_of_contract": 1
+    },
+    "8482055": null,
+    "8480001": {
+      "cap_hit": 1550000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8483678": {
+      "cap_hit": 11600000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8480748": null,
+    "8480459": {
+      "cap_hit": 4125000,
+      "length_of_contract": 2,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 1
+    },
+    "8475762": {
+      "cap_hit": 2000000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8479425": {
+      "cap_hit": 7250000,
+      "length_of_contract": 8,
+      "expiry_year": 2032,
+      "expiry_status": "UFA",
+      "years_left": 6,
+      "year_of_contract": 2
+    },
+    "8477969": {
+      "cap_hit": 5500000,
+      "length_of_contract": 6,
+      "expiry_year": 2031,
+      "expiry_status": "UFA",
+      "years_left": 5,
+      "year_of_contract": 1
+    },
+    "8480800": {
+      "cap_hit": 7850000,
+      "length_of_contract": 6,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 5
+    },
+    "8474574": {
+      "cap_hit": 3000000,
+      "length_of_contract": 3,
+      "expiry_year": 2027,
+      "expiry_status": "UFA",
+      "years_left": 1,
+      "year_of_contract": 2
+    },
+    "8478454": {
+      "cap_hit": 900000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    },
+    "8480947": {
+      "cap_hit": 4500000,
+      "length_of_contract": 5,
+      "expiry_year": 2030,
+      "expiry_status": "UFA",
+      "years_left": 4,
+      "year_of_contract": 1
+    },
+    "8477967": null
+  }
+}

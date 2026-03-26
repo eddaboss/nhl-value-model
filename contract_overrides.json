@@ -1,0 +1,13 @@
+{
+  "_comment": "Manual contract overrides. Keys are NHL player_id (string). These ALWAYS win over the database.",
+  "_example": {
+    "8471675": {
+      "cap_hit": 8500000,
+      "length_of_contract": 1,
+      "expiry_year": 2026,
+      "expiry_status": "UFA",
+      "years_left": 0,
+      "year_of_contract": 1
+    }
+  }
+}
