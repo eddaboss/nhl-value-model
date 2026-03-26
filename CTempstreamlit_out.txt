@@ -1,0 +1,4 @@
+
+Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+
+2026-03-26 00:36:06.456 Port 8502 is not available

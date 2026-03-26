@@ -187,8 +187,11 @@ def pct_rank(series, val) -> int:
     return round((clean < val).sum() / len(clean) * 100)
 
 
-def headshot_url(player_id) -> str:
-    return f"https://assets.nhl.com/bio/{int(player_id)}/headshot/current/168x168.jpg"
+def headshot_url(player_id, team: str = "") -> str:
+    team = str(team).upper().strip() if team else ""
+    if team:
+        return f"https://assets.nhle.com/mugs/nhl/20252026/{team}/{int(player_id)}.png"
+    return f"https://assets.nhle.com/mugs/nhl/20252026/{int(player_id)}.png"
 
 
 def team_logo_url(team_abbrev: str) -> str:
@@ -214,7 +217,7 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
 
         hs_html = ""
         if pid and pd.notna(pid):
-            hs_url  = headshot_url(pid)
+            hs_url  = headshot_url(pid, team)
             hs_html = (
                 f"<img src='{hs_url}' width='60' height='60' "
                 f"style='border-radius:50%;object-fit:cover;"
@@ -831,7 +834,7 @@ def tab_kings(df: pd.DataFrame):
 
         hs_html = ""
         if pid and pd.notna(pid):
-            hs_url = headshot_url(pid)
+            hs_url = headshot_url(pid, "LAK")
             hs_html = (
                 f"<img src='{hs_url}' width='48' height='48' "
                 f"style='border-radius:50%;object-fit:cover;"
@@ -968,7 +971,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
     hs_html = ""
     if pid and pd.notna(pid):
-        hs_url = headshot_url(pid)
+        hs_url = headshot_url(pid, team)
         hs_html = (
             f"<img src='{hs_url}' width='80' height='80' "
             f"style='border-radius:50%;object-fit:cover;"
@@ -1150,7 +1153,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
             sp_hs = ""
             if sp_pid and pd.notna(sp_pid):
-                sp_hs_url = headshot_url(sp_pid)
+                sp_hs_url = headshot_url(sp_pid, sp_team)
                 sp_hs = (
                     f"<img src='{sp_hs_url}' width='56' height='56' "
                     f"style='border-radius:50%;object-fit:cover;"
