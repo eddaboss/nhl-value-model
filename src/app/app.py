@@ -359,33 +359,33 @@ def _load_cap_ceiling() -> int:
 CAP_CEILING = _load_cap_ceiling()
 
 # ── Kings brand colors ─────────────────────────────────────────────────────────
-KINGS_BLACK  = "#090909"
-KINGS_GOLD   = "#C4A462"
-KINGS_SILVER = "#A2AAAD"
-KINGS_WHITE  = "#F0EDE8"
+KINGS_BLACK  = "#040404"
+KINGS_GOLD   = "#C8A84B"
+KINGS_SILVER = "#8A9499"
+KINGS_WHITE  = "#E8E4DC"
 
 # ── Resign signal palettes ─────────────────────────────────────────────────────
 RESIGN_PALETTE = {
-    "Must Sign":         "#154A1A",
-    "Priority RFA":      "#104E9A",
-    "Locked In (Value)": "#3A116E",
-    "Fair Deal":         "#2C3A40",
-    "Let Walk":          "#952A09",
-    "Buyout Candidate":  "#6A0D3F",
-    "Monitor":           "#3A525C",
-    "Extension Signed":  "#1A3A50",
+    "Must Sign":         "#0E7A3A",
+    "Priority RFA":      "#1254A0",
+    "Locked In (Value)": "#6B21C8",
+    "Fair Deal":         "#2A3A40",
+    "Let Walk":          "#8B2200",
+    "Buyout Candidate":  "#7B0D42",
+    "Monitor":           "#2E4A54",
+    "Extension Signed":  "#0D3348",
 }
 
 KINGS_SIGNAL_PALETTE = {
-    "Extension Now":    "#005000",
-    "Lock Up":          "#154A1A",
-    "Priority Re-sign": "#0A3880",
-    "Extension Signed": "#1A3A50",
-    "Fair Deal":        "#2C3A40",
-    "Monitor":          "#3A525C",
-    "Let Walk":         "#952A09",
-    "Buyout Candidate": "#6A0D3F",
-    "UFA":              "#3A2018",
+    "Extension Now":    "#0A5C30",
+    "Lock Up":          "#0E7A3A",
+    "Priority Re-sign": "#1254A0",
+    "Extension Signed": "#0D3348",
+    "Fair Deal":        "#2A3A40",
+    "Monitor":          "#2E4A54",
+    "Let Walk":         "#8B2200",
+    "Buyout Candidate": "#7B0D42",
+    "UFA":              "#2A1A10",
 }
 
 PERCENTILE_STATS = [
@@ -405,231 +405,244 @@ CAP_CEILING = 95_500_000
 st.markdown("""
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 """, unsafe_allow_html=True)
 
 st.markdown("""
 <style>
-  /* ── Override Streamlit's font variables ── */
-  :root {
-      --font: 'Source Sans 3', sans-serif;
-      --font-mono: 'Space Mono', monospace;
-  }
+/* Root variables */
+:root {
+    --font: 'Manrope', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --gold: #C8A84B;
+    --bg: #040404;
+    --surface: #0C0C0C;
+    --raised: #141414;
+    --border: #141414;
+    --text: #E8E4DC;
+    --muted: #4A4A4A;
+    --pos: #1FBFA0;
+    --neg: #E84040;
+}
 
-  /* ── Base ── */
-  html, body,
-  .stApp,
-  [data-testid="stAppViewContainer"],
-  [data-testid="stMain"],
-  [data-testid="stVerticalBlock"],
-  [data-testid="stHorizontalBlock"],
-  p, div, span, label, input, select, textarea, button,
-  [class*="css"] {
-      font-family: 'Source Sans 3', sans-serif !important;
-  }
-  .block-container { padding-top: 3.5rem; padding-bottom: 2rem; }
+/* Base */
+html, body, .stApp, [data-testid="stAppViewContainer"],
+[data-testid="stMain"], p, div, span, label, [class*="css"] {
+    font-family: 'Manrope', sans-serif !important;
+}
 
-  /* ── Metric cards ── */
-  [data-testid="stMetric"] {
-      background: #141414;
-      border-radius: 3px;
-      padding: 14px 18px;
-      border: 1px solid #202020;
-      border-bottom: 2px solid #C4A462;
-  }
-  [data-testid="stMetricLabel"] {
-      color: #585858;
-      font-size: 0.68rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      font-family: 'Space Mono', monospace !important;
-  }
-  [data-testid="stMetricValue"] {
-      color: #F0EDE8;
-      font-size: 1.35rem;
-      font-weight: 700;
-      font-family: 'Space Mono', monospace !important;
-  }
-  [data-testid="stMetricDelta"] { font-size: 0.78rem; }
+/* App background */
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
+[data-testid="stHeader"] {
+    background-color: #040404 !important;
+}
 
-  /* ── Player card ── */
-  .player-card {
-      background: #141414;
-      border-radius: 3px;
-      padding: 20px 24px;
-      border: 1px solid #202020;
-      border-left: 3px solid #C4A462;
-      margin-bottom: 12px;
-  }
-  .kings-card {
-      background: #121212;
-      border-radius: 3px;
-      padding: 20px 24px;
-      border: 1px solid #202020;
-      border-left: 3px solid #C4A462;
-      margin-bottom: 8px;
-      transition: background 0.12s, border-left-color 0.12s;
-  }
-  .kings-card:hover {
-      background: #181818;
-      border-left-color: #DFC080;
-  }
+/* Block container */
+.block-container {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+}
 
-  /* ── Typography helpers ── */
-  .stat-label {
-      color: #525252;
-      font-size: 0.66rem;
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      font-family: 'Space Mono', monospace;
-  }
-  .stat-value {
-      color: #F0EDE8;
-      font-size: 1.05rem;
-      font-weight: 600;
-      font-family: 'Space Mono', monospace;
-  }
-  .delta-pos  { color: #4EC994; font-size: 1.5rem; font-weight: 800; font-family: 'Space Mono', monospace; }
-  .delta-neg  { color: #E05858; font-size: 1.5rem; font-weight: 800; font-family: 'Space Mono', monospace; }
-  .pct-pos    { color: #6ED9A8; font-size: 0.88rem; }
-  .pct-neg    { color: #E08080; font-size: 0.88rem; }
-  .kings-gold { color: #C4A462; font-weight: 700; }
-  .section-header {
-      color: #C4A462;
-      font-size: 1.35rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-      font-family: 'Playfair Display', serif;
-  }
+/* METRIC CARDS — No box. Just a top gold rule + huge Bebas Neue number. */
+[data-testid="stMetric"] {
+    background: transparent !important;
+    border: none !important;
+    border-top: 1px solid #C8A84B !important;
+    border-radius: 0 !important;
+    padding: 14px 2px 10px !important;
+    box-shadow: none !important;
+}
+[data-testid="stMetricLabel"] {
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: 0.52rem !important;
+    letter-spacing: 0.28em !important;
+    text-transform: uppercase !important;
+    color: #3A3A3A !important;
+}
+[data-testid="stMetricValue"] {
+    font-family: 'Bebas Neue', cursive !important;
+    font-size: 2.6rem !important;
+    line-height: 1.0 !important;
+    color: #E8E4DC !important;
+    letter-spacing: 0.04em !important;
+    font-weight: 400 !important;
+}
+[data-testid="stMetricDelta"] {
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: 0.62rem !important;
+    letter-spacing: 0.08em !important;
+}
 
-  /* ── Section divider label ── */
-  .group-label {
-      color: #A2AAAD;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      font-family: 'Space Mono', monospace;
-      margin: 18px 0 8px;
-      padding-left: 10px;
-      border-left: 2px solid #C4A462;
-  }
+/* Sidebar */
+[data-testid="stSidebar"], section[data-testid="stSidebar"] {
+    background-color: #040404 !important;
+    border-right: 1px solid #141414 !important;
+}
+[data-testid="stSidebar"] label, [data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span, [data-testid="stSidebar"] div {
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: 0.72rem !important;
+    color: #3A3A3A !important;
+}
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: 0.68rem !important;
+    color: #3A3A3A !important;
+}
 
-  /* ── Signal badge ── */
-  .signal-badge {
-      display: inline-block;
-      padding: 3px 9px;
-      border-radius: 2px;
-      font-size: .68rem;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      font-family: 'Space Mono', monospace;
-  }
+/* TABS — Terminal style */
+[data-baseweb="tab-list"] {
+    gap: 0 !important;
+    background: transparent !important;
+    border-bottom: 1px solid #141414 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 20px !important;
+}
+[data-baseweb="tab"] {
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: 0.6rem !important;
+    letter-spacing: 0.22em !important;
+    text-transform: uppercase !important;
+    padding: 12px 24px !important;
+    border-radius: 0 !important;
+    color: #2A2A2A !important;
+    background: transparent !important;
+    border-bottom: 2px solid transparent !important;
+    margin-bottom: -1px !important;
+    border-right: 1px solid #141414 !important;
+}
+[aria-selected="true"][data-baseweb="tab"] {
+    color: #C8A84B !important;
+    background: transparent !important;
+    border-bottom: 2px solid #C8A84B !important;
+}
 
-  /* ── App background ── */
-  .stApp,
-  [data-testid="stAppViewContainer"],
-  [data-testid="stMain"] {
-      background-color: #090909 !important;
-  }
-  section[data-testid="stSidebar"] + div [data-testid="stMain"] {
-      background-color: #090909 !important;
-  }
+/* Player cards */
+.player-card {
+    background: #0C0C0C;
+    border-radius: 0;
+    padding: 20px 24px;
+    border: 1px solid #141414;
+    border-left: 3px solid #C8A84B;
+    margin-bottom: 14px;
+}
+.kings-card {
+    background: #080808;
+    border-radius: 0;
+    padding: 18px 22px;
+    border: 1px solid #141414;
+    border-left: 3px solid #C8A84B;
+    margin-bottom: 6px;
+    transition: background 0.1s;
+}
+.kings-card:hover {
+    background: #0E0E0E;
+}
 
-  /* ── Sidebar ── */
-  [data-testid="stSidebar"],
-  section[data-testid="stSidebar"] {
-      background-color: #0D0D0D !important;
-      border-right: 1px solid #1C1C1C !important;
-  }
+/* Typography helpers */
+.stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    color: #333;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+.stat-value {
+    font-family: 'IBM Plex Mono', monospace;
+    color: #E8E4DC;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+.delta-pos  { font-family: 'IBM Plex Mono', monospace; color: #1FBFA0; font-size: 1.4rem; font-weight: 500; }
+.delta-neg  { font-family: 'IBM Plex Mono', monospace; color: #E84040; font-size: 1.4rem; font-weight: 500; }
+.pct-pos    { font-family: 'IBM Plex Mono', monospace; color: #3ED4B6; font-size: 0.8rem; }
+.pct-neg    { font-family: 'IBM Plex Mono', monospace; color: #EF7070; font-size: 0.8rem; }
+.kings-gold { color: #C8A84B; font-weight: 700; }
+.section-header {
+    font-family: 'Bebas Neue', cursive;
+    color: #E8E4DC;
+    font-size: 1.8rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    font-weight: 400;
+    line-height: 1;
+}
 
-  /* ── Tabs — broadcast chyron style ── */
-  [data-baseweb="tab-list"] {
-      gap: 0px !important;
-      border-bottom: 1px solid #222 !important;
-      background: transparent !important;
-  }
-  [data-baseweb="tab"] {
-      border-radius: 0 !important;
-      font-family: 'Source Sans 3', sans-serif !important;
-      font-weight: 600 !important;
-      font-size: 0.76rem !important;
-      letter-spacing: 0.1em !important;
-      text-transform: uppercase !important;
-      padding: 10px 18px !important;
-      border-bottom: 2px solid transparent !important;
-      margin-bottom: -1px !important;
-      background: transparent !important;
-  }
-  [aria-selected="true"][data-baseweb="tab"] {
-      border-bottom: 2px solid #C4A462 !important;
-      background: transparent !important;
-      color: #C4A462 !important;
-  }
+/* Group labels */
+.group-label {
+    font-family: 'IBM Plex Mono', monospace;
+    color: #3A3A3A;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin: 20px 0 10px;
+    padding-left: 10px;
+    border-left: 2px solid #C8A84B;
+}
 
-  /* ── Expanders ── */
-  [data-testid="stExpander"] {
-      border: 1px solid #1C1C1C !important;
-      border-radius: 3px !important;
-      background-color: #111 !important;
-  }
+/* Signal badge */
+.signal-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
 
-  /* ── Scrollbar ── */
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: #0D0D0D; }
-  ::-webkit-scrollbar-thumb { background: #282828; border-radius: 2px; }
+/* Headings */
+h1, h2, h3,
+[data-testid="stMarkdownContainer"] h1,
+[data-testid="stMarkdownContainer"] h2,
+[data-testid="stMarkdownContainer"] h3 {
+    font-family: 'Bebas Neue', cursive !important;
+    letter-spacing: 0.04em !important;
+    font-weight: 400 !important;
+    line-height: 1.05 !important;
+}
 
-  /* ── Headings use serif ── */
-  h1, h2, h3 { font-family: 'Playfair Display', serif !important; }
+/* Expanders */
+[data-testid="stExpander"] {
+    border: 1px solid #141414 !important;
+    border-radius: 0 !important;
+    background-color: #080808 !important;
+}
+details summary p {
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.1em !important;
+}
 
-  /* ── Streamlit native header widget text ── */
-  [data-testid="stMarkdownContainer"] h1,
-  [data-testid="stMarkdownContainer"] h2,
-  [data-testid="stMarkdownContainer"] h3 {
-      font-family: 'Playfair Display', serif !important;
-      letter-spacing: -0.02em;
-  }
+/* Inputs */
+input, [data-baseweb="input"] input {
+    background: #0C0C0C !important;
+    border-color: #141414 !important;
+    color: #E8E4DC !important;
+    font-family: 'Manrope', sans-serif !important;
+    border-radius: 0 !important;
+}
 
-  /* ── Inputs & selects ── */
-  input, select, textarea,
-  [data-testid="textInput"] input,
-  [data-baseweb="input"] input {
-      background: #141414 !important;
-      border-color: #282828 !important;
-      color: #F0EDE8 !important;
-      font-family: 'Source Sans 3', sans-serif !important;
-  }
+/* Captions */
+[data-testid="stCaptionContainer"] p {
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: 0.55rem !important;
+    letter-spacing: 0.12em !important;
+    color: #303030 !important;
+}
 
-  /* ── Dataframe ── */
-  [data-testid="stDataFrame"] {
-      border: 1px solid #1C1C1C !important;
-  }
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #040404; }
+::-webkit-scrollbar-thumb { background: #141414; border-radius: 0; }
 
-  /* ── Buttons ── */
-  [data-testid="stButton"] button {
-      font-family: 'Source Sans 3', sans-serif !important;
-      border-radius: 3px !important;
-  }
+/* Dividers */
+hr { border-color: #141414 !important; margin: 16px 0 !important; }
 
-  /* ── Caption text ── */
-  [data-testid="stCaptionContainer"] {
-      color: #484848 !important;
-      font-family: 'Space Mono', monospace !important;
-      font-size: 0.65rem !important;
-      letter-spacing: 0.06em !important;
-  }
-
-  /* ── Selectbox ── */
-  [data-baseweb="select"] [data-testid="stMarkdownContainer"] {
-      font-family: 'Source Sans 3', sans-serif !important;
-  }
-
-  /* ── Hide Streamlit default footer ── */
-  footer { visibility: hidden; }
-
-  /* ── hr ── */
-  hr { border-color: #1C1C1C !important; }
+/* Hide Streamlit footer */
+footer { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -748,7 +761,7 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
         delta = row.get(delta_col)
         pv    = row.get("predicted_value")
 
-        clr     = "#4EC994" if (delta or 0) >= 0 else "#E05858"
+        clr     = "#1FBFA0" if (delta or 0) >= 0 else "#E84040"
         val_str = fmt_delta(delta) if not show_pred else fmt_m(pv)
         age_str = f"Age {age:.0f}" if pd.notna(age) else ""
 
@@ -770,16 +783,16 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
 
         cols[i].markdown(
             f"<div style='background:#141414;border-radius:2px;padding:12px 8px;"
-            f"text-align:center;border:1px solid #202020;border-bottom:2px solid {clr};'>"
+            f"text-align:center;border:1px solid #141414;border-bottom:2px solid {clr};'>"
             f"  {hs_html}"
-            f"  <div style='font-weight:700;color:#F0EDE8;font-size:.8rem;"
+            f"  <div style='font-weight:700;color:#E8E4DC;font-size:.8rem;"
             f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
-            f"    max-width:100%;font-family:\"Source Sans 3\",sans-serif;'>{name}</div>"
-            f"  <div style='color:#585858;font-size:.68rem;margin:3px 0;"
-            f"    font-family:\"Space Mono\",monospace;letter-spacing:.04em;'>"
+            f"    max-width:100%;font-family:\"Manrope\",sans-serif;'>{name}</div>"
+            f"  <div style='color:#3A3A3A;font-size:.68rem;margin:3px 0;"
+            f"    font-family:\"IBM Plex Mono\",monospace;letter-spacing:.04em;'>"
             f"    {team} · {pos}</div>"
             f"  <div style='color:{clr};font-size:.82rem;font-weight:700;"
-            f"    margin-top:4px;font-family:\"Space Mono\",monospace;'>{val_str}</div>"
+            f"    margin-top:4px;font-family:\"IBM Plex Mono\",monospace;'>{val_str}</div>"
             f"</div>",
             unsafe_allow_html=True,
         )
@@ -853,7 +866,7 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
     with st.sidebar:
         st.markdown(
             f"<div style='color:{KINGS_GOLD};font-size:1.0rem;font-weight:700;"
-            "margin-bottom:4px;font-family:\"Playfair Display\",serif;letter-spacing:-0.01em;'>"
+            "margin-bottom:4px;font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;'>"
             "NHL Value Model</div>",
             unsafe_allow_html=True,
         )
@@ -917,7 +930,7 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
 
 # ── Tab 1: League Overview ─────────────────────────────────────────────────────
 def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
-    st.markdown("## League-Wide Value vs. Cap Hit")
+    st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>League-Wide Value vs. Cap Hit</div>", unsafe_allow_html=True)
 
     df_all = df[df["predicted_value"].notna()].copy()
     df_all = add_delta_pct(df_all)
@@ -974,7 +987,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
             name="UFA / Unsigned",
             marker=dict(
                 symbol="diamond", size=9, opacity=0.85,
-                color="#C4A462",
+                color="#C8A84B",
                 line=dict(width=1, color="#fff"),
             ),
             customdata=df_ufa[["name", "team", "pos",
@@ -992,18 +1005,18 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
         lo = min(df_c["predicted_value"].min(), df_c["cap_hit"].min()) * 0.95
         hi = max(df_c["predicted_value"].max(), df_c["cap_hit"].max()) * 1.02
         fig.add_shape(type="line", x0=lo, y0=lo, x1=hi, y1=hi,
-                      line=dict(dash="dash", color="#666", width=1.5))
+                      line=dict(dash="dash", color="#444", width=1.5))
         fig.add_annotation(x=hi * 0.72, y=hi * 0.78, text="Fair value line",
-                           showarrow=False, font=dict(color="#666", size=11))
+                           showarrow=False, font=dict(color="#444", size=11))
 
     fig.update_layout(
-        paper_bgcolor="#090909", plot_bgcolor="#121212",
-        font=dict(family="'Source Sans 3', sans-serif", color="#787570"),
+        paper_bgcolor="#040404", plot_bgcolor="#080808",
+        font=dict(family="'IBM Plex Mono', monospace", color="#3A3A3A"),
         xaxis=dict(tickformat="$,.0f", title="Predicted Market Value",
-                   gridcolor="#1A1A1A", zeroline=False),
+                   gridcolor="#141414", zeroline=False),
         yaxis=dict(tickformat="$,.0f", title="Actual Cap Hit (0 = UFA/Unsigned)",
-                   gridcolor="#1A1A1A"),
-        legend=dict(bgcolor="#141414", bordercolor="#202020",
+                   gridcolor="#141414"),
+        legend=dict(bgcolor="#141414", bordercolor="#141414",
                     orientation="h", y=1.04, x=0.5, xanchor="center"),
         height=600,
         margin=dict(l=10, r=10, t=30, b=10),
@@ -1042,18 +1055,18 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
         mi1, mi2 = st.columns(2)
         with mi1:
             st.markdown(
-                "<div style='color:#4EC994;font-size:.68rem;font-weight:700;"
+                "<div style='color:#1FBFA0;font-size:.68rem;font-weight:700;"
                 "letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;"
-                "font-family:\"Space Mono\",monospace;border-left:2px solid #4EC994;"
+                "font-family:\"IBM Plex Mono\",monospace;border-left:2px solid #1FBFA0;"
                 "padding-left:8px;'>Top 5 Underpaid</div>",
                 unsafe_allow_html=True,
             )
             _mini_player_cards(df_c.nlargest(5, "value_delta"))
         with mi2:
             st.markdown(
-                "<div style='color:#E05858;font-size:.68rem;font-weight:700;"
+                "<div style='color:#E84040;font-size:.68rem;font-weight:700;"
                 "letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;"
-                "font-family:\"Space Mono\",monospace;border-left:2px solid #E05858;"
+                "font-family:\"IBM Plex Mono\",monospace;border-left:2px solid #E84040;"
                 "padding-left:8px;'>Top 5 Overpaid</div>",
                 unsafe_allow_html=True,
             )
@@ -1062,7 +1075,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
 # ── Tab 2: Leaderboards ────────────────────────────────────────────────────────
 def tab_leaderboards(df: pd.DataFrame):
-    st.markdown("## Value Leaderboards")
+    st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Value Leaderboards</div>", unsafe_allow_html=True)
 
     df_c   = df[df["cap_hit"].notna() & df["value_delta"].notna()].copy()
     df_c   = add_delta_pct(df_c)
@@ -1099,16 +1112,16 @@ def tab_leaderboards(df: pd.DataFrame):
             height=max(360, n * 28),
         )
         fig.update_layout(
-            paper_bgcolor="#090909", plot_bgcolor="#121212",
-            font=dict(family="'Source Sans 3', sans-serif", color="#787570"), showlegend=False,
+            paper_bgcolor="#040404", plot_bgcolor="#080808",
+            font=dict(family="'IBM Plex Mono', monospace", color="#3A3A3A"), showlegend=False,
             coloraxis_showscale=False,
             yaxis=dict(autorange="reversed"),
             xaxis=dict(
                 tickformat=".1f%" if sort_by == "% Delta" else "$,.0f",
-                title=x_lbl, gridcolor="#1A1A1A",
+                title=x_lbl, gridcolor="#141414",
             ),
             margin=dict(l=0, r=10, t=30, b=10),
-            title=dict(text=title, font=dict(family="'Source Sans 3', sans-serif", color="#787570", size=13)),
+            title=dict(text=title, font=dict(family="'IBM Plex Mono', monospace", color="#3A3A3A")),
         )
         return fig
 
@@ -1128,18 +1141,18 @@ def tab_leaderboards(df: pd.DataFrame):
     hs1, hs2 = st.columns(2)
     with hs1:
         st.markdown(
-            "<div style='color:#4EC994;font-size:.68rem;font-weight:700;"
+            "<div style='color:#1FBFA0;font-size:.68rem;font-weight:700;"
             "letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;"
-            "font-family:\"Space Mono\",monospace;border-left:2px solid #4EC994;"
+            "font-family:\"IBM Plex Mono\",monospace;border-left:2px solid #1FBFA0;"
             "padding-left:8px;'>Top 5 Underpaid</div>",
             unsafe_allow_html=True,
         )
         _mini_player_cards(df_c.nlargest(5, sort_col))
     with hs2:
         st.markdown(
-            "<div style='color:#E05858;font-size:.68rem;font-weight:700;"
+            "<div style='color:#E84040;font-size:.68rem;font-weight:700;"
             "letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;"
-            "font-family:\"Space Mono\",monospace;border-left:2px solid #E05858;"
+            "font-family:\"IBM Plex Mono\",monospace;border-left:2px solid #E84040;"
             "padding-left:8px;'>Top 5 Overpaid</div>",
             unsafe_allow_html=True,
         )
@@ -1184,7 +1197,7 @@ def tab_leaderboards(df: pd.DataFrame):
             st.markdown("---")
             st.markdown(
                 "<div style='display:flex;align-items:center;gap:10px;'>"
-                "<span style='font-size:1.1rem;font-weight:700;color:#C4A462;'>"
+                "<span style='font-size:1.1rem;font-weight:700;color:#C8A84B;'>"
                 "🔶 UFA / Unsigned Players</span>"
                 "<span style='background:#3A2018;color:#B8C4C8;padding:2px 8px;"
                 "border-radius:2px;font-size:.75rem;'>No current contract — predicted value only</span>"
@@ -1214,15 +1227,15 @@ def tab_kings(df: pd.DataFrame):
     kings_logo = team_logo_url("LAK")
     st.markdown(
         f"<div style='display:flex;align-items:center;gap:18px;margin-bottom:12px;"
-        f"padding:18px 22px;background:#121212;border-left:4px solid {KINGS_GOLD};'>"
+        f"padding:18px 22px;background:#080808;border-left:4px solid {KINGS_GOLD};'>"
         f"<img src='{kings_logo}' width='64' height='64' "
         f"style='flex-shrink:0;opacity:.95;' onerror=\"this.style.display='none'\">"
         f"<div>"
         f"<div style='font-size:1.5rem;font-weight:700;color:{KINGS_WHITE};"
-        f"font-family:\"Playfair Display\",serif;letter-spacing:-0.02em;line-height:1.1;'>"
+        f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
         f"Los Angeles Kings</div>"
-        f"<div style='color:#484848;font-size:.62rem;margin-top:5px;"
-        f"font-family:\"Space Mono\",monospace;letter-spacing:.14em;text-transform:uppercase;'>"
+        f"<div style='color:#333333;font-size:.62rem;margin-top:5px;"
+        f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.14em;text-transform:uppercase;'>"
         f"{_season_str(load_season_context())} Roster Analysis &nbsp;·&nbsp; XGBoost Model</div>"
         f"</div></div>",
         unsafe_allow_html=True,
@@ -1246,7 +1259,7 @@ def tab_kings(df: pd.DataFrame):
     n_expiring        = int((kings["years_left"].fillna(0) <= 1).sum())
 
     st.markdown(
-        f"<div style='background:#121212;border-top:3px solid {KINGS_GOLD};"
+        f"<div style='background:#080808;border-top:3px solid {KINGS_GOLD};"
         "border-radius:3px;padding:16px 20px;margin-bottom:16px;'>",
         unsafe_allow_html=True,
     )
@@ -1277,14 +1290,14 @@ def tab_kings(df: pd.DataFrame):
     )
     fig.update_layout(
         barmode="group",
-        paper_bgcolor="#090909", plot_bgcolor="#121212",
-        font=dict(family="'Source Sans 3', sans-serif", color="#787570"),
+        paper_bgcolor="#040404", plot_bgcolor="#080808",
+        font=dict(family="'IBM Plex Mono', monospace", color="#3A3A3A"),
         xaxis=dict(tickangle=-40, gridcolor="#1A1A28"),
         yaxis=dict(tickformat="$,.0f", title="",
                    gridcolor="#1A1A28", zeroline=False),
         title=dict(text="Cap Hit vs. Predicted Market Value",
                    font=dict(color=KINGS_GOLD, size=15)),
-        legend=dict(bgcolor="#141414", bordercolor="#202020",
+        legend=dict(bgcolor="#141414", bordercolor="#141414",
                     orientation="h", y=1.08, x=0.5, xanchor="center"),
         height=420,
         margin=dict(l=10, r=10, t=50, b=10),
@@ -1328,7 +1341,7 @@ def tab_kings(df: pd.DataFrame):
     # ── Roster grouped by F / D ──────────────────────────────────────────────
     st.markdown(
         f"<div style='color:{KINGS_GOLD};font-size:1.0rem;font-weight:700;"
-        "margin:14px 0 10px;font-family:\"Playfair Display\",serif;letter-spacing:-0.01em;'>"
+        "margin:14px 0 10px;font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;'>"
         "Player Breakdown</div>",
         unsafe_allow_html=True,
     )
@@ -1372,7 +1385,7 @@ def tab_kings(df: pd.DataFrame):
         pct_str   = ""
         if pd.notna(delta):
             sign = "+" if delta >= 0 else ""
-            clr  = "#4EC994" if delta >= 0 else "#E05858"
+            clr  = "#1FBFA0" if delta >= 0 else "#E84040"
             delta_str = f"<span style='color:{clr};font-weight:700;'>{sign}{fmt_m(delta)}</span>"
             if pd.notna(delta_pct):
                 pct_str = f"<span style='color:{clr};font-size:.8rem;'>({sign}{delta_pct:.1f}%)</span>"
@@ -1417,9 +1430,9 @@ def tab_kings(df: pd.DataFrame):
             f"  <div style='flex:1;min-width:0;'>"
             f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
             f"      <span style='font-size:1.0rem;font-weight:700;color:{KINGS_WHITE};"
-            f"font-family:\"Source Sans 3\",sans-serif;'>{name}</span>"
+            f"font-family:\"Manrope\",sans-serif;'>{name}</span>"
             f"      {est_badge}"
-            f"      <span style='color:#585858;font-size:.72rem;font-family:\"Space Mono\",monospace;"
+            f"      <span style='color:#3A3A3A;font-size:.72rem;font-family:\"IBM Plex Mono\",monospace;"
             f"letter-spacing:.04em;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
@@ -1428,7 +1441,7 @@ def tab_kings(df: pd.DataFrame):
             f"      <div><div class='stat-label'>Pred. Value</div>"
             f"           <div class='stat-value'>{pv_str}</div></div>"
             f"      <div><div class='stat-label'>Value Delta</div>"
-            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"Space Mono\",monospace;'>"
+            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"IBM Plex Mono\",monospace;'>"
             f"             {delta_str} {pct_str}</div></div>"
             f"      <div><div class='stat-label'>Expiry</div>"
             f"           <div class='stat-value'>{exp_str} ({exp_st})</div></div>"
@@ -1540,7 +1553,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         hs_html = (
             f"<img src='{hs_url}' width='80' height='80' "
             f"style='border-radius:50%;object-fit:cover;"
-            f"border:2px solid #C4A462;flex-shrink:0;' "
+            f"border:2px solid #C8A84B;flex-shrink:0;' "
             f"onerror=\"this.style.display='none'\">"
         )
 
@@ -1549,12 +1562,12 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         f"  <div style='display:flex;gap:18px;align-items:center;'>"
         f"    {hs_html}"
         f"    <div>"
-        f"      <div style='font-size:1.5rem;font-weight:700;color:#F0EDE8;"
-        f"font-family:\"Playfair Display\",serif;letter-spacing:-0.01em;line-height:1.1;'>"
+        f"      <div style='font-size:1.5rem;font-weight:700;color:#E8E4DC;"
+        f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
         f"        {name}{prior_badge}{contract_badge}"
         f"      </div>"
-        f"      <div style='color:#585858;margin-top:5px;font-size:.72rem;"
-        f"font-family:\"Space Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
+        f"      <div style='color:#3A3A3A;margin-top:5px;font-size:.72rem;"
+        f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
         f"        {team} &nbsp;·&nbsp; {pos} &nbsp;·&nbsp; Age {age}"
         f"      </div>"
         f"    </div>"
@@ -1615,10 +1628,10 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         ext_start_str = f"{int(ext_start)-1}-{str(int(ext_start))[-2:]}" if ext_start else "?"
         ext_exp_str  = f"{int(ext_exp)-1}-{str(int(ext_exp))[-2:]}" if ext_exp else "?"
         st.markdown(
-            f"<div style='background:#0E1A24;border:1px solid #1A3A50;border-radius:3px;"
+            f"<div style='background:#0A1520;border:1px solid #152E42;border-radius:3px;"
             f"padding:10px 14px;margin:8px 0;font-size:13px;'>"
             f"<span style='color:#6BBAD4;font-weight:700;'>✅ Extension Signed</span>"
-            f"<span style='color:#909090;margin-left:10px;'>"
+            f"<span style='color:#5A5A5A;margin-left:10px;'>"
             f"{ext_yrs_str} · {ext_ch_str}/yr · {ext_start_str} → {ext_exp_str}"
             f"{' · ' + ext_stat if ext_stat else ''}"
             f"</span></div>",
@@ -1630,8 +1643,8 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     sig_color = RESIGN_PALETTE.get(signal, "#555")
     st.markdown(
         f"<div style='margin:10px 0;display:flex;align-items:center;gap:10px;'>"
-        f"<span style='color:#484848;font-size:.62rem;letter-spacing:.14em;"
-        f"font-family:\"Space Mono\",monospace;text-transform:uppercase;'>Re-sign Signal</span>"
+        f"<span style='color:#333333;font-size:.62rem;letter-spacing:.14em;"
+        f"font-family:\"IBM Plex Mono\",monospace;text-transform:uppercase;'>Re-sign Signal</span>"
         f"<span class='signal-badge' style='background:{sig_color};color:#fff;'>{signal}</span>"
         f"</div>",
         unsafe_allow_html=True,
@@ -1643,10 +1656,10 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     total    = len(df)
     rank_pct = pct_rank(df["predicted_value"], pv or 0)
     st.markdown(
-        f"<div style='color:#484848;font-size:.72rem;font-family:\"Space Mono\",monospace;"
+        f"<div style='color:#333333;font-size:.72rem;font-family:\"IBM Plex Mono\",monospace;"
         f"letter-spacing:.04em;'>LEAGUE RANK BY PREDICTED VALUE: "
-        f"<span style='color:#C4A462;font-weight:700;'>#{rank} of {total}</span> "
-        f"&nbsp;·&nbsp; TOP <span style='color:#C4A462;font-weight:700;'>{100-rank_pct}%</span></div>",
+        f"<span style='color:#C8A84B;font-weight:700;'>#{rank} of {total}</span> "
+        f"&nbsp;·&nbsp; TOP <span style='color:#C8A84B;font-weight:700;'>{100-rank_pct}%</span></div>",
         unsafe_allow_html=True,
     )
     st.markdown("")
@@ -1675,9 +1688,9 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
         fig_pct.update_traces(textposition="inside", textfont_size=11)
         fig_pct.update_layout(
-            paper_bgcolor="#090909", plot_bgcolor="#121212", font_color="#B0AEA8",
+            paper_bgcolor="#040404", plot_bgcolor="#080808", font_color="#3A3A3A",
             showlegend=False, coloraxis_showscale=False,
-            xaxis=dict(range=[0, 100], title="Percentile", gridcolor="#1A1A1A"),
+            xaxis=dict(range=[0, 100], title="Percentile", gridcolor="#141414"),
             yaxis=dict(title=""),
             margin=dict(l=0, r=0, t=10, b=10),
         )
@@ -1698,23 +1711,23 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
 
         st.markdown(
-            f"<div style='margin:18px 0 4px 0;font-family:\"Playfair Display\",serif;"
-            f"font-size:1.1rem;font-weight:700;color:#F0EDE8;letter-spacing:-0.01em;'>"
+            f"<div style='margin:18px 0 4px 0;font-family:\"Bebas Neue\",cursive;"
+            f"font-size:1.1rem;font-weight:700;color:#E8E4DC;letter-spacing:0.04em;'>"
             f"What drives {name}'s value?</div>"
-            f"<div style='color:#484848;font-size:.72rem;margin-bottom:14px;"
-            f"font-family:\"Space Mono\",monospace;letter-spacing:.04em;'>"
+            f"<div style='color:#333333;font-size:.72rem;margin-bottom:14px;"
+            f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.04em;'>"
             f"STARTING FROM LEAGUE AVERAGE — FACTORS PUSHING VALUE UP OR DOWN</div>",
             unsafe_allow_html=True,
         )
 
         # Section 1 — league average
         st.markdown(
-            f"<div style='background:#141414;border-radius:2px;border:1px solid #202020;"
+            f"<div style='background:#141414;border-radius:2px;border:1px solid #141414;"
             f"padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;"
             f"justify-content:space-between;'>"
-            f"<span style='font-size:.65rem;color:#484848;font-family:\"Space Mono\",monospace;"
+            f"<span style='font-size:.65rem;color:#333333;font-family:\"IBM Plex Mono\",monospace;"
             f"letter-spacing:.12em;text-transform:uppercase;'>League Average</span>"
-            f"<strong style='color:#C4A462;font-family:\"Space Mono\",monospace;"
+            f"<strong style='color:#C8A84B;font-family:\"IBM Plex Mono\",monospace;"
             f"font-size:.95rem;'>${base/1e6:.2f}M</strong></div>",
             unsafe_allow_html=True,
         )
@@ -1725,7 +1738,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 .vd-row{position:relative;margin:5px 0;cursor:default;}
 .vd-tip{
   visibility:hidden;opacity:0;
-  background:#1A1A1A;color:#F0EDE8;
+  background:#141414;color:#E8E4DC;
   border:1px solid #2A2A2A;border-radius:2px;
   padding:8px 12px;font-size:11px;line-height:1.6;
   position:absolute;z-index:9999;
@@ -1733,7 +1746,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
   min-width:240px;max-width:340px;
   white-space:normal;pointer-events:none;
   transition:opacity .12s ease;
-  font-family:'Source Sans 3',sans-serif;
+  font-family:'Manrope',sans-serif;
 }
 .vd-row:hover .vd-tip{visibility:visible;opacity:1;}
 </style>
@@ -1742,7 +1755,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         def _factor_row(lbl: str, val: float, max_v: float, positive: bool, tip: str) -> str:
             bar_pct  = int(abs(val) / max_v * 100) if max_v > 0 else 0
             bar_pct  = max(bar_pct, 3)
-            color    = "#4EC994" if positive else "#E05858"
+            color    = "#1FBFA0" if positive else "#E84040"
             sign_str = f"+${val/1e6:.2f}M" if positive else f"-${abs(val)/1e6:.2f}M"
             safe_tip = tip.replace('"', "&quot;").replace("<br>", " ")
             return (
@@ -1750,7 +1763,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 f"<div class='vd-tip'><strong>{lbl}</strong><br>{safe_tip}</div>"
                 f"<div style='display:flex;justify-content:space-between;"
                 f"align-items:center;margin-bottom:3px;'>"
-                f"<span style='font-size:12px;color:#B0AEA8;'>{lbl}</span>"
+                f"<span style='font-size:12px;color:#E8E4DC;'>{lbl}</span>"
                 f"<span style='font-size:12px;color:{color};font-weight:600;'>{sign_str}</span>"
                 f"</div>"
                 f"<div style='height:12px;width:{bar_pct}%;background:{color};"
@@ -1762,15 +1775,15 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
         with col_up:
             st.markdown(
-                "<div style='color:#4EC994;font-weight:700;font-size:.68rem;"
+                "<div style='color:#1FBFA0;font-weight:700;font-size:.68rem;"
                 "letter-spacing:.12em;text-transform:uppercase;"
-                "font-family:\"Space Mono\",monospace;margin-bottom:8px;"
-                "border-left:2px solid #4EC994;padding-left:8px;'>"
+                "font-family:\"IBM Plex Mono\",monospace;margin-bottom:8px;"
+                "border-left:2px solid #1FBFA0;padding-left:8px;'>"
                 "Pushing value UP</div>",
                 unsafe_allow_html=True,
             )
             if pos_factors.empty:
-                st.markdown("<span style='color:#484848;font-size:12px;'>None</span>",
+                st.markdown("<span style='color:#333333;font-size:12px;'>None</span>",
                             unsafe_allow_html=True)
             else:
                 rows = "".join(
@@ -1779,22 +1792,22 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                     for f, v in pos_factors.items()
                 )
                 st.markdown(
-                    f"<div style='background:#0E0E0E;border-radius:2px;border:1px solid #1A1A1A;"
+                    f"<div style='background:#0E0E0E;border-radius:2px;border:1px solid #141414;"
                     f"padding:10px 12px;'>{rows}</div>",
                     unsafe_allow_html=True,
                 )
 
         with col_dn:
             st.markdown(
-                "<div style='color:#E05858;font-weight:700;font-size:.68rem;"
+                "<div style='color:#E84040;font-weight:700;font-size:.68rem;"
                 "letter-spacing:.12em;text-transform:uppercase;"
-                "font-family:\"Space Mono\",monospace;margin-bottom:8px;"
-                "border-left:2px solid #E05858;padding-left:8px;'>"
+                "font-family:\"IBM Plex Mono\",monospace;margin-bottom:8px;"
+                "border-left:2px solid #E84040;padding-left:8px;'>"
                 "Pushing value DOWN</div>",
                 unsafe_allow_html=True,
             )
             if neg_factors.empty:
-                st.markdown("<span style='color:#484848;font-size:12px;'>None</span>",
+                st.markdown("<span style='color:#333333;font-size:12px;'>None</span>",
                             unsafe_allow_html=True)
             else:
                 rows = "".join(
@@ -1803,30 +1816,30 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                     for f, v in neg_factors.items()
                 )
                 st.markdown(
-                    f"<div style='background:#0E0E0E;border-radius:2px;border:1px solid #1A1A1A;"
+                    f"<div style='background:#0E0E0E;border-radius:2px;border:1px solid #141414;"
                     f"padding:10px 12px;'>{rows}</div>",
                     unsafe_allow_html=True,
                 )
 
         # Section 3 — result
         pv_val   = pv or base
-        pv_color = "#4EC994" if (delta or 0) >= 0 else "#E05858"
+        pv_color = "#1FBFA0" if (delta or 0) >= 0 else "#E84040"
         cap_str  = f"${ch/1e6:.2f}M" if ch else "—"
         if delta is not None:
             delta_str = f"+${delta/1e6:.2f}M" if delta >= 0 else f"-${abs(delta)/1e6:.2f}M"
         else:
             delta_str = "—"
         st.markdown(
-            f"<div style='background:#141414;border:1px solid #202020;border-radius:2px;"
+            f"<div style='background:#141414;border:1px solid #141414;border-radius:2px;"
             f"border-left:3px solid {pv_color};padding:16px 20px;margin-top:16px;'>"
-            f"<div style='font-size:.62rem;color:#484848;font-family:\"Space Mono\",monospace;"
+            f"<div style='font-size:.62rem;color:#333333;font-family:\"IBM Plex Mono\",monospace;"
             f"letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;'>"
             f"Estimated Market Value</div>"
             f"<div style='font-size:1.5rem;font-weight:700;color:{pv_color};"
-            f"font-family:\"Space Mono\",monospace;margin-bottom:8px;'>"
+            f"font-family:\"IBM Plex Mono\",monospace;margin-bottom:8px;'>"
             f"${pv_val/1e6:.2f}M</div>"
-            f"<div style='font-size:.72rem;color:#484848;font-family:\"Space Mono\",monospace;'>"
-            f"Current Cap Hit: <span style='color:#909090;'>{cap_str}</span>"
+            f"<div style='font-size:.72rem;color:#333333;font-family:\"IBM Plex Mono\",monospace;'>"
+            f"Current Cap Hit: <span style='color:#5A5A5A;'>{cap_str}</span>"
             f"&nbsp;&nbsp;·&nbsp;&nbsp;"
             f"Difference: <span style='color:{pv_color};font-weight:700;'>{delta_str}</span>"
             f"</div></div>",
@@ -1855,28 +1868,28 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 sp_hs = (
                     f"<img src='{sp_hs_url}' width='56' height='56' "
                     f"style='border-radius:50%;object-fit:cover;"
-                    f"border:1px solid #202020;' "
+                    f"border:1px solid #141414;' "
                     f"onerror=\"this.style.display='none'\">"
                 )
-            clr = "#4EC994" if (sp_dlt or 0) >= 0 else "#E05858"
+            clr = "#1FBFA0" if (sp_dlt or 0) >= 0 else "#E84040"
             sim_cols[col_i].markdown(
                 f"<div style='background:#141414;border-radius:2px;padding:14px 10px;"
-                f"border:1px solid #202020;border-bottom:2px solid {clr};text-align:center;'>"
+                f"border:1px solid #141414;border-bottom:2px solid {clr};text-align:center;'>"
                 f"  {sp_hs}"
-                f"  <div style='font-weight:700;color:#F0EDE8;margin-top:7px;"
-                f"font-size:.85rem;font-family:\"Source Sans 3\",sans-serif;'>{sp_name}</div>"
-                f"  <div style='color:#484848;font-size:.62rem;margin:3px 0;"
-                f"font-family:\"Space Mono\",monospace;letter-spacing:.06em;'>"
+                f"  <div style='font-weight:700;color:#E8E4DC;margin-top:7px;"
+                f"font-size:.85rem;font-family:\"Manrope\",sans-serif;'>{sp_name}</div>"
+                f"  <div style='color:#333333;font-size:.62rem;margin:3px 0;"
+                f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.06em;'>"
                 f"    {sp_team} · {sp_pos}"
                 f"    {f'· {sp_age:.0f}' if pd.notna(sp_age) else ''}"
                 f"  </div>"
                 f"  <div style='margin-top:7px;font-size:.78rem;"
-                f"font-family:\"Space Mono\",monospace;'>"
-                f"    <span style='color:#484848;'>PRED </span>"
-                f"    <span style='color:#F0EDE8;'>{fmt_m(sp_pv)}</span>"
+                f"font-family:\"IBM Plex Mono\",monospace;'>"
+                f"    <span style='color:#333333;'>PRED </span>"
+                f"    <span style='color:#E8E4DC;'>{fmt_m(sp_pv)}</span>"
                 f"  </div>"
                 f"  <div style='color:{clr};font-size:.75rem;font-weight:700;"
-                f"font-family:\"Space Mono\",monospace;margin-top:2px;'>"
+                f"font-family:\"IBM Plex Mono\",monospace;margin-top:2px;'>"
                 f"    {fmt_delta(sp_dlt)}"
                 f"  </div>"
                 f"</div>",
@@ -1921,7 +1934,7 @@ The model is retrained nightly from live NHL API stats.
 
 
 def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame):
-    st.markdown("## Player Search")
+    st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Player Search</div>", unsafe_allow_html=True)
 
     all_names = sorted(df["name"].dropna().tolist())
     search1 = st.text_input(
@@ -1956,7 +1969,7 @@ def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame):
 
 # ── Tab 5: Model Insights ──────────────────────────────────────────────────────
 def tab_insights(df: pd.DataFrame):
-    st.markdown("## Model Insights — SHAP Feature Importance")
+    st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Model Insights — SHAP Feature Importance</div>", unsafe_allow_html=True)
     shap_summary = load_shap_summary()
     shap_vals    = load_shap_values()
 
@@ -1964,7 +1977,7 @@ def tab_insights(df: pd.DataFrame):
         st.info("Run `py -3 pipeline.py` to generate SHAP values.")
         return
 
-    st.markdown("### What drives predicted player value?")
+    st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:1.5rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 12px;font-weight:400;'>What drives predicted player value?</div>", unsafe_allow_html=True)
     top_n = st.slider("Features to show", 5, min(30, len(shap_summary)), 15)
     top   = shap_summary.head(top_n).copy()
     top["feature"] = top["feature"].apply(_label)
@@ -1981,11 +1994,11 @@ def tab_insights(df: pd.DataFrame):
         height=max(500, top_n * 34),
     )
     fig.update_layout(
-        paper_bgcolor="#090909", plot_bgcolor="#121212",
-        font=dict(family="'Source Sans 3', sans-serif", color="#787570"), showlegend=False, coloraxis_showscale=False,
+        paper_bgcolor="#040404", plot_bgcolor="#080808",
+        font=dict(family="'IBM Plex Mono', monospace", color="#3A3A3A"), showlegend=False, coloraxis_showscale=False,
         xaxis=dict(
             tickvals=tick_vals, ticktext=tick_text,
-            title="Avg. Dollar Impact on Prediction", gridcolor="#1A1A1A",
+            title="Avg. Dollar Impact on Prediction", gridcolor="#141414",
         ),
         margin=dict(l=10, r=20, t=10, b=10),
     )
@@ -1994,7 +2007,7 @@ def tab_insights(df: pd.DataFrame):
 
     if not shap_vals.empty and "name" in shap_vals.columns:
         st.markdown("---")
-        st.markdown("### Player-Level Explanation")
+        st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:1.5rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 12px;font-weight:400;'>Player-Level Explanation</div>", unsafe_allow_html=True)
         chosen = st.selectbox("Select a player",
                                sorted(df["name"].dropna().tolist()),
                                key="insights_player")
@@ -2034,15 +2047,15 @@ def tab_insights(df: pd.DataFrame):
                 height=max(500, len(top12) * 42 + 80),
             )
             fig2.update_layout(
-                paper_bgcolor="#090909", plot_bgcolor="#121212",
-                font=dict(family="'Source Sans 3', sans-serif", color="#787570"), showlegend=False, coloraxis_showscale=False,
+                paper_bgcolor="#040404", plot_bgcolor="#080808",
+                font=dict(family="'IBM Plex Mono', monospace", color="#3A3A3A"), showlegend=False, coloraxis_showscale=False,
                 xaxis=dict(
                     tickvals=tick_vals2, ticktext=tick_text2,
-                    title="Dollar Impact on Prediction", gridcolor="#1A1A1A",
-                    zeroline=True, zerolinecolor="#484848", zerolinewidth=2,
+                    title="Dollar Impact on Prediction", gridcolor="#141414",
+                    zeroline=True, zerolinecolor="#1C1C1C", zerolinewidth=2,
                 ),
                 title=dict(text=f"SHAP Breakdown — {chosen}",
-                           font=dict(family="'Source Sans 3', sans-serif", color="#787570", size=13)),
+                           font=dict(family="'IBM Plex Mono', monospace", color="#3A3A3A")),
                 margin=dict(l=10, r=20, t=40, b=10),
             )
             st.plotly_chart(fig2, use_container_width=True)
@@ -2067,15 +2080,15 @@ def render_footer(df: pd.DataFrame):
     n_est  = int(df["is_estimated"].sum()) if "is_estimated" in df.columns else 0
 
     st.markdown(
-        "<div style='height:1px;background:linear-gradient(90deg,#C4A462 0%,#C4A462 25%,"
-        "#2A2A2A 60%,#1A1A1A 100%);margin:20px 0 12px;'></div>",
+        "<div style='height:1px;background:linear-gradient(90deg,#C8A84B 0%,#C8A84B 25%,"
+        "#2A2A2A 60%,#141414 100%);margin:20px 0 12px;'></div>",
         unsafe_allow_html=True,
     )
     _last_updated = (f" &nbsp;·&nbsp; {last_ts}" if last_ts else "")
     _season_info = f" &nbsp;·&nbsp; {_season_str(load_season_context())} &nbsp;·&nbsp; Cap: ${CAP_CEILING/1e6:.0f}M"
     st.markdown(
-        f"<div style='color:#383838;font-size:.62rem;text-align:center;padding:4px 0 8px;"
-        f"font-family:\"Space Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
+        f"<div style='color:#2A2A2A;font-size:.62rem;text-align:center;padding:4px 0 8px;"
+        f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
         f"NHL API &nbsp;·&nbsp; PuckPedia &nbsp;·&nbsp; "
         f"{n_real} contracts · {n_est} est"
         f"{_last_updated}{_season_info}"
@@ -2095,20 +2108,21 @@ def main():
         st.rerun()
 
     st.markdown(
-        f"<div style='margin-bottom:0;padding-bottom:0;'>"
-        f"<div style='font-family:\"Space Mono\",monospace;font-size:0.65rem;color:#484848;"
-        f"letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;'>"
-        f"{_season_str(load_season_context())} &nbsp;·&nbsp; XGBoost + SHAP &nbsp;·&nbsp; Live Data"
+        f"<div style='padding:20px 0 0;'>"
+        f"<div style='font-family:\"IBM Plex Mono\",monospace;font-size:0.5rem;"
+        f"color:#272727;letter-spacing:0.35em;text-transform:uppercase;margin-bottom:14px;'>"
+        f"{_season_str(load_season_context())} &nbsp;·&nbsp; XGBOOST + SHAP &nbsp;·&nbsp; LIVE DATA"
         f"</div>"
-        f"<h1 style='margin:0;color:#F0EDE8;font-family:\"Playfair Display\",serif;"
-        f"font-size:2.1rem;font-weight:700;letter-spacing:-0.02em;line-height:1.1;'>"
-        f"NHL Player Value Model</h1>"
+        f"<div style='font-family:\"Bebas Neue\",cursive;font-size:3.8rem;color:#E8E4DC;"
+        f"line-height:0.88;letter-spacing:0.04em;'>"
+        f"NHL Player Value<br>"
+        f"<span style='color:#C8A84B;'>Model</span>"
+        f"</div>"
         f"</div>",
         unsafe_allow_html=True,
     )
     st.markdown(
-        "<div style='height:1px;background:linear-gradient(90deg,#C4A462 0%,#C4A462 25%,"
-        "#3A3A3A 60%,#1A1A1A 100%);margin:14px 0 18px;'></div>",
+        "<div style='height:1px;background:#1C1C1C;margin:18px 0 24px;'></div>",
         unsafe_allow_html=True,
     )
 
