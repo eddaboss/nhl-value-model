@@ -1257,57 +1257,115 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
         st.plotly_chart(fig_pct, use_container_width=True)
 
-    # SHAP waterfall
+    # Value driver breakdown
     if (not shap_vals.empty and "name" in shap_vals.columns
             and name in shap_vals["name"].values):
-        st.markdown("**What drives this player's predicted value?**")
-        row_shap  = shap_vals[shap_vals["name"] == name].iloc[0].drop("name")
-        vals      = row_shap.astype(float)
-        top12_idx = vals.abs().nlargest(12).index
-        features  = [_label(f) for f in top12_idx]
-        # SHAP values are in normalized cap-fraction units — scale back to dollars
-        shap_v    = (vals[top12_idx] * CAP_CEILING).tolist()  # signed, in dollars
-        base      = float(df["predicted_value"].mean())
-        measure   = ["absolute"] + ["relative"] * len(shap_v) + ["total"]
-        x_labels  = ["Base Value"] + features + ["Predicted Value"]
-        y_vals    = [base] + shap_v + [(pv or base)]
+        row_shap     = shap_vals[shap_vals["name"] == name].iloc[0].drop("name")
+        vals_dollars = row_shap.astype(float) * CAP_CEILING
+        base         = float(df["predicted_value"].mean())
 
-        def _fmt_shap(i, v):
-            if i == 0 or i == len(y_vals) - 1:
-                return f"${v/1e6:.1f}M"
-            return (f"+${v/1e6:.1f}M" if v > 0 else f"-${abs(v)/1e6:.1f}M")
-
-        fig_shap = go.Figure(go.Waterfall(
-            orientation="h", measure=measure,
-            x=y_vals, y=x_labels,
-            connector=dict(line=dict(color="#444455", width=1, dash="dot")),
-            increasing=dict(marker=dict(color="#43A047", line=dict(color="#2E7D32", width=1))),
-            decreasing=dict(marker=dict(color="#E53935", line=dict(color="#B71C1C", width=1))),
-            totals=dict(marker=dict(color=KINGS_GOLD, line=dict(color="#8B6914", width=2))),
-            textposition="outside",
-            text=[_fmt_shap(i, v) for i, v in enumerate(y_vals)],
-            textfont=dict(size=11),
-        ))
-        fig_shap.update_layout(
-            paper_bgcolor="#0A0A14", plot_bgcolor="#111120", font_color="#CCCCDD",
-            height=max(520, len(features) * 42 + 100),
-            xaxis=dict(
-                tickformat="$,.1f",
-                ticksuffix="",
-                title="Value (USD)",
-                gridcolor="#1E1E30",
-                tickvals=[i * 1_000_000 for i in range(0, 20)],
-                ticktext=[f"${i}M" for i in range(0, 20)],
-            ),
-            yaxis=dict(autorange="reversed"),
-            margin=dict(l=10, r=100, t=40, b=20),
-            title=dict(text=f"SHAP Waterfall — {name}", font=dict(color="#CCCCEE", size=14)),
+        pos_factors = vals_dollars[vals_dollars > 0].nlargest(5)
+        neg_factors = vals_dollars[vals_dollars < 0].nsmallest(5)
+        max_abs     = max(
+            pos_factors.abs().max() if not pos_factors.empty else 0,
+            neg_factors.abs().max() if not neg_factors.empty else 0,
         )
-        st.plotly_chart(fig_shap, use_container_width=True)
-        st.caption(
-            "🟡 Gold = start (Base Value) & end (Predicted Value) · "
-            "🟢 Green = feature pushes value UP · 🔴 Red = pushes value DOWN · "
-            "Base Value is the league-average predicted salary."
+
+        st.markdown(
+            f"<div style='margin:16px 0 4px 0;font-size:1.05rem;font-weight:700;color:#EEE;'>"
+            f"What drives {name}'s value?</div>"
+            f"<div style='color:#777799;font-size:12px;margin-bottom:12px;'>"
+            f"Starting from the league average salary, here is what pushes this player's value up or down.</div>",
+            unsafe_allow_html=True,
+        )
+
+        # Section 1 — league average
+        st.markdown(
+            f"<div style='background:#1A1A2E;border-radius:8px;padding:10px 16px;"
+            f"margin-bottom:14px;font-size:14px;color:#AAAACC;'>"
+            f"League Average &nbsp;<strong style='color:#DDD;'>${base/1e6:.2f}M</strong></div>",
+            unsafe_allow_html=True,
+        )
+
+        # Section 2 — side-by-side factors
+        col_up, col_dn = st.columns(2)
+
+        def _factor_row(label: str, val: float, max_v: float, positive: bool) -> str:
+            bar_pct  = int(abs(val) / max_v * 100) if max_v > 0 else 0
+            bar_pct  = max(bar_pct, 3)
+            color    = "#43A047" if positive else "#E53935"
+            sign_str = f"+${val/1e6:.2f}M" if positive else f"-${abs(val)/1e6:.2f}M"
+            return (
+                f"<div style='margin:6px 0;'>"
+                f"<div style='display:flex;justify-content:space-between;"
+                f"align-items:center;margin-bottom:3px;'>"
+                f"<span style='font-size:12px;color:#CCCCDD;'>{label}</span>"
+                f"<span style='font-size:12px;color:{color};font-weight:600;'>{sign_str}</span>"
+                f"</div>"
+                f"<div style='height:12px;width:{bar_pct}%;background:{color};"
+                f"border-radius:3px;opacity:0.85;'></div>"
+                f"</div>"
+            )
+
+        with col_up:
+            st.markdown(
+                "<div style='color:#43A047;font-weight:700;font-size:13px;"
+                "margin-bottom:8px;'>↑ Pushing value UP</div>",
+                unsafe_allow_html=True,
+            )
+            if pos_factors.empty:
+                st.markdown("<span style='color:#555566;font-size:12px;'>None</span>",
+                            unsafe_allow_html=True)
+            else:
+                rows = "".join(
+                    _factor_row(_label(f), v, max_abs, True)
+                    for f, v in pos_factors.items()
+                )
+                st.markdown(
+                    f"<div style='background:#0D0D1A;border-radius:8px;padding:10px 12px;'>"
+                    f"{rows}</div>",
+                    unsafe_allow_html=True,
+                )
+
+        with col_dn:
+            st.markdown(
+                "<div style='color:#E53935;font-weight:700;font-size:13px;"
+                "margin-bottom:8px;'>↓ Pushing value DOWN</div>",
+                unsafe_allow_html=True,
+            )
+            if neg_factors.empty:
+                st.markdown("<span style='color:#555566;font-size:12px;'>None</span>",
+                            unsafe_allow_html=True)
+            else:
+                rows = "".join(
+                    _factor_row(_label(f), v, max_abs, False)
+                    for f, v in neg_factors.items()
+                )
+                st.markdown(
+                    f"<div style='background:#0D0D1A;border-radius:8px;padding:10px 12px;'>"
+                    f"{rows}</div>",
+                    unsafe_allow_html=True,
+                )
+
+        # Section 3 — result
+        pv_val   = pv or base
+        pv_color = "#43A047" if (delta or 0) >= 0 else "#E53935"
+        cap_str  = f"${ch/1e6:.2f}M" if ch else "—"
+        if delta is not None:
+            delta_str = f"+${delta/1e6:.2f}M" if delta >= 0 else f"-${abs(delta)/1e6:.2f}M"
+        else:
+            delta_str = "—"
+        st.markdown(
+            f"<div style='background:#13131F;border:1px solid #2A2A3F;border-radius:10px;"
+            f"padding:16px 20px;margin-top:16px;'>"
+            f"<div style='font-size:1.25rem;font-weight:800;color:{pv_color};margin-bottom:6px;'>"
+            f"Estimated Market Value: ${pv_val/1e6:.2f}M</div>"
+            f"<div style='font-size:13px;color:#777799;'>"
+            f"Current Cap Hit: <span style='color:#AAAACC;'>{cap_str}</span>"
+            f"&nbsp;&nbsp;·&nbsp;&nbsp;"
+            f"Difference: <span style='color:{pv_color};font-weight:600;'>{delta_str}</span>"
+            f"</div></div>",
+            unsafe_allow_html=True,
         )
 
     # Similar players
