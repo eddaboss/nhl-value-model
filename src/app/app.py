@@ -209,8 +209,14 @@ PROCESSED_DIR = Path(__file__).parents[2] / "data" / "processed"
 
 
 # ── Data loaders ───────────────────────────────────────────────────────────────
-@st.cache_data(ttl=300)   # re-read the file at most every 5 min to pick up background refreshes
-def load_predictions() -> pd.DataFrame:
+def _predictions_mtime() -> float:
+    """Return mtime of predictions.csv — used as cache key so cache busts on file change."""
+    p = PROCESSED_DIR / "predictions.csv"
+    return p.stat().st_mtime if p.exists() else 0.0
+
+
+@st.cache_data
+def _load_predictions_for_mtime(_mtime: float) -> pd.DataFrame:
     path = PROCESSED_DIR / "predictions.csv"
     if not path.exists():
         st.error("predictions.csv not found — run `py -3 pipeline.py` first.")
@@ -222,6 +228,11 @@ def load_predictions() -> pd.DataFrame:
         df["is_estimated"] = False
     df["is_estimated"] = df["is_estimated"].fillna(False).astype(bool)
     return df
+
+
+def load_predictions() -> pd.DataFrame:
+    """Load predictions — cache busts automatically whenever the file is updated."""
+    return _load_predictions_for_mtime(_predictions_mtime())
 
 
 @st.cache_data
@@ -449,18 +460,16 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         )
         st.markdown("---")
 
-        # Refresh status badge
-        if _refresh_status["running"]:
-            st.caption("🔄 Updating stats in background…")
-        elif _refresh_status["error"]:
-            st.caption(f"⚠️ Update failed: {_refresh_status['error'][:60]}")
+        # Data freshness indicator
+        if _refresh_status["error"]:
+            st.caption(f"Update error: {_refresh_status['error'][:60]}")
         else:
-            # Show mtime of predictions.csv as last-updated timestamp
             pred_path = PROCESSED_DIR / "predictions.csv"
             if pred_path.exists():
                 from datetime import datetime
                 mtime = datetime.fromtimestamp(pred_path.stat().st_mtime)
-                st.caption(f"Last updated: {mtime.strftime('%b %d %Y %I:%M %p')}")
+                label = "Updating..." if _refresh_status["running"] else mtime.strftime('%b %d %Y %I:%M %p')
+                st.caption(f"Data: {label}")
 
     return filt
 
@@ -1453,11 +1462,22 @@ def main():
     # Kick off background data refresh on every cold start (non-blocking)
     start_background_refresh(PROCESSED_DIR)
 
-    # If background job just finished, clear the file cache so next read is fresh
+    # If background job just finished, trigger a rerun so UI picks up fresh mtime
     if _refresh_status["done"]:
         _refresh_status["done"] = False
-        load_predictions.clear()
         st.rerun()
+
+    # While background is running: show a top-of-page banner and auto-refresh
+    # every 30 s so the user sees the update without touching anything.
+    if _refresh_status["running"]:
+        st.info(
+            "Fetching latest NHL stats — data will refresh automatically when ready.",
+            icon="🔄",
+        )
+        st.markdown(
+            '<meta http-equiv="refresh" content="30">',
+            unsafe_allow_html=True,
+        )
 
     st.markdown(
         f"<div style='display:flex;align-items:baseline;gap:12px;margin-bottom:0;'>"
