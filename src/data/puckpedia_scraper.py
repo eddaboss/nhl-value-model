@@ -101,8 +101,51 @@ def _parse_contract(html: str, season_end_year: int) -> Optional[dict]:
     """
     season_start_year = season_end_year - 1   # e.g. 2025 for 2025-26
 
+    # ── Capture future-extension block BEFORE stripping it ─────────────────────
+    extension: Optional[dict] = None
+    ext_header = re.search(
+        r'[Hh]is next contract begins for the (\d{4})-\d{2} season',
+        html, re.DOTALL
+    )
+    if ext_header:
+        ext_start_year = int(ext_header.group(1)) + 1   # "2026-27" → 2027 end year
+        # Search window: 600 chars before "His next contract begins" + 600 chars after.
+        # PuckPedia sometimes puts the contract prose BEFORE the "His next contract
+        # begins" clause (all in one sentence), so we look backwards too.
+        ext_window_start = max(0, ext_header.start() - 600)
+        ext_window = html[ext_window_start: ext_header.end() + 600]
+        ext_prose = re.search(
+            r'is signed to (?:a )?(\d+) year[^$]+'
+            r'\$[\d,]+ contract(?:\s+extension)?\s+with a cap hit of \$([\d,]+) per season',
+            ext_window, re.IGNORECASE
+        )
+        if ext_prose:
+            ext_length  = int(ext_prose.group(1))
+            ext_cap_hit = int(ext_prose.group(2).replace(',', ''))
+            ext_expiry_year = ext_start_year + ext_length - 1
+            # Expiry status: check the full extension window
+            ext_status_m = re.search(
+                r'(Unrestricted|Restricted)\s+Free Agent', ext_window, re.IGNORECASE
+            )
+            ext_status = None
+            if ext_status_m:
+                ext_status = ('UFA' if ext_status_m.group(1).lower() == 'unrestricted'
+                              else 'RFA')
+            extension = {
+                'extension_cap_hit':       ext_cap_hit,
+                'extension_start_year':    ext_start_year,
+                'extension_expiry_year':   ext_expiry_year,
+                'extension_length':        ext_length,
+                'extension_expiry_status': ext_status,
+            }
+
     # ── Strip future-extension block ───────────────────────────────────────────
-    html_work = re.sub(r'[Hh]is next contract begins[^.]*\.', '', html, flags=re.DOTALL)
+    # Cut everything from "His next contract begins" onwards so that extension
+    # prose (cap hit, expiry year) can't leak into the candidates loop.
+    if ext_header:
+        html_work = html[:ext_header.start()]
+    else:
+        html_work = html
 
     # ── Collect all prose-format contract candidates ───────────────────────────
     # Anchor on each "expires at the end of YYYY-YY season" sentence, then look
@@ -167,15 +210,39 @@ def _parse_contract(html: str, season_end_year: int) -> Optional[dict]:
             rf'{re.escape(cur_season_str)}.{{0,600}}?Cap Hit \$([\d,]+)',
             html_work, re.IGNORECASE | re.DOTALL
         )
-        if not tab_m:
-            return None
-        cap_hit        = int(tab_m.group(1).replace(',', ''))
-        contract_years = None
-        exp_m2 = re.search(
-            r'expires at the end of the (\d{4})-\d{2} season', html_work, re.IGNORECASE
-        )
-        expiry_year   = int(exp_m2.group(1)) + 1 if exp_m2 else season_end_year
-        expiry_status = None
+        if tab_m:
+            cap_hit        = int(tab_m.group(1).replace(',', ''))
+            contract_years = None
+            exp_m2 = re.search(
+                r'expires at the end of the (\d{4})-\d{2} season', html_work, re.IGNORECASE
+            )
+            expiry_year   = int(exp_m2.group(1)) + 1 if exp_m2 else season_end_year
+            # If the only expiry found is for a future contract, the cap hit in the table
+            # belongs to the current deal which expires this season.
+            if expiry_year > season_end_year:
+                expiry_year = season_end_year
+            expiry_status = None
+        else:
+            # ── Fallback: sidebar "Cap Hit" widget ────────────────────────────
+            # For players who signed an extension: PuckPedia shows only the future
+            # contract in prose, but the sidebar still shows the CURRENT cap hit
+            # under the label "Cap Hit" (distinct from "Next Cap Hit").
+            # The pattern "</i>Cap Hit" uniquely matches the current-deal label.
+            sidebar_m = re.search(
+                r'</i>Cap Hit[\s\S]{0,350}?<span[^>]*val-lg[^>]*>\$([\d,]+)',
+                html_work, re.IGNORECASE
+            )
+            if not sidebar_m:
+                return None
+            cap_hit        = int(sidebar_m.group(1).replace(',', ''))
+            contract_years = None
+            # These players' current contracts expire at the end of this season
+            # (they signed an extension beginning next season).
+            expiry_year   = season_end_year
+            # Use extension's UFA/RFA status; both expiry points share the same status.
+            # Fall back to UFA: players who sign multi-year extensions are typically UFA.
+            expiry_status = (extension.get('extension_expiry_status') or 'UFA'
+                             if extension else 'UFA')
 
     # ── Resolve expiry status if not yet determined ────────────────────────────
     if expiry_status is None:
@@ -200,14 +267,18 @@ def _parse_contract(html: str, season_end_year: int) -> Optional[dict]:
     years_left = max(0, expiry_year - season_end_year)
     year_of_contract = max(1, contract_years - years_left) if contract_years else None
 
-    return {
+    result = {
         'cap_hit':            cap_hit,
         'length_of_contract': contract_years,
         'expiry_year':        expiry_year,
         'expiry_status':      expiry_status,
         'years_left':         years_left,
         'year_of_contract':   year_of_contract,
+        'has_extension':      extension is not None,
     }
+    if extension:
+        result.update(extension)
+    return result
 
 
 # ── Cache ──────────────────────────────────────────────────────────────────────
