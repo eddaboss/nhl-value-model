@@ -3,12 +3,18 @@ NHL Player Value Model — Streamlit App
 Tabs: League Overview | Leaderboards | LA Kings | Player Search | Model Insights
 """
 import json
+import sys
 import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 from pathlib import Path
+
+# Ensure repo root is on sys.path (needed on Streamlit Cloud)
+_ROOT = Path(__file__).parents[2]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 
 from src.data.load import load_and_merge, CAP_CEILING
 from src.features.build import build_features, get_feature_matrix, resign_label
