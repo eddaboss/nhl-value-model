@@ -4,6 +4,8 @@ Tabs: League Overview | Leaderboards | LA Kings | Player Search | Model Insights
 """
 import json
 import sys
+import threading
+import time
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -16,9 +18,84 @@ _ROOT = Path(__file__).parents[2]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from src.data.load import load_and_merge, CAP_CEILING
-from src.features.build import build_features, get_feature_matrix, resign_label
-from src.models.train import load_model
+
+# ── Background refresh state (module-level, shared across Streamlit reruns) ────
+_refresh_status: dict = {"running": False, "done": False, "error": None}
+_refresh_lock = threading.Lock()
+
+
+def _run_pipeline_background(processed_dir: Path) -> None:
+    """Run load+predict in a background thread and write predictions.csv when done."""
+    global _refresh_status
+    try:
+        import warnings
+        warnings.filterwarnings("ignore")
+
+        from src.data.load import load_and_merge, CAP_CEILING
+        from src.features.build import build_features, get_feature_matrix, resign_label
+        from src.models.train import load_model
+
+        df_raw, ctx = load_and_merge()
+        df = build_features(df_raw)
+        X, _ = get_feature_matrix(df)
+        model = load_model("xgb")
+
+        df["predicted_value"] = model.predict(X) * CAP_CEILING
+        df["value_delta"] = df.apply(
+            lambda r: r["predicted_value"] - r["cap_hit"]
+            if r.get("has_contract_data") else None, axis=1
+        )
+        df["resign_signal"] = df.apply(resign_label, axis=1)
+
+        keep = [
+            "name", "team", "pos", "age",
+            "cap_hit", "predicted_value", "value_delta",
+            "expiry_status", "expiry_year", "years_left", "length_of_contract",
+            "gp", "g", "a", "p", "ppg",
+            "toi_per_g", "plus_minus", "pim",
+            "g60", "p60", "pp_pts", "shots", "shooting_pct",
+            "resign_signal", "player_id",
+            "has_contract_data", "has_prior_market_data", "is_estimated",
+        ]
+        out = df[[c for c in keep if c in df.columns]].copy()
+        for col in ["cap_hit", "predicted_value", "value_delta"]:
+            if col in out.columns:
+                out[col] = pd.to_numeric(out[col], errors="coerce").round(0)
+        if "is_estimated" not in out.columns:
+            out["is_estimated"] = False
+        out["is_estimated"] = out["is_estimated"].fillna(False).astype(bool)
+
+        # Write to a temp file then rename (atomic on most filesystems)
+        tmp = processed_dir / "predictions_tmp.csv"
+        out.to_csv(tmp, index=False)
+        tmp.replace(processed_dir / "predictions.csv")
+
+        # Also refresh season_context.json
+        import json as _json
+        (processed_dir / "season_context.json").write_text(
+            _json.dumps(ctx, indent=2), encoding="utf-8"
+        )
+
+        _refresh_status["done"] = True
+        _refresh_status["error"] = None
+    except Exception as e:
+        _refresh_status["error"] = str(e)
+    finally:
+        _refresh_status["running"] = False
+
+
+def start_background_refresh(processed_dir: Path) -> None:
+    """Launch background pipeline thread if not already running."""
+    with _refresh_lock:
+        if _refresh_status["running"]:
+            return
+        _refresh_status["running"] = True
+        _refresh_status["done"] = False
+        _refresh_status["error"] = None
+    t = threading.Thread(
+        target=_run_pipeline_background, args=(processed_dir,), daemon=True
+    )
+    t.start()
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -126,50 +203,22 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 PROCESSED_DIR = Path(__file__).parents[2] / "data" / "processed"
-MODELS_DIR    = Path(__file__).parents[2] / "models"
-
-_KEEP_COLS = [
-    "name", "team", "pos", "age",
-    "cap_hit", "predicted_value", "value_delta",
-    "expiry_status", "expiry_year", "years_left", "length_of_contract",
-    "gp", "g", "a", "p", "ppg",
-    "toi_per_g", "plus_minus", "pim",
-    "g60", "p60", "pp_pts", "shots", "shooting_pct",
-    "resign_signal", "player_id",
-    "has_contract_data", "has_prior_market_data", "is_estimated",
-]
 
 
 # ── Data loaders ───────────────────────────────────────────────────────────────
-@st.cache_data(ttl=3600)   # refresh live data every hour
+@st.cache_data(ttl=300)   # re-read the file at most every 5 min to pick up background refreshes
 def load_predictions() -> pd.DataFrame:
-    """
-    Build predictions from live sources every hour.
-    - NHL API stats:  fetched live (24-hour disk cache in data/raw/)
-    - Contracts:      read from data/contracts.db (committed to repo)
-    - Model:          loaded from models/xgb.pkl (committed to repo)
-    No manual pipeline run needed — the app always serves fresh data.
-    """
-    df_raw, _ctx = load_and_merge()
-    df = build_features(df_raw)
-    X, _ = get_feature_matrix(df)
-
-    model = load_model("xgb")
-    df["predicted_value"] = model.predict(X) * CAP_CEILING
-    df["value_delta"] = df.apply(
-        lambda r: r["predicted_value"] - r["cap_hit"]
-        if r.get("has_contract_data") else None, axis=1
-    )
-    df["resign_signal"] = df.apply(resign_label, axis=1)
-
-    out = df[[c for c in _KEEP_COLS if c in df.columns]].copy()
+    path = PROCESSED_DIR / "predictions.csv"
+    if not path.exists():
+        st.error("predictions.csv not found — run `py -3 pipeline.py` first.")
+        st.stop()
+    df = pd.read_csv(path)
     for col in ["cap_hit", "predicted_value", "value_delta"]:
-        if col in out.columns:
-            out[col] = pd.to_numeric(out[col], errors="coerce")
-    if "is_estimated" not in out.columns:
-        out["is_estimated"] = False
-    out["is_estimated"] = out["is_estimated"].fillna(False).astype(bool)
-    return out
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+    if "is_estimated" not in df.columns:
+        df["is_estimated"] = False
+    df["is_estimated"] = df["is_estimated"].fillna(False).astype(bool)
+    return df
 
 
 @st.cache_data
@@ -397,17 +446,18 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         )
         st.markdown("---")
 
-        # Last updated
-        lu = load_last_updated()
-        if lu:
-            ts = (lu.get("nightly_stats") or lu.get("weekly_contracts") or {}).get("timestamp", "")
-            if ts:
-                from datetime import datetime, timezone
-                try:
-                    dt = datetime.fromisoformat(ts).astimezone()
-                    st.caption(f"Last refreshed: {dt.strftime('%b %d %Y %I:%M %p')}")
-                except Exception:
-                    st.caption(f"Last refreshed: {ts[:10]}")
+        # Refresh status badge
+        if _refresh_status["running"]:
+            st.caption("🔄 Updating stats in background…")
+        elif _refresh_status["error"]:
+            st.caption(f"⚠️ Update failed: {_refresh_status['error'][:60]}")
+        else:
+            # Show mtime of predictions.csv as last-updated timestamp
+            pred_path = PROCESSED_DIR / "predictions.csv"
+            if pred_path.exists():
+                from datetime import datetime
+                mtime = datetime.fromtimestamp(pred_path.stat().st_mtime)
+                st.caption(f"Last updated: {mtime.strftime('%b %d %Y %I:%M %p')}")
 
     return filt
 
@@ -1396,6 +1446,15 @@ def render_footer(df: pd.DataFrame):
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 def main():
+    # Kick off background data refresh on every cold start (non-blocking)
+    start_background_refresh(PROCESSED_DIR)
+
+    # If background job just finished, clear the file cache so next read is fresh
+    if _refresh_status["done"]:
+        _refresh_status["done"] = False
+        load_predictions.clear()
+        st.rerun()
+
     st.markdown(
         f"<div style='display:flex;align-items:baseline;gap:12px;margin-bottom:0;'>"
         f"<h1 style='margin:0;color:#F0F0FF;font-size:1.8rem;'>🏒 NHL Player Value Model</h1>"
