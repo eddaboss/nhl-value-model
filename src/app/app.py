@@ -401,250 +401,193 @@ PERCENTILE_STATS = [
 CAP_CEILING = 95_500_000
 
 # ── CSS ────────────────────────────────────────────────────────────────────────
-# Fonts injected via <link> — more reliable than @import in injected <style> tags
-st.markdown("""
+_FONT_LINK = """
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-""", unsafe_allow_html=True)
+"""
 
-st.markdown("""
-<style>
-/* Root variables */
-:root {
-    --font: 'Manrope', sans-serif;
-    --font-mono: 'IBM Plex Mono', monospace;
-    --gold: #C8A84B;
-    --bg: #040404;
-    --surface: #0C0C0C;
-    --raised: #141414;
-    --border: #141414;
-    --text: #E8E4DC;
-    --muted: #4A4A4A;
-    --pos: #1FBFA0;
-    --neg: #E84040;
-}
+_DARK_CSS  = """<style>
+  .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+  [data-testid="stMetric"] {
+      background: transparent !important; border: none !important;
+      border-radius: 0 !important; padding: 14px 2px 10px !important; box-shadow: none !important;
+  }
+  [data-testid="stMetricLabel"] {
+      font-family: 'IBM Plex Mono', monospace !important;
+      font-size: 0.52rem !important; letter-spacing: 0.28em !important; text-transform: uppercase !important;
+  }
+  [data-testid="stMetricValue"] {
+      font-family: 'Bebas Neue', cursive !important;
+      font-size: 2.6rem !important; line-height: 1.0 !important; letter-spacing: 0.04em !important; font-weight: 400 !important;
+  }
+  [data-testid="stMetricDelta"] {
+      font-family: 'IBM Plex Mono', monospace !important; font-size: 0.62rem !important; letter-spacing: 0.08em !important;
+  }
+  [data-baseweb="tab-list"] { gap: 0 !important; background: transparent !important; padding-bottom: 0 !important; margin-bottom: 20px !important; }
+  [data-baseweb="tab"] {
+      font-family: 'IBM Plex Mono', monospace !important; font-size: 0.6rem !important;
+      letter-spacing: 0.22em !important; text-transform: uppercase !important;
+      padding: 12px 24px !important; border-radius: 0 !important;
+      background: transparent !important; border-bottom: 2px solid transparent !important; margin-bottom: -1px !important;
+  }
+  .player-card { border-radius: 0; padding: 20px 24px; border-left-width: 3px; margin-bottom: 14px; }
+  .kings-card  { border-radius: 0; padding: 18px 22px; border-left-width: 3px; margin-bottom: 6px; transition: background 0.1s; }
+  .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.2em; }
+  .stat-value { font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; font-weight: 500; }
+  .delta-pos  { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 500; }
+  .delta-neg  { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 500; }
+  .pct-pos    { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
+  .pct-neg    { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
+  .section-header { font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: 0.04em; margin-bottom: 8px; font-weight: 400; line-height: 1; }
+  .group-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; margin: 20px 0 10px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; }
+  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+  h1, h2, h3, [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
+      font-family: 'Bebas Neue', cursive !important; letter-spacing: 0.04em !important; font-weight: 400 !important; line-height: 1.05 !important;
+  }
+  [data-testid="stExpander"] { border-radius: 0 !important; }
+  details summary p { font-family: 'IBM Plex Mono', monospace !important; font-size: 0.7rem !important; letter-spacing: 0.1em !important; }
+  [data-testid="stCaptionContainer"] p { font-family: 'IBM Plex Mono', monospace !important; font-size: 0.55rem !important; letter-spacing: 0.12em !important; }
+  input, [data-baseweb="input"] input { border-radius: 0 !important; font-family: 'Manrope', sans-serif !important; }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-thumb { border-radius: 0; }
+  hr { margin: 16px 0 !important; }
+  html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
+  p, div, span, label, [class*="css"] { font-family: 'Manrope', sans-serif !important; }
+  footer { visibility: hidden; }
 
-/* Base */
-html, body, .stApp, [data-testid="stAppViewContainer"],
-[data-testid="stMain"], p, div, span, label, [class*="css"] {
-    font-family: 'Manrope', sans-serif !important;
-}
+  :root { --font: 'Manrope', sans-serif; --font-mono: 'IBM Plex Mono', monospace; }
+  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #040404 !important; }
+  [data-testid="stMetric"] { border-top: 1px solid #C8A84B !important; }
+  [data-testid="stMetricLabel"] { color: #707070 !important; }
+  [data-testid="stMetricValue"] { color: #E8E4DC !important; }
+  [data-testid="stMetricDelta"] { color: #888 !important; }
+  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #040404 !important; border-right: 1px solid #141414 !important; }
+  [data-testid="stSidebar"] label, [data-testid="stSidebar"] p,
+  [data-testid="stSidebar"] span, [data-testid="stSidebar"] div { color: #707070 !important; }
+  [data-baseweb="tab-list"] { border-bottom: 1px solid #141414 !important; }
+  [data-baseweb="tab"] { color: #404040 !important; border-right: 1px solid #141414 !important; }
+  [aria-selected="true"][data-baseweb="tab"] { color: #C8A84B !important; border-bottom: 2px solid #C8A84B !important; }
+  .player-card { background: #0C0C0C; border: 1px solid #141414; border-left-color: #C8A84B; }
+  .kings-card  { background: #080808; border: 1px solid #141414; border-left-color: #C8A84B; }
+  .kings-card:hover { background: #0E0E0E; }
+  .stat-label { color: #505050; }
+  .stat-value { color: #E8E4DC; }
+  .delta-pos  { color: #1FBFA0; }
+  .delta-neg  { color: #E84040; }
+  .pct-pos    { color: #3ED4B6; }
+  .pct-neg    { color: #EF7070; }
+  .kings-gold { color: #C8A84B; font-weight: 700; }
+  .section-header { color: #E8E4DC; }
+  .group-label { color: #505050; border-left-color: #C8A84B; }
+  .signal-badge { color: #fff !important; }
+  [data-testid="stExpander"] { border: 1px solid #141414 !important; background-color: #080808 !important; }
+  [data-testid="stCaptionContainer"] p { color: #404040 !important; }
+  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #E8E4DC !important; }
+  input, [data-baseweb="input"] input { background: #0C0C0C !important; border-color: #1C1C1C !important; color: #E8E4DC !important; }
+  ::-webkit-scrollbar-track { background: #040404; }
+  ::-webkit-scrollbar-thumb { background: #1C1C1C; }
+  hr { border-color: #141414 !important; }
+</style>"""
+_LIGHT_CSS = """<style>
+  .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+  [data-testid="stMetric"] {
+      background: transparent !important; border: none !important;
+      border-radius: 0 !important; padding: 14px 2px 10px !important; box-shadow: none !important;
+  }
+  [data-testid="stMetricLabel"] {
+      font-family: 'IBM Plex Mono', monospace !important;
+      font-size: 0.52rem !important; letter-spacing: 0.28em !important; text-transform: uppercase !important;
+  }
+  [data-testid="stMetricValue"] {
+      font-family: 'Bebas Neue', cursive !important;
+      font-size: 2.6rem !important; line-height: 1.0 !important; letter-spacing: 0.04em !important; font-weight: 400 !important;
+  }
+  [data-testid="stMetricDelta"] {
+      font-family: 'IBM Plex Mono', monospace !important; font-size: 0.62rem !important; letter-spacing: 0.08em !important;
+  }
+  [data-baseweb="tab-list"] { gap: 0 !important; background: transparent !important; padding-bottom: 0 !important; margin-bottom: 20px !important; }
+  [data-baseweb="tab"] {
+      font-family: 'IBM Plex Mono', monospace !important; font-size: 0.6rem !important;
+      letter-spacing: 0.22em !important; text-transform: uppercase !important;
+      padding: 12px 24px !important; border-radius: 0 !important;
+      background: transparent !important; border-bottom: 2px solid transparent !important; margin-bottom: -1px !important;
+  }
+  .player-card { border-radius: 0; padding: 20px 24px; border-left-width: 3px; margin-bottom: 14px; }
+  .kings-card  { border-radius: 0; padding: 18px 22px; border-left-width: 3px; margin-bottom: 6px; transition: background 0.1s; }
+  .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.2em; }
+  .stat-value { font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; font-weight: 500; }
+  .delta-pos  { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 500; }
+  .delta-neg  { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 500; }
+  .pct-pos    { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
+  .pct-neg    { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
+  .section-header { font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: 0.04em; margin-bottom: 8px; font-weight: 400; line-height: 1; }
+  .group-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; margin: 20px 0 10px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; }
+  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+  h1, h2, h3, [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
+      font-family: 'Bebas Neue', cursive !important; letter-spacing: 0.04em !important; font-weight: 400 !important; line-height: 1.05 !important;
+  }
+  [data-testid="stExpander"] { border-radius: 0 !important; }
+  details summary p { font-family: 'IBM Plex Mono', monospace !important; font-size: 0.7rem !important; letter-spacing: 0.1em !important; }
+  [data-testid="stCaptionContainer"] p { font-family: 'IBM Plex Mono', monospace !important; font-size: 0.55rem !important; letter-spacing: 0.12em !important; }
+  input, [data-baseweb="input"] input { border-radius: 0 !important; font-family: 'Manrope', sans-serif !important; }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-thumb { border-radius: 0; }
+  hr { margin: 16px 0 !important; }
+  html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
+  p, div, span, label, [class*="css"] { font-family: 'Manrope', sans-serif !important; }
+  footer { visibility: hidden; }
 
-/* App background */
-.stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
-[data-testid="stHeader"] {
-    background-color: #040404 !important;
-}
+  :root { --font: 'Manrope', sans-serif; --font-mono: 'IBM Plex Mono', monospace; }
+  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #F4F1EC !important; }
+  [data-testid="stMetric"] { border-top: 1px solid #A8861A !important; }
+  [data-testid="stMetricLabel"] { color: #999 !important; }
+  [data-testid="stMetricValue"] { color: #1C1C1C !important; }
+  [data-testid="stMetricDelta"] { color: #666 !important; }
+  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #EDE9DF !important; border-right: 1px solid #D8D3C8 !important; }
+  [data-testid="stSidebar"] label, [data-testid="stSidebar"] p,
+  [data-testid="stSidebar"] span, [data-testid="stSidebar"] div { color: #555 !important; }
+  [data-baseweb="tab-list"] { border-bottom: 1px solid #D8D3C8 !important; }
+  [data-baseweb="tab"] { color: #BCBCBC !important; border-right: 1px solid #E8E4DC !important; }
+  [aria-selected="true"][data-baseweb="tab"] { color: #A8861A !important; border-bottom: 2px solid #A8861A !important; }
+  .player-card { background: #FFFFFF; border: 1px solid #E0DBD0; border-left-color: #A8861A; }
+  .kings-card  { background: #FAF8F4; border: 1px solid #E0DBD0; border-left-color: #A8861A; }
+  .kings-card:hover { background: #F5F2EC; }
+  .stat-label { color: #AAAAAA; }
+  .stat-value { color: #1C1C1C; }
+  .delta-pos  { color: #0D7A60; }
+  .delta-neg  { color: #C02828; }
+  .pct-pos    { color: #0D9E7C; }
+  .pct-neg    { color: #D43A3A; }
+  .kings-gold { color: #A8861A; font-weight: 700; }
+  .section-header { color: #1C1C1C; }
+  .group-label { color: #AAAAAA; border-left-color: #A8861A; }
+  .signal-badge { color: #fff !important; }
+  [data-testid="stExpander"] { border: 1px solid #E0DBD0 !important; background-color: #FAFAF8 !important; }
+  [data-testid="stCaptionContainer"] p { color: #BBBBBB !important; }
+  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #1C1C1C !important; }
+  input, [data-baseweb="input"] input { background: #FFFFFF !important; border-color: #D8D3C8 !important; color: #1C1C1C !important; }
+  ::-webkit-scrollbar-track { background: #F4F1EC; }
+  ::-webkit-scrollbar-thumb { background: #D8D3C8; }
+  hr { border-color: #E0DBD0 !important; }
+  /* Override inline dark colours in custom HTML for light mode */
+  [data-testid="stMarkdownContainer"] span:not([class]),
+  [data-testid="stMarkdownContainer"] div:not([class]) { color: #1C1C1C !important; }
+  [data-testid="stMarkdownContainer"] .delta-pos { color: #0D7A60 !important; }
+  [data-testid="stMarkdownContainer"] .delta-neg { color: #C02828 !important; }
+  [data-testid="stMarkdownContainer"] .pct-pos   { color: #0D9E7C !important; }
+  [data-testid="stMarkdownContainer"] .pct-neg   { color: #D43A3A !important; }
+  [data-testid="stMarkdownContainer"] .kings-gold { color: #A8861A !important; }
+  [data-testid="stMarkdownContainer"] .stat-label { color: #AAAAAA !important; }
+  [data-testid="stMarkdownContainer"] .group-label { color: #AAAAAA !important; }
+</style>"""
 
-/* Block container */
-.block-container {
-    padding-top: 2rem !important;
-    padding-bottom: 2rem !important;
-}
 
-/* METRIC CARDS — No box. Just a top gold rule + huge Bebas Neue number. */
-[data-testid="stMetric"] {
-    background: transparent !important;
-    border: none !important;
-    border-top: 1px solid #C8A84B !important;
-    border-radius: 0 !important;
-    padding: 14px 2px 10px !important;
-    box-shadow: none !important;
-}
-[data-testid="stMetricLabel"] {
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.52rem !important;
-    letter-spacing: 0.28em !important;
-    text-transform: uppercase !important;
-    color: #3A3A3A !important;
-}
-[data-testid="stMetricValue"] {
-    font-family: 'Bebas Neue', cursive !important;
-    font-size: 2.6rem !important;
-    line-height: 1.0 !important;
-    color: #E8E4DC !important;
-    letter-spacing: 0.04em !important;
-    font-weight: 400 !important;
-}
-[data-testid="stMetricDelta"] {
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.62rem !important;
-    letter-spacing: 0.08em !important;
-}
+def _inject_css(dark: bool = True) -> None:
+    """Inject theme CSS. Called at start of main() based on session_state."""
+    st.markdown(_FONT_LINK, unsafe_allow_html=True)
+    st.markdown(_DARK_CSS if dark else _LIGHT_CSS, unsafe_allow_html=True)
 
-/* Sidebar */
-[data-testid="stSidebar"], section[data-testid="stSidebar"] {
-    background-color: #040404 !important;
-    border-right: 1px solid #141414 !important;
-}
-[data-testid="stSidebar"] label, [data-testid="stSidebar"] p,
-[data-testid="stSidebar"] span, [data-testid="stSidebar"] div {
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.72rem !important;
-    color: #3A3A3A !important;
-}
-[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.68rem !important;
-    color: #3A3A3A !important;
-}
-
-/* TABS — Terminal style */
-[data-baseweb="tab-list"] {
-    gap: 0 !important;
-    background: transparent !important;
-    border-bottom: 1px solid #141414 !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 20px !important;
-}
-[data-baseweb="tab"] {
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.6rem !important;
-    letter-spacing: 0.22em !important;
-    text-transform: uppercase !important;
-    padding: 12px 24px !important;
-    border-radius: 0 !important;
-    color: #2A2A2A !important;
-    background: transparent !important;
-    border-bottom: 2px solid transparent !important;
-    margin-bottom: -1px !important;
-    border-right: 1px solid #141414 !important;
-}
-[aria-selected="true"][data-baseweb="tab"] {
-    color: #C8A84B !important;
-    background: transparent !important;
-    border-bottom: 2px solid #C8A84B !important;
-}
-
-/* Player cards */
-.player-card {
-    background: #0C0C0C;
-    border-radius: 0;
-    padding: 20px 24px;
-    border: 1px solid #141414;
-    border-left: 3px solid #C8A84B;
-    margin-bottom: 14px;
-}
-.kings-card {
-    background: #080808;
-    border-radius: 0;
-    padding: 18px 22px;
-    border: 1px solid #141414;
-    border-left: 3px solid #C8A84B;
-    margin-bottom: 6px;
-    transition: background 0.1s;
-}
-.kings-card:hover {
-    background: #0E0E0E;
-}
-
-/* Typography helpers */
-.stat-label {
-    font-family: 'IBM Plex Mono', monospace;
-    color: #333;
-    font-size: 0.55rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-}
-.stat-value {
-    font-family: 'IBM Plex Mono', monospace;
-    color: #E8E4DC;
-    font-size: 0.95rem;
-    font-weight: 500;
-}
-.delta-pos  { font-family: 'IBM Plex Mono', monospace; color: #1FBFA0; font-size: 1.4rem; font-weight: 500; }
-.delta-neg  { font-family: 'IBM Plex Mono', monospace; color: #E84040; font-size: 1.4rem; font-weight: 500; }
-.pct-pos    { font-family: 'IBM Plex Mono', monospace; color: #3ED4B6; font-size: 0.8rem; }
-.pct-neg    { font-family: 'IBM Plex Mono', monospace; color: #EF7070; font-size: 0.8rem; }
-.kings-gold { color: #C8A84B; font-weight: 700; }
-.section-header {
-    font-family: 'Bebas Neue', cursive;
-    color: #E8E4DC;
-    font-size: 1.8rem;
-    letter-spacing: 0.04em;
-    margin-bottom: 8px;
-    font-weight: 400;
-    line-height: 1;
-}
-
-/* Group labels */
-.group-label {
-    font-family: 'IBM Plex Mono', monospace;
-    color: #3A3A3A;
-    font-size: 0.55rem;
-    font-weight: 700;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin: 20px 0 10px;
-    padding-left: 10px;
-    border-left: 2px solid #C8A84B;
-}
-
-/* Signal badge */
-.signal-badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 0;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-}
-
-/* Headings */
-h1, h2, h3,
-[data-testid="stMarkdownContainer"] h1,
-[data-testid="stMarkdownContainer"] h2,
-[data-testid="stMarkdownContainer"] h3 {
-    font-family: 'Bebas Neue', cursive !important;
-    letter-spacing: 0.04em !important;
-    font-weight: 400 !important;
-    line-height: 1.05 !important;
-}
-
-/* Expanders */
-[data-testid="stExpander"] {
-    border: 1px solid #141414 !important;
-    border-radius: 0 !important;
-    background-color: #080808 !important;
-}
-details summary p {
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.7rem !important;
-    letter-spacing: 0.1em !important;
-}
-
-/* Inputs */
-input, [data-baseweb="input"] input {
-    background: #0C0C0C !important;
-    border-color: #141414 !important;
-    color: #E8E4DC !important;
-    font-family: 'Manrope', sans-serif !important;
-    border-radius: 0 !important;
-}
-
-/* Captions */
-[data-testid="stCaptionContainer"] p {
-    font-family: 'IBM Plex Mono', monospace !important;
-    font-size: 0.55rem !important;
-    letter-spacing: 0.12em !important;
-    color: #303030 !important;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #040404; }
-::-webkit-scrollbar-thumb { background: #141414; border-radius: 0; }
-
-/* Dividers */
-hr { border-color: #141414 !important; margin: 16px 0 !important; }
-
-/* Hide Streamlit footer */
-footer { visibility: hidden; }
-</style>
-""", unsafe_allow_html=True)
 
 PROCESSED_DIR = Path(__file__).parents[2] / "data" / "processed"
 
@@ -864,6 +807,15 @@ def kings_resign_signal(row) -> str:
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
     with st.sidebar:
+        # ── Dark/Light mode toggle ──────────────────────────────────────
+        _dark = st.session_state.get("dark_mode", True)
+        _icon = "🌙" if _dark else "☀️"
+        _label = f"{_icon}  Dark Mode" if _dark else f"{_icon}  Light Mode"
+        if st.button(_label, key="_theme_btn", use_container_width=True):
+            st.session_state["dark_mode"] = not _dark
+            st.rerun()
+        st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+
         st.markdown(
             f"<div style='color:{KINGS_GOLD};font-size:1.0rem;font-weight:700;"
             "margin-bottom:4px;font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;'>"
@@ -2099,6 +2051,11 @@ def render_footer(df: pd.DataFrame):
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 def main():
+    # Initialise theme
+    if "dark_mode" not in st.session_state:
+        st.session_state["dark_mode"] = True
+    _inject_css(st.session_state.get("dark_mode", True))
+
     # Kick off background data refresh on every cold start (non-blocking)
     start_background_refresh(PROCESSED_DIR)
 
