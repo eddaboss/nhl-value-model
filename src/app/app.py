@@ -517,6 +517,38 @@ _DARK_CSS  = """<style>
   ::-webkit-scrollbar-track { background: #040404; }
   ::-webkit-scrollbar-thumb { background: #1C1C1C; }
   hr { border-color: #141414 !important; }
+  /* ── Widget overrides (config.toml base=light → must flip all to dark) ── */
+  /* Buttons */
+  [data-testid="stButton"] button {
+      background: #141414 !important; color: #E8E4DC !important;
+      border: 1px solid #2C2C2C !important; border-radius: 0 !important;
+      font-family: 'Manrope', sans-serif !important;
+  }
+  [data-testid="stButton"] button:hover { background: #1E1E1E !important; border-color: #C8A84B !important; }
+  /* Selectbox */
+  [data-baseweb="select"] > div { background: #0C0C0C !important; border-color: #2C2C2C !important; }
+  [data-baseweb="select"] span, [data-baseweb="select"] div { color: #E8E4DC !important; }
+  [data-baseweb="select"] svg { fill: #A0A0A0 !important; }
+  [data-baseweb="popover"] { background: #0C0C0C !important; }
+  [data-baseweb="menu"] { background: #0C0C0C !important; border: 1px solid #2C2C2C !important; }
+  [data-baseweb="menu-item"], [role="option"] { color: #E8E4DC !important; background: #0C0C0C !important; }
+  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #141414 !important; }
+  /* Slider */
+  [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #2C2C2C !important; }
+  [data-testid="stSlider"] [data-testid="stThumbValue"] { background: #141414 !important; color: #E8E4DC !important; }
+  [data-testid="stSlider"] [data-testid="stTickBarMin"],
+  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #A0A0A0 !important; }
+  /* Dataframe */
+  [data-testid="stDataFrameContainer"] { background: #0C0C0C !important; }
+  iframe[title="st_aggrid"], [data-testid="stDataFrame"] { background: #0C0C0C !important; }
+  /* Markdown container general text */
+  [data-testid="stMainBlockContainer"] p,
+  [data-testid="stMainBlockContainer"] li { color: #E8E4DC !important; }
+  /* Caption */
+  .stCaptionContainer p { color: #A0A0A0 !important; }
+  /* Widget labels */
+  [data-testid="stWidgetLabel"] p,
+  [data-testid="stWidgetLabel"] label { color: #A0A0A0 !important; }
 </style>"""
 _LIGHT_CSS = """<style>
   .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
@@ -578,7 +610,7 @@ _LIGHT_CSS = """<style>
   [data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
   [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #555 !important; }
   [data-baseweb="tab-list"] { border-bottom: 1px solid #D8D3C8 !important; }
-  [data-baseweb="tab"] { color: #BCBCBC !important; border-right: 1px solid #E8E4DC !important; }
+  [data-baseweb="tab"] { color: #777777 !important; border-right: 1px solid #D8D3C8 !important; }
   [aria-selected="true"][data-baseweb="tab"] { color: #A8861A !important; border-bottom: 2px solid #A8861A !important; }
   .player-card { background: #FFFFFF; border: 1px solid #E0DBD0; border-left-color: #A8861A; }
   .kings-card  { background: #FAF8F4; border: 1px solid #E0DBD0; border-left-color: #A8861A; }
@@ -615,12 +647,36 @@ _LIGHT_CSS = """<style>
   [style*="background:#080808"] { background: #FFFFFF !important; }
   [style*="background:#0C0C0C"] { background: #FAFAF8 !important; }
   [style*="background:#141414"] { background: #ECEAE4 !important; }
-  [style*="border:1px solid #141414"] { border-color: #D8D3C8 !important; }
   [style*="color:#B8C4C8"] { color: #2A4050 !important; }
   [style*="background:#3A2018"] { background: #FDE8D0 !important; }
   [style*="background:#2C3A40"] { background: #D4E8F4 !important; }
   [style*="color:#6BBAD4"] { color: #1A6FA8 !important; }
   [style*="color:#5A5A5A"] { color: #333333 !important; }
+  /* ── General content text ── */
+  [data-testid="stMainBlockContainer"] p,
+  [data-testid="stMainBlockContainer"] li { color: #1C1C1C !important; }
+  [data-testid="stWidgetLabel"] p,
+  [data-testid="stWidgetLabel"] label { color: #555 !important; }
+  /* ── Button: make sure theme toggle and all buttons look right ── */
+  [data-testid="stButton"] button {
+      background: #EDE9DF !important; color: #1C1C1C !important;
+      border: 1px solid #C8C3B8 !important; border-radius: 0 !important;
+      font-family: 'Manrope', sans-serif !important;
+  }
+  [data-testid="stButton"] button:hover { background: #E0DBD0 !important; border-color: #A8861A !important; }
+  /* ── Selectbox ── */
+  [data-baseweb="select"] > div { background: #FFFFFF !important; border-color: #C8C3B8 !important; }
+  [data-baseweb="select"] span, [data-baseweb="select"] div { color: #1C1C1C !important; }
+  [data-baseweb="popover"] { background: #FFFFFF !important; }
+  [data-baseweb="menu"] { background: #FFFFFF !important; border: 1px solid #D8D3C8 !important; }
+  [data-baseweb="menu-item"], [role="option"] { color: #1C1C1C !important; background: #FFFFFF !important; }
+  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #F0EBE0 !important; }
+  /* ── Slider ── */
+  [data-testid="stSlider"] [data-testid="stThumbValue"] { background: #EDE9DF !important; color: #1C1C1C !important; }
+  [data-testid="stSlider"] [data-testid="stTickBarMin"],
+  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #888 !important; }
+  /* ── Caption ── */
+  .stCaptionContainer p { color: #777 !important; }
 </style>"""
 
 
