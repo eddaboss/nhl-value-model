@@ -1587,7 +1587,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
             safe_tip = tip.replace('"', "&quot;").replace("<br>", " ")
             return (
                 f"<div class='vd-row'>"
-                f"<div class='vd-tip'><strong>{lbl}</strong><br>{safe_tip}</div>"
+                f"<div class='vd-tip'>{safe_tip}</div>"
                 f"<div style='display:flex;justify-content:space-between;"
                 f"align-items:center;margin-bottom:3px;'>"
                 f"<span style='font-size:12px;color:#CCCCDD;'>{lbl}</span>"
