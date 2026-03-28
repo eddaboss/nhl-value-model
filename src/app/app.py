@@ -1007,6 +1007,8 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                   delta_color="inverse")
 
     # ── Scatter: contracted players colored by delta ─────────────────────────
+    show_ufa = st.session_state.get("overview_show_ufa", False)
+
     fig = go.Figure()
 
     # Trace 1 — contracted players (colored by delta)
@@ -1036,8 +1038,8 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
             ),
         ))
 
-    # Trace 2 — UFA/unsigned players (diamond markers on x-axis)
-    if not df_ufa.empty:
+    # Trace 2 — UFA/unsigned players (diamond markers, only when toggled on)
+    if show_ufa and not df_ufa.empty:
         fig.add_trace(go.Scatter(
             x=df_ufa["predicted_value"], y=[0] * len(df_ufa),
             mode="markers",
@@ -1073,8 +1075,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                    gridcolor=_T["grid"], zeroline=False),
         yaxis=dict(tickformat="$,.0f", title="Actual Cap Hit (0 = UFA/Unsigned)",
                    gridcolor=_T["grid"]),
-        legend=dict(bgcolor=_T["legend_bg"], bordercolor=_T["legend_bg"],
-                    orientation="h", y=1.04, x=0.5, xanchor="center"),
+        showlegend=False,
         height=600,
         margin=dict(l=10, r=10, t=30, b=10),
     )
@@ -1098,6 +1099,12 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                 dv = p.get("value_delta")
                 mc4.metric("Delta", fmt_delta(dv),
                            delta_color="normal" if (dv or 0) >= 0 else "inverse")
+
+    # ── UFA toggle button + color key — stacked, left-aligned below chart ────
+    _ufa_label = "🔶  Hide UFA / Unsigned" if show_ufa else "🔶  Show UFA / Unsigned"
+    if st.button(_ufa_label, key="overview_ufa_toggle"):
+        st.session_state["overview_show_ufa"] = not show_ufa
+        st.rerun()
 
     st.caption(
         "🟢 Below the dashed line = underpaid &nbsp;·&nbsp; "
