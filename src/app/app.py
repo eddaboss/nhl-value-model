@@ -374,25 +374,37 @@ def _set_theme(dark: bool) -> None:
     global _T
     if dark:
         _T.update({
-            "page_text":   "#E8E4DC",
-            "plot_paper":  "#040404",
-            "plot_bg":     "#0d0d1a",
-            "plot_font":   "#A0A0A0",
-            "grid":        "#1e1e35",
-            "grid_alt":    "#1e1e35",
-            "zero":        "#2a2a4a",
-            "legend_bg":   "#1a1a2e",
+            "page_text":     "#E8E4DC",
+            "plot_paper":    "#040404",
+            "plot_bg":       "#0d0d1a",
+            "plot_font":     "#A0A0A0",
+            "grid":          "#1e1e35",
+            "grid_alt":      "#1e1e35",
+            "zero":          "#2a2a4a",
+            "legend_bg":     "#1a1a2e",
+            "card_bg":       "#1a1a2e",
+            "card_border":   "#252545",
+            "card_text":     "#E8E4DC",
+            "card_subtext":  "#A0A0A0",
+            "card_header":   "#141428",
+            "row_divider":   "#1e1e35",
         })
     else:
         _T.update({
-            "page_text":   "#1C1C1C",
-            "plot_paper":  "rgba(0,0,0,0)",
-            "plot_bg":     "#EDE9E0",
-            "plot_font":   "#333333",
-            "grid":        "#D8D3C8",
-            "grid_alt":    "#D8D3C8",
-            "zero":        "#AAAAAA",
-            "legend_bg":   "#1a1a2e",
+            "page_text":     "#1C1C1C",
+            "plot_paper":    "rgba(0,0,0,0)",
+            "plot_bg":       "#EDE9E0",
+            "plot_font":     "#333333",
+            "grid":          "#D8D3C8",
+            "grid_alt":      "#D8D3C8",
+            "zero":          "#AAAAAA",
+            "legend_bg":     "#1a1a2e",
+            "card_bg":       "#EDE9DF",
+            "card_border":   "#C8C3B8",
+            "card_text":     "#1a1a1a",
+            "card_subtext":  "#666666",
+            "card_header":   "#E0DBD0",
+            "row_divider":   "#D8D3C8",
         })
 
 # ── Resign signal palettes ─────────────────────────────────────────────────────
@@ -636,24 +648,35 @@ _LIGHT_CSS = """<style>
   [data-baseweb="tab"] { color: #666 !important; border-right: 1px solid #D8D3C8 !important; }
   [aria-selected="true"][data-baseweb="tab"] { color: #A8861A !important; border-bottom: 2px solid #A8861A !important; }
 
-  /* ── CARDS: dark navy on cream — intentional editorial contrast ── */
-  .player-card { background: #1a1a2e; border: 1px solid #252545; border-left-color: #A8861A; }
-  .kings-card  { background: #1a1a2e; border: 1px solid #252545; border-left-color: #A8861A; }
-  .kings-card:hover { background: #1e2235; }
+  /* ── CARDS: cream on cream — same surface, subtle border ── */
+  .player-card { background: #EDE9DF; border: 1px solid #C8C3B8; border-left-color: #A8861A; }
+  .kings-card  { background: #EDE9DF; border: 1px solid #C8C3B8; border-left-color: #A8861A; }
+  .kings-card:hover { background: #E4DFD3; }
 
-  /* Text ON dark navy cards stays white */
-  .stat-label { color: #9090b0; }
-  .stat-value { color: #E8E4DC; }
-  .delta-pos  { color: #1FBFA0; }
-  .delta-neg  { color: #E84040; }
-  .pct-pos    { color: #3ED4B6; }
-  .pct-neg    { color: #EF7070; }
-  .kings-gold { color: #C8A84B; font-weight: 700; }
+  /* Text ON light cards */
+  .stat-label { color: #666; }
+  .stat-value { color: #1a1a1a; }
+  .delta-pos  { color: #0E8A5F; }
+  .delta-neg  { color: #C62828; }
+  .pct-pos    { color: #0E8A5F; }
+  .pct-neg    { color: #C62828; }
+  .kings-gold { color: #8B6914; font-weight: 700; }
 
-  /* Section headers sit on cream page — use dark text */
+  /* Section headers */
   .section-header { color: #1a1a1a; }
-  .group-label { color: #9090b0; border-left-color: #A8861A; }
+  .group-label { color: #666; border-left-color: #A8861A; }
   .signal-badge { color: #fff !important; }
+
+  /* ── Flip remaining hardcoded dark inline backgrounds to cream ── */
+  [style*="background:#1a1a2e"] { background: #EDE9DF !important; }
+  [style*="background: #1a1a2e"] { background: #EDE9DF !important; }
+  /* Text inside those containers */
+  [style*="background:#1a1a2e"] [style*="color:#E8E4DC"],
+  [style*="background:#1a1a2e"] [style*="color: #E8E4DC"] { color: #1a1a1a !important; }
+  [style*="background:#1a1a2e"] [style*="color:#A0A0A0"] { color: #666 !important; }
+  /* Borders on inline dark cards */
+  [style*="border:1px solid #252545"] { border-color: #C8C3B8 !important; }
+  [style*="border: 1px solid #252545"] { border-color: #C8C3B8 !important; }
 
   /* Expanders — light */
   [data-testid="stExpander"] { border: 1px solid #D8D3C8 !important; background-color: #F8F5EE !important; }
@@ -666,36 +689,34 @@ _LIGHT_CSS = """<style>
   [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #333 !important; }
 
   /* Inputs */
-  input, [data-baseweb="input"] input { background: #FFFFFF !important; border-color: #D8D3C8 !important; color: #1a1a1a !important; }
+  input, [data-baseweb="input"] input { background: #F4F1EC !important; border-color: #C8C3B8 !important; color: #1a1a1a !important; }
   ::-webkit-scrollbar-track { background: #F4F1EC; }
   ::-webkit-scrollbar-thumb { background: #D8D3C8; }
   hr { border-color: #E0DBD0 !important; }
 
-  /* ── CLASS OVERRIDES for dark-card classes on light page ── */
-  /* Ensure stMarkdownContainer class styles match dark-card intent */
-  [data-testid="stMarkdownContainer"] .stat-value { color: #E8E4DC !important; }
-  [data-testid="stMarkdownContainer"] .stat-label  { color: #9090b0 !important; }
-  [data-testid="stMarkdownContainer"] .delta-pos   { color: #1FBFA0 !important; }
-  [data-testid="stMarkdownContainer"] .delta-neg   { color: #E84040 !important; }
-  [data-testid="stMarkdownContainer"] .kings-gold  { color: #C8A84B !important; }
-  [data-testid="stMarkdownContainer"] .group-label { color: #9090b0 !important; }
-
-  /* ── WIDGET OVERRIDES (Streamlit base=light, just need our custom colours) ── */
+  /* ── WIDGET OVERRIDES ── */
   [data-testid="stButton"] button {
       background: #EDE9DF !important; color: #1a1a1a !important;
       border: 1px solid #C8C3B8 !important; border-radius: 0 !important;
       font-family: 'Manrope', sans-serif !important;
   }
   [data-testid="stButton"] button:hover { background: #E0DBD0 !important; border-color: #A8861A !important; }
-  [data-baseweb="select"] > div { background: #FFFFFF !important; border-color: #C8C3B8 !important; }
+  /* Selectbox */
+  [data-baseweb="select"] > div { background: #F4F1EC !important; border-color: #C8C3B8 !important; }
   [data-baseweb="select"] span { color: #1a1a1a !important; }
-  [data-baseweb="popover"] { background: #FFFFFF !important; }
-  [data-baseweb="menu"] { background: #FFFFFF !important; border: 1px solid #D8D3C8 !important; }
-  [data-baseweb="menu-item"], [role="option"] { color: #1a1a1a !important; background: #FFFFFF !important; }
-  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #F0EBE0 !important; }
-  /* Tick bar labels */
-  [data-testid="stSlider"] [data-testid="stTickBarMin"],
-  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #888 !important; }
+  [data-baseweb="popover"] { background: #F4F1EC !important; }
+  [data-baseweb="menu"] { background: #F4F1EC !important; border: 1px solid #D8D3C8 !important; }
+  [data-baseweb="menu-item"], [role="option"] { color: #1a1a1a !important; background: #F4F1EC !important; }
+  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #EDE9DF !important; }
+  /* Text inputs and number inputs */
+  input, [data-baseweb="input"] input { background: #F4F1EC !important; border-color: #C8C3B8 !important; color: #1a1a1a !important; }
+  [data-testid="stNumberInput"] input {
+      background: #F4F1EC !important; color: #1a1a1a !important;
+      border-color: #C8C3B8 !important; border-radius: 0 !important;
+      font-family: 'IBM Plex Mono', monospace !important;
+  }
+  [data-testid="stNumberInput"] input:focus { border-color: #A8861A !important; box-shadow: none !important; }
+  [data-testid="stNumberInput"] button { background: #EDE9DF !important; border-color: #C8C3B8 !important; }
   .stCaptionContainer p { color: #666 !important; }
 </style>"""
 
@@ -843,13 +864,13 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
         )
 
         cols[i].markdown(
-            f"<div style='background:#1a1a2e;border-radius:2px;padding:12px 8px;"
-            f"text-align:center;border:1px solid #252545;border-bottom:2px solid {clr};'>"
+            f"<div style='background:{_T[\"card_bg\"]};border-radius:2px;padding:12px 8px;"
+            f"text-align:center;border:1px solid {_T[\"card_border\"]};border-bottom:2px solid {clr};'>"
             f"  {hs_html}"
-            f"  <div style='font-weight:700;color:#E8E4DC;font-size:.8rem;"
+            f"  <div style='font-weight:700;color:{_T[\"card_text\"]};font-size:.8rem;"
             f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
             f"    max-width:100%;font-family:\"Manrope\",sans-serif;'>{name}</div>"
-            f"  <div style='color:#A0A0A0;font-size:.85rem;margin:3px 0;"
+            f"  <div style='color:{_T[\"card_subtext\"]};font-size:.85rem;margin:3px 0;"
             f"    font-family:\"IBM Plex Mono\",monospace;letter-spacing:.04em;'>"
             f"    {team} · {pos}</div>"
             f"  <div style='color:{clr};font-size:.82rem;font-weight:700;"
@@ -1241,15 +1262,15 @@ def tab_leaderboards(df: pd.DataFrame):
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
     _TABLE_CSS = (
-        "width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;"
-        "font-size:.78rem;background:#1a1a2e;"
+        f"width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;"
+        f"font-size:.78rem;background:{_T['card_bg']};"
     )
     _TH_CSS = (
-        "padding:7px 10px;text-align:left;color:#A0A0A0;font-weight:600;"
-        "letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid #252545;"
-        "background:#141428;"
+        f"padding:7px 10px;text-align:left;color:{_T['card_subtext']};font-weight:600;"
+        f"letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid {_T['card_border']};"
+        f"background:{_T['card_header']};"
     )
-    _TD_CSS = "padding:6px 10px;color:#E8E4DC;border-bottom:1px solid #1e1e35;"
+    _TD_CSS = f"padding:6px 10px;color:{_T['card_text']};border-bottom:1px solid {_T['row_divider']};"
 
     def _html_table(data, delta_col="value_delta"):
         cols_order = ["name", "team", "pos", "age", "cap_hit",
@@ -1289,7 +1310,7 @@ def tab_leaderboards(df: pd.DataFrame):
             rows_html += f"<tr style='{row_bg}'>{cells}</tr>"
         header = "".join(f"<th style='{_TH_CSS}'>{col_labels.get(c, c)}</th>" for c in cols)
         return (
-            f"<div style='background:#1a1a2e;border:1px solid #252545;border-radius:2px;"
+            f"<div style='background:{_T[\"card_bg\"]};border:1px solid {_T[\"card_border\"]};border-radius:2px;"
             f"overflow:hidden;margin-bottom:4px;'>"
             f"<table style='{_TABLE_CSS}'>"
             f"<thead><tr>{header}</tr></thead>"
@@ -1351,7 +1372,7 @@ def tab_leaderboards(df: pd.DataFrame):
                         elif c == "predicted_value":
                             txt = f"<span style='color:#C8A84B;font-weight:700;'>{fmt_m(v)}</span>"
                         elif c == "name":
-                            txt = f"<span style='color:#E8E4DC;font-weight:700;'>{v}</span>"
+                            txt = f"<span style='color:{_T[\"card_text\"]};font-weight:700;'>{v}</span>"
                         elif c == "team":
                             txt = f"<span style='color:#C8A84B;'>{v}</span>"
                         else:
@@ -2273,7 +2294,7 @@ def main():
         f"color:#707070;letter-spacing:0.35em;text-transform:uppercase;margin-bottom:14px;'>"
         f"{_season_str(load_season_context())} &nbsp;·&nbsp; XGBOOST + SHAP &nbsp;·&nbsp; LIVE DATA"
         f"</div>"
-        f"<div style='font-family:\"Bebas Neue\",cursive;font-size:3.8rem;color:#E8E4DC;"
+        f"<div style='font-family:\"Bebas Neue\",cursive;font-size:3.8rem;color:{_T['page_text']};"
         f"line-height:0.88;letter-spacing:0.04em;'>"
         f"NHL Player Value<br>"
         f"<span style='color:#C8A84B;'>Model</span>"
