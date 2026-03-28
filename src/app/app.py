@@ -1581,6 +1581,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
         f"</div>",
         unsafe_allow_html=True,
     )
+    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
 
     # ── Cap Outlook expander ──────────────────────────────────────────────────
     with st.expander("📅 Cap Outlook — Next Season", expanded=False):
@@ -2733,9 +2734,13 @@ def main():
     with tab3:
         _all_team_codes = sorted([t for t in df["team"].dropna().unique() if t in TEAM_NAMES])
         _team_labels    = [f"{TEAM_NAMES.get(t, t)} ({t})" for t in _all_team_codes]
-        _default_idx    = _all_team_codes.index("LAK") if "LAK" in _all_team_codes else 0
-        _sel_label = st.selectbox("Select Team", _team_labels, index=_default_idx, key="team_tab_sel")
-        _sel_code  = _all_team_codes[_team_labels.index(_sel_label)]
+        # Initialise session state once so the selectbox remembers the chosen team
+        # across tab switches. Never pass index= when key= is set — it fights session state.
+        _default_label = f"{TEAM_NAMES.get('LAK','Los Angeles Kings')} (LAK)"
+        if "team_tab_sel" not in st.session_state:
+            st.session_state["team_tab_sel"] = _default_label if _default_label in _team_labels else _team_labels[0]
+        _sel_label = st.selectbox("Select Team", _team_labels, key="team_tab_sel")
+        _sel_code  = _all_team_codes[_team_labels.index(_sel_label)] if _sel_label in _team_labels else "LAK"
         tab_team(df, _sel_code)
     with tab4:
         tab_player_search(df, shap_vals)
