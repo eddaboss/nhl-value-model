@@ -863,14 +863,18 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
             f"onerror=\"this.style.display='none'\">"
         )
 
+        _card_bg  = _T["card_bg"]
+        _card_bd  = _T["card_border"]
+        _card_txt = _T["card_text"]
+        _card_sub = _T["card_subtext"]
         cols[i].markdown(
-            f"<div style='background:{_T[\"card_bg\"]};border-radius:2px;padding:12px 8px;"
-            f"text-align:center;border:1px solid {_T[\"card_border\"]};border-bottom:2px solid {clr};'>"
+            f"<div style='background:{_card_bg};border-radius:2px;padding:12px 8px;"
+            f"text-align:center;border:1px solid {_card_bd};border-bottom:2px solid {clr};'>"
             f"  {hs_html}"
-            f"  <div style='font-weight:700;color:{_T[\"card_text\"]};font-size:.8rem;"
+            f"  <div style='font-weight:700;color:{_card_txt};font-size:.8rem;"
             f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
             f"    max-width:100%;font-family:\"Manrope\",sans-serif;'>{name}</div>"
-            f"  <div style='color:{_T[\"card_subtext\"]};font-size:.85rem;margin:3px 0;"
+            f"  <div style='color:{_card_sub};font-size:.85rem;margin:3px 0;"
             f"    font-family:\"IBM Plex Mono\",monospace;letter-spacing:.04em;'>"
             f"    {team} · {pos}</div>"
             f"  <div style='color:{clr};font-size:.82rem;font-weight:700;"
@@ -1309,8 +1313,9 @@ def tab_leaderboards(df: pd.DataFrame):
                 cells += f"<td style='{_TD_CSS}'>{txt}</td>"
             rows_html += f"<tr style='{row_bg}'>{cells}</tr>"
         header = "".join(f"<th style='{_TH_CSS}'>{col_labels.get(c, c)}</th>" for c in cols)
+        _cbg = _T["card_bg"]; _cbd = _T["card_border"]
         return (
-            f"<div style='background:{_T[\"card_bg\"]};border:1px solid {_T[\"card_border\"]};border-radius:2px;"
+            f"<div style='background:{_cbg};border:1px solid {_cbd};border-radius:2px;"
             f"overflow:hidden;margin-bottom:4px;'>"
             f"<table style='{_TABLE_CSS}'>"
             f"<thead><tr>{header}</tr></thead>"
@@ -1372,7 +1377,8 @@ def tab_leaderboards(df: pd.DataFrame):
                         elif c == "predicted_value":
                             txt = f"<span style='color:#C8A84B;font-weight:700;'>{fmt_m(v)}</span>"
                         elif c == "name":
-                            txt = f"<span style='color:{_T[\"card_text\"]};font-weight:700;'>{v}</span>"
+                            _ct = _T["card_text"]
+                            txt = f"<span style='color:{_ct};font-weight:700;'>{v}</span>"
                         elif c == "team":
                             txt = f"<span style='color:#C8A84B;'>{v}</span>"
                         else:
@@ -1380,8 +1386,9 @@ def tab_leaderboards(df: pd.DataFrame):
                         cells += f"<td style='{_TD_CSS}'>{txt}</td>"
                     rows_html += f"<tr>{cells}</tr>"
                 header = "".join(f"<th style='{_TH_CSS}'>{col_labels.get(c, c)}</th>" for c in cols)
+                _cbg2 = _T["card_bg"]; _cbd2 = _T["card_border"]
                 return (
-                    f"<div style='background:#1a1a2e;border:1px solid #252545;border-radius:2px;"
+                    f"<div style='background:{_cbg2};border:1px solid {_cbd2};border-radius:2px;"
                     f"overflow:hidden;margin-bottom:4px;'>"
                     f"<table style='{_TABLE_CSS}'>"
                     f"<thead><tr>{header}</tr></thead>"
