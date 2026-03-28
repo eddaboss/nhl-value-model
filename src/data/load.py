@@ -303,6 +303,16 @@ def load_and_merge(
                 "expiry_status": None, "years_left": None,
                 "is_estimated": False,
             })
+        # Extension fields — always propagate regardless of contract state
+        if cdata:
+            row["has_extension"]           = bool(cdata.get("has_extension", False))
+            row["extension_cap_hit"]       = cdata.get("extension_cap_hit")
+            row["extension_start_year"]    = cdata.get("extension_start_year")
+            row["extension_expiry_year"]   = cdata.get("extension_expiry_year")
+            row["extension_length"]        = cdata.get("extension_length")
+            row["extension_expiry_status"] = cdata.get("extension_expiry_status")
+        else:
+            row["has_extension"] = False
         contract_rows.append(row)
 
     df_contracts = pd.DataFrame(contract_rows)

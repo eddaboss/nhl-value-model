@@ -126,6 +126,10 @@ def get_feature_matrix(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series | None
 
 def resign_label(row) -> str:
     """Re-signing signal used by both pipeline.py and the Streamlit app."""
+    # Extension already signed — override everything else
+    if row.get("has_extension"):
+        return "Extension Signed"
+
     age        = row.get("age", 30)
     delta      = row.get("value_delta", 0)
     expiry     = str(row.get("expiry_status", "")).upper()

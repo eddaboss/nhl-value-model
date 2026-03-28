@@ -56,6 +56,8 @@ def _run_pipeline_background(processed_dir: Path) -> None:
             "g60", "p60", "pp_pts", "shots", "shooting_pct",
             "resign_signal", "player_id",
             "has_contract_data", "has_prior_market_data", "is_estimated",
+            "has_extension", "extension_cap_hit", "extension_start_year",
+            "extension_expiry_year", "extension_length", "extension_expiry_status",
         ]
         out = df[[c for c in keep if c in df.columns]].copy()
         for col in ["cap_hit", "predicted_value", "value_delta"]:
@@ -371,12 +373,14 @@ RESIGN_PALETTE = {
     "Let Walk":          "#BF360C",
     "Buyout Candidate":  "#880E4F",
     "Monitor":           "#546E7A",
+    "Extension Signed":  "#1A5276",
 }
 
 KINGS_SIGNAL_PALETTE = {
     "Extension Now":    "#006400",
     "Lock Up":          "#1B5E20",
     "Priority Re-sign": "#0D47A1",
+    "Extension Signed": "#1A5276",
     "Fair Deal":        "#37474F",
     "Monitor":          "#546E7A",
     "Let Walk":         "#BF360C",
@@ -636,6 +640,10 @@ def kings_resign_signal(row) -> str:
     yrs_left = int(row.get("years_left") or 0)
     cap_hit  = float(row.get("cap_hit") or 0)
     has_data = bool(row.get("has_contract_data"))
+
+    # Extension already signed — highest priority override
+    if row.get("has_extension"):
+        return "Extension Signed"
 
     if not has_data:
         return "UFA"
@@ -1204,6 +1212,21 @@ def tab_kings(df: pd.DataFrame):
             f"title='Salary estimated — contract data pending verification'>est*</span>"
         ) if is_est else ""
 
+        # Extension note for Kings card
+        has_ext = bool(row.get("has_extension", False))
+        ext_note = ""
+        if has_ext:
+            ext_ch_val  = row.get("extension_cap_hit")
+            ext_start_v = row.get("extension_start_year")
+            ext_len_v   = row.get("extension_length")
+            ext_ch_s    = f"${ext_ch_val/1e6:.2f}M" if ext_ch_val else "?"
+            ext_yr_s    = f"{int(ext_start_v)-1}-{str(int(ext_start_v))[-2:]}" if ext_start_v else "?"
+            ext_len_s   = f"{int(ext_len_v)}-yr" if ext_len_v else ""
+            ext_note    = (
+                f"<div style='margin-top:5px;font-size:11px;color:#5DADE2;'>"
+                f"✅ Extension signed — {ext_len_s} {ext_ch_s}/yr starting {ext_yr_s}</div>"
+            )
+
         st.markdown(
             f"<div class='kings-card' style='display:flex;align-items:center;gap:16px;'>"
             f"  {hs_html}"
@@ -1226,6 +1249,7 @@ def tab_kings(df: pd.DataFrame):
             f"      <div><div class='stat-label'>Yrs Left</div>"
             f"           <div class='stat-value'>{yrs_str}</div></div>"
             f"    </div>"
+            f"    {ext_note}"
             f"  </div>"
             f"  <div style='text-align:center;flex-shrink:0;'>"
             f"    <div class='stat-label'>Signal</div>"
@@ -1388,6 +1412,29 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         cc4.markdown(
             f"<div class='stat-label'>Expiry Year</div>"
             f"<div class='stat-value'>{player.get('expiry_year','—')}</div>",
+            unsafe_allow_html=True,
+        )
+
+    # Extension badge (shown when a future contract is already signed)
+    has_ext = bool(player.get("has_extension", False))
+    if has_ext:
+        ext_ch    = player.get("extension_cap_hit")
+        ext_start = player.get("extension_start_year")
+        ext_exp   = player.get("extension_expiry_year")
+        ext_len   = player.get("extension_length")
+        ext_stat  = player.get("extension_expiry_status") or ""
+        ext_ch_str   = f"${ext_ch/1e6:.2f}M" if ext_ch else "?"
+        ext_yrs_str  = f"{int(ext_len)}-yr" if ext_len else ""
+        ext_start_str = f"{int(ext_start)-1}-{str(int(ext_start))[-2:]}" if ext_start else "?"
+        ext_exp_str  = f"{int(ext_exp)-1}-{str(int(ext_exp))[-2:]}" if ext_exp else "?"
+        st.markdown(
+            f"<div style='background:#0D2137;border:1px solid #1A5276;border-radius:8px;"
+            f"padding:10px 14px;margin:8px 0;font-size:13px;'>"
+            f"<span style='color:#5DADE2;font-weight:700;'>✅ Extension Signed</span>"
+            f"<span style='color:#AAAACC;margin-left:10px;'>"
+            f"{ext_yrs_str} · {ext_ch_str}/yr · {ext_start_str} → {ext_exp_str}"
+            f"{' · ' + ext_stat if ext_stat else ''}"
+            f"</span></div>",
             unsafe_allow_html=True,
         )
 

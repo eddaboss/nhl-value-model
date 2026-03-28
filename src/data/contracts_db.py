@@ -3,18 +3,24 @@ SQLite-backed contract database — source of truth for player salary data.
 
 Schema
 ──────
-  player_id        INTEGER  PRIMARY KEY
-  name             TEXT
-  cap_hit          INTEGER  annual salary ($)
-  contract_length  INTEGER  total years on the contract
-  expiry_year      INTEGER  year contract expires
-  expiry_status    TEXT     UFA | RFA | UDFA
-  years_left       INTEGER
-  year_of_contract INTEGER  which year of contract we are currently in
-  last_verified    TEXT     ISO-8601 datetime (UTC)
-  source           TEXT     puckpedia | spotrac | overthecap | hockeyref
-                            | estimated | override
-  is_estimated     INTEGER  0 = real data, 1 = model-estimated fallback
+  player_id              INTEGER  PRIMARY KEY
+  name                   TEXT
+  cap_hit                INTEGER  annual salary ($)
+  contract_length        INTEGER  total years on the contract
+  expiry_year            INTEGER  year contract expires
+  expiry_status          TEXT     UFA | RFA | UDFA
+  years_left             INTEGER
+  year_of_contract       INTEGER  which year of contract we are currently in
+  last_verified          TEXT     ISO-8601 datetime (UTC)
+  source                 TEXT     puckpedia | spotrac | overthecap | hockeyref
+                                  | estimated | override
+  is_estimated           INTEGER  0 = real data, 1 = model-estimated fallback
+  has_extension          INTEGER  1 if a future extension was found on PuckPedia
+  extension_cap_hit      INTEGER  AAV of the signed extension
+  extension_start_year   INTEGER  first season-end-year the extension is active
+  extension_expiry_year  INTEGER  year extension expires
+  extension_length       INTEGER  total years on the extension
+  extension_expiry_status TEXT    UFA | RFA of the extension
 
 Overrides
 ─────────
@@ -35,19 +41,34 @@ MISSING_PATH   = BASE_DIR / "missing_contracts.json"
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS contracts (
-    player_id        INTEGER PRIMARY KEY,
-    name             TEXT,
-    cap_hit          INTEGER,
-    contract_length  INTEGER,
-    expiry_year      INTEGER,
-    expiry_status    TEXT,
-    years_left       INTEGER,
-    year_of_contract INTEGER,
-    last_verified    TEXT,
-    source           TEXT,
-    is_estimated     INTEGER DEFAULT 0
+    player_id               INTEGER PRIMARY KEY,
+    name                    TEXT,
+    cap_hit                 INTEGER,
+    contract_length         INTEGER,
+    expiry_year             INTEGER,
+    expiry_status           TEXT,
+    years_left              INTEGER,
+    year_of_contract        INTEGER,
+    last_verified           TEXT,
+    source                  TEXT,
+    is_estimated            INTEGER DEFAULT 0,
+    has_extension           INTEGER DEFAULT 0,
+    extension_cap_hit       INTEGER,
+    extension_start_year    INTEGER,
+    extension_expiry_year   INTEGER,
+    extension_length        INTEGER,
+    extension_expiry_status TEXT
 );
 """
+
+_EXTENSION_COLS = [
+    ("has_extension",           "INTEGER DEFAULT 0"),
+    ("extension_cap_hit",       "INTEGER"),
+    ("extension_start_year",    "INTEGER"),
+    ("extension_expiry_year",   "INTEGER"),
+    ("extension_length",        "INTEGER"),
+    ("extension_expiry_status", "TEXT"),
+]
 
 
 # ── Connection helper ──────────────────────────────────────────────────────────
@@ -56,6 +77,12 @@ def _conn() -> sqlite3.Connection:
     con = sqlite3.connect(DB_PATH)
     con.row_factory = sqlite3.Row
     con.execute(_SCHEMA)
+    # Migrate existing databases that predate the extension columns
+    for col, typedef in _EXTENSION_COLS:
+        try:
+            con.execute(f"ALTER TABLE contracts ADD COLUMN {col} {typedef}")
+        except sqlite3.OperationalError:
+            pass  # column already exists
     con.commit()
     return con
 
@@ -75,24 +102,33 @@ def upsert(player_id: int, name: str, data: dict, source: str,
            is_estimated: bool = False) -> None:
     """Insert or replace a contract row."""
     now = datetime.now(timezone.utc).isoformat()
+    has_ext = int(bool(data.get("has_extension", False)))
     with _conn() as con:
         con.execute("""
             INSERT INTO contracts
                 (player_id, name, cap_hit, contract_length, expiry_year,
                  expiry_status, years_left, year_of_contract,
-                 last_verified, source, is_estimated)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?)
+                 last_verified, source, is_estimated,
+                 has_extension, extension_cap_hit, extension_start_year,
+                 extension_expiry_year, extension_length, extension_expiry_status)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(player_id) DO UPDATE SET
-                name             = excluded.name,
-                cap_hit          = excluded.cap_hit,
-                contract_length  = excluded.contract_length,
-                expiry_year      = excluded.expiry_year,
-                expiry_status    = excluded.expiry_status,
-                years_left       = excluded.years_left,
-                year_of_contract = excluded.year_of_contract,
-                last_verified    = excluded.last_verified,
-                source           = excluded.source,
-                is_estimated     = excluded.is_estimated
+                name                    = excluded.name,
+                cap_hit                 = excluded.cap_hit,
+                contract_length         = excluded.contract_length,
+                expiry_year             = excluded.expiry_year,
+                expiry_status           = excluded.expiry_status,
+                years_left              = excluded.years_left,
+                year_of_contract        = excluded.year_of_contract,
+                last_verified           = excluded.last_verified,
+                source                  = excluded.source,
+                is_estimated            = excluded.is_estimated,
+                has_extension           = excluded.has_extension,
+                extension_cap_hit       = excluded.extension_cap_hit,
+                extension_start_year    = excluded.extension_start_year,
+                extension_expiry_year   = excluded.extension_expiry_year,
+                extension_length        = excluded.extension_length,
+                extension_expiry_status = excluded.extension_expiry_status
         """, (
             player_id,
             name,
@@ -105,6 +141,12 @@ def upsert(player_id: int, name: str, data: dict, source: str,
             now,
             source,
             int(is_estimated),
+            has_ext,
+            data.get("extension_cap_hit"),
+            data.get("extension_start_year"),
+            data.get("extension_expiry_year"),
+            data.get("extension_length"),
+            data.get("extension_expiry_status"),
         ))
 
 

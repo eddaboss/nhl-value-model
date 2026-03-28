@@ -101,6 +101,41 @@ def _parse_contract(html: str, season_end_year: int) -> Optional[dict]:
     """
     season_start_year = season_end_year - 1   # e.g. 2025 for 2025-26
 
+    # ── Capture future-extension block BEFORE stripping it ─────────────────────
+    extension: Optional[dict] = None
+    ext_header = re.search(
+        r'[Hh]is next contract begins for the (\d{4})-\d{2} season',
+        html, re.DOTALL
+    )
+    if ext_header:
+        ext_start_year = int(ext_header.group(1)) + 1   # "2026-27" → 2027 end year
+        ext_block = html[ext_header.start():]
+        # Parse cap hit and length from the extension prose block
+        ext_prose = re.search(
+            r'is signed to (?:a )?(\d+) year[^$]+'
+            r'\$[\d,]+ contract(?:\s+extension)?\s+with a cap hit of \$([\d,]+) per season',
+            ext_block, re.IGNORECASE
+        )
+        if ext_prose:
+            ext_length  = int(ext_prose.group(1))
+            ext_cap_hit = int(ext_prose.group(2).replace(',', ''))
+            ext_expiry_year = ext_start_year + ext_length - 1
+            # Expiry status from the extension block
+            ext_status_m = re.search(
+                r'(Unrestricted|Restricted)\s+Free Agent', ext_block, re.IGNORECASE
+            )
+            ext_status = None
+            if ext_status_m:
+                ext_status = ('UFA' if ext_status_m.group(1).lower() == 'unrestricted'
+                              else 'RFA')
+            extension = {
+                'extension_cap_hit':       ext_cap_hit,
+                'extension_start_year':    ext_start_year,
+                'extension_expiry_year':   ext_expiry_year,
+                'extension_length':        ext_length,
+                'extension_expiry_status': ext_status,
+            }
+
     # ── Strip future-extension block ───────────────────────────────────────────
     html_work = re.sub(r'[Hh]is next contract begins[^.]*\.', '', html, flags=re.DOTALL)
 
@@ -200,14 +235,18 @@ def _parse_contract(html: str, season_end_year: int) -> Optional[dict]:
     years_left = max(0, expiry_year - season_end_year)
     year_of_contract = max(1, contract_years - years_left) if contract_years else None
 
-    return {
+    result = {
         'cap_hit':            cap_hit,
         'length_of_contract': contract_years,
         'expiry_year':        expiry_year,
         'expiry_status':      expiry_status,
         'years_left':         years_left,
         'year_of_contract':   year_of_contract,
+        'has_extension':      extension is not None,
     }
+    if extension:
+        result.update(extension)
+    return result
 
 
 # ── Cache ──────────────────────────────────────────────────────────────────────
