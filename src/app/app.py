@@ -2770,17 +2770,12 @@ def main():
     with tab3:
         _all_team_codes = sorted([t for t in df["team"].dropna().unique() if t in TEAM_NAMES])
         _team_labels    = [f"{TEAM_NAMES.get(t, t)} ({t})" for t in _all_team_codes]
-        # Manage team selection explicitly in our own session state key (_team_sel_saved)
-        # so it survives st.rerun() (theme toggle etc.) without fighting Streamlit's
-        # internal key↔value reconciliation on st.selectbox.
+        # Initialise session state once; omit index= to avoid fighting Streamlit's
+        # own key↔value tracking — session state persists across st.rerun() calls.
         _default_label = f"{TEAM_NAMES.get('LAK','Los Angeles Kings')} (LAK)"
-        if "_team_sel_saved" not in st.session_state:
-            st.session_state["_team_sel_saved"] = _default_label if _default_label in _team_labels else _team_labels[0]
-        _saved = st.session_state["_team_sel_saved"]
-        _saved_idx = _team_labels.index(_saved) if _saved in _team_labels else 0
-        # No key= on the selectbox — we control state ourselves via index= + explicit save
-        _sel_label = st.selectbox("Select Team", _team_labels, index=_saved_idx)
-        st.session_state["_team_sel_saved"] = _sel_label
+        if "team_tab_sel" not in st.session_state:
+            st.session_state["team_tab_sel"] = _default_label if _default_label in _team_labels else _team_labels[0]
+        _sel_label = st.selectbox("Select Team", _team_labels, key="team_tab_sel")
         _sel_code  = _all_team_codes[_team_labels.index(_sel_label)] if _sel_label in _team_labels else "LAK"
         tab_team(df, _sel_code)
     with tab4:
