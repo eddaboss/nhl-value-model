@@ -525,9 +525,13 @@ _DARK_CSS  = """<style>
   .section-header { color: #E8E4DC; }
   .group-label { color: #A0A0A0; border-left-color: #C8A84B; }
   .signal-badge { color: #fff !important; }
-  [data-testid="stExpander"] { border: none !important; background-color: #1a1a2e !important; }
+  [data-testid="stExpander"],
+  [data-testid="stExpander"] > *,
+  [data-testid="stExpander"] details,
+  [data-testid="stExpander"] details > div { border: none !important; outline: none !important; box-shadow: none !important; }
+  [data-testid="stExpander"] { background-color: #1a1a2e !important; }
   [data-testid="stExpander"] details { background-color: #1a1a2e !important; }
-  [data-testid="stExpander"] details summary { background-color: #141428 !important; color: #E8E4DC !important; }
+  [data-testid="stExpander"] details summary { background-color: #141428 !important; color: #E8E4DC !important; border: none !important; }
   [data-testid="stExpander"] details > div { background-color: #1a1a2e !important; }
   [data-testid="stCaptionContainer"] p { color: #A0A0A0 !important; }
   [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #E8E4DC !important; }
