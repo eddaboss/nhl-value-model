@@ -1632,7 +1632,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
     def _render_group(group_df, group_label):
         if group_df.empty:
             return
-        st.markdown(f"<div class='group-label'>{group_label}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='group-label' style='border-left-color:{T_PRIMARY};'>{group_label}</div>", unsafe_allow_html=True)
         for _, row in group_df.iterrows():
             _render_player_row(row)
 
@@ -1701,7 +1701,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
 
         _rtxt = _T["card_text"]; _rsub = _T["card_subtext"]
         st.markdown(
-            f"<div class='kings-card' style='display:flex;align-items:center;gap:16px;'>"
+            f"<div class='kings-card' style='display:flex;align-items:center;gap:16px;border-left-color:{T_PRIMARY};'>"
             f"  {hs_html}"
             f"  <div style='flex:1;min-width:0;'>"
             f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
