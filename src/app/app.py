@@ -939,7 +939,11 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         import math
         age_min = math.floor(df["age"].dropna().min())
         age_max = math.ceil(df["age"].dropna().max())
-        age_r = st.slider("Age range", age_min, age_max, (age_min, age_max))
+        st.markdown("<div style='font-size:.8rem;color:#888;margin-bottom:2px;font-family:\"IBM Plex Mono\",monospace;letter-spacing:.06em;text-transform:uppercase;'>Age range</div>", unsafe_allow_html=True)
+        _ac1, _ac2 = st.columns(2)
+        age_lo = _ac1.number_input("Min age", min_value=age_min, max_value=age_max, value=age_min, step=1, label_visibility="collapsed", key="age_lo")
+        age_hi = _ac2.number_input("Max age", min_value=age_min, max_value=age_max, value=age_max, step=1, label_visibility="collapsed", key="age_hi")
+        age_r = (int(age_lo), int(age_hi))
 
         filt = df.copy()
         if pos_sel == "F (all)":
@@ -1147,7 +1151,7 @@ def tab_leaderboards(df: pd.DataFrame):
     df_ufa = df[df["cap_hit"].isna() & df["predicted_value"].notna()].copy()
 
     lc1, lc2, lc3 = st.columns([1, 1, 2])
-    n = lc1.slider("Show top N", 5, 30, 15, key="lb_n")
+    n = int(lc1.number_input("Show top N", min_value=5, max_value=30, value=15, step=1, key="lb_n"))
     sort_by = lc2.radio("Sort by", ["% Delta", "$ Delta"], horizontal=True, key="lb_sort")
     pos_opts = ["All", "C", "L", "R", "D", "F (all)"]
     pos_f = lc3.radio("Position", pos_opts, horizontal=True, key="lb_pos")
@@ -1224,31 +1228,81 @@ def tab_leaderboards(df: pd.DataFrame):
         _mini_player_cards(df_c.nsmallest(5, sort_col))
 
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-    t1, t2 = st.columns(2)
 
-    def fmt_table(data):
-        cols = ["name", "team", "pos", "age", "cap_hit",
-                "predicted_value", "value_delta", "value_delta_pct"]
-        d = data[[c for c in cols if c in data.columns]].copy()
-        d["age"]             = d["age"].apply(lambda v: f"{v:.0f}" if pd.notna(v) else "?")
-        d["cap_hit"]         = d["cap_hit"].apply(fmt_m)
-        d["predicted_value"] = d["predicted_value"].apply(fmt_m)
-        d["value_delta"]     = d["value_delta"].apply(fmt_delta)
-        d["value_delta_pct"] = d["value_delta_pct"].apply(fmt_pct)
-        return d.rename(columns={
+    _TABLE_CSS = (
+        "width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;"
+        "font-size:.78rem;background:#1a1a2e;"
+    )
+    _TH_CSS = (
+        "padding:7px 10px;text-align:left;color:#A0A0A0;font-weight:600;"
+        "letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid #252545;"
+        "background:#141428;"
+    )
+    _TD_CSS = "padding:6px 10px;color:#E8E4DC;border-bottom:1px solid #1e1e35;"
+
+    def _html_table(data, delta_col="value_delta"):
+        cols_order = ["name", "team", "pos", "age", "cap_hit",
+                      "predicted_value", "value_delta", "value_delta_pct"]
+        col_labels = {
             "name": "Player", "team": "Team", "pos": "Pos", "age": "Age",
             "cap_hit": "Cap Hit", "predicted_value": "Pred. Value",
             "value_delta": "$ Delta", "value_delta_pct": "% Delta",
-        })
+        }
+        cols = [c for c in cols_order if c in data.columns]
+        rows_html = ""
+        for _, row in data.iterrows():
+            delta_v = row.get(delta_col, 0) or 0
+            row_bg  = "background:#1a1a2e;" if delta_v >= 0 else "background:#1a1a2e;"
+            cells = ""
+            for c in cols:
+                v = row.get(c)
+                if c == "age":
+                    txt = f"{v:.0f}" if pd.notna(v) else "?"
+                elif c == "cap_hit":
+                    txt = fmt_m(v)
+                elif c == "predicted_value":
+                    txt = fmt_m(v)
+                elif c == "value_delta":
+                    color = "#1FBFA0" if (v or 0) >= 0 else "#E84040"
+                    txt = f"<span style='color:{color};font-weight:700;'>{fmt_delta(v)}</span>"
+                elif c == "value_delta_pct":
+                    color = "#1FBFA0" if (v or 0) >= 0 else "#E84040"
+                    txt = f"<span style='color:{color};'>{fmt_pct(v)}</span>"
+                elif c == "name":
+                    txt = f"<span style='color:#E8E4DC;font-weight:700;'>{v}</span>"
+                elif c == "team":
+                    txt = f"<span style='color:#C8A84B;'>{v}</span>"
+                else:
+                    txt = str(v) if pd.notna(v) else "?"
+                cells += f"<td style='{_TD_CSS}'>{txt}</td>"
+            rows_html += f"<tr style='{row_bg}'>{cells}</tr>"
+        header = "".join(f"<th style='{_TH_CSS}'>{col_labels.get(c, c)}</th>" for c in cols)
+        return (
+            f"<div style='background:#1a1a2e;border:1px solid #252545;border-radius:2px;"
+            f"overflow:hidden;margin-bottom:4px;'>"
+            f"<table style='{_TABLE_CSS}'>"
+            f"<thead><tr>{header}</tr></thead>"
+            f"<tbody>{rows_html}</tbody>"
+            f"</table></div>"
+        )
 
+    t1, t2 = st.columns(2)
     with t1:
-        st.caption(f"**Hidden Gems** — top {n} by {sort_by}")
-        st.dataframe(fmt_table(df_c.nlargest(n, sort_col)),
-                     use_container_width=True, hide_index=True)
+        st.markdown(
+            "<div style='color:#1FBFA0;font-size:.78rem;font-weight:700;letter-spacing:.1em;"
+            "text-transform:uppercase;font-family:\"IBM Plex Mono\",monospace;margin-bottom:6px;'>"
+            "Hidden Gems</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(_html_table(df_c.nlargest(n, sort_col)), unsafe_allow_html=True)
     with t2:
-        st.caption(f"**Overpaid** — bottom {n} by {sort_by}")
-        st.dataframe(fmt_table(df_c.nsmallest(n, sort_col)),
-                     use_container_width=True, hide_index=True)
+        st.markdown(
+            "<div style='color:#E84040;font-size:.78rem;font-weight:700;letter-spacing:.1em;"
+            "text-transform:uppercase;font-family:\"IBM Plex Mono\",monospace;margin-bottom:6px;'>"
+            "Overpaid</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(_html_table(df_c.nsmallest(n, sort_col)), unsafe_allow_html=True)
 
     # ── UFA / Unsigned players ────────────────────────────────────────────────
     if not df_ufa.empty:
@@ -1271,15 +1325,39 @@ def tab_leaderboards(df: pd.DataFrame):
             )
             top_ufa = ufa_filtered.nlargest(min(n, len(ufa_filtered)), "predicted_value")
             ufa_disp = top_ufa[["name", "team", "pos", "age", "predicted_value"]].copy()
-            ufa_disp["age"] = ufa_disp["age"].apply(
-                lambda v: f"{v:.0f}" if pd.notna(v) else "?"
-            )
-            ufa_disp["predicted_value"] = ufa_disp["predicted_value"].apply(fmt_m)
-            ufa_disp = ufa_disp.rename(columns={
-                "name": "Player", "team": "Team", "pos": "Pos", "age": "Age",
-                "predicted_value": "Predicted Value",
-            })
-            st.dataframe(ufa_disp, use_container_width=True, hide_index=True)
+
+            def _ufa_html_table(data):
+                cols = ["name", "team", "pos", "age", "predicted_value"]
+                col_labels = {"name": "Player", "team": "Team", "pos": "Pos",
+                              "age": "Age", "predicted_value": "Predicted Value"}
+                rows_html = ""
+                for _, row in data.iterrows():
+                    cells = ""
+                    for c in cols:
+                        v = row.get(c)
+                        if c == "age":
+                            txt = f"{v:.0f}" if pd.notna(v) else "?"
+                        elif c == "predicted_value":
+                            txt = f"<span style='color:#C8A84B;font-weight:700;'>{fmt_m(v)}</span>"
+                        elif c == "name":
+                            txt = f"<span style='color:#E8E4DC;font-weight:700;'>{v}</span>"
+                        elif c == "team":
+                            txt = f"<span style='color:#C8A84B;'>{v}</span>"
+                        else:
+                            txt = str(v) if pd.notna(v) else "?"
+                        cells += f"<td style='{_TD_CSS}'>{txt}</td>"
+                    rows_html += f"<tr>{cells}</tr>"
+                header = "".join(f"<th style='{_TH_CSS}'>{col_labels.get(c, c)}</th>" for c in cols)
+                return (
+                    f"<div style='background:#1a1a2e;border:1px solid #252545;border-radius:2px;"
+                    f"overflow:hidden;margin-bottom:4px;'>"
+                    f"<table style='{_TABLE_CSS}'>"
+                    f"<thead><tr>{header}</tr></thead>"
+                    f"<tbody>{rows_html}</tbody>"
+                    f"</table></div>"
+                )
+
+            st.markdown(_ufa_html_table(ufa_disp), unsafe_allow_html=True)
             st.caption(
                 f"Showing {len(top_ufa)} of {len(ufa_filtered)} UFA/unsigned players — "
                 "sorted by predicted market value. These players have no active cap charge."
@@ -2042,7 +2120,7 @@ def tab_insights(df: pd.DataFrame):
         return
 
     st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:1.5rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 12px;font-weight:400;'>What drives predicted player value?</div>", unsafe_allow_html=True)
-    top_n = st.slider("Features to show", 5, min(30, len(shap_summary)), 15)
+    top_n = int(st.number_input("Features to show", min_value=5, max_value=min(30, len(shap_summary)), value=15, step=1))
     top   = shap_summary.head(top_n).copy()
     top["feature"] = top["feature"].apply(_label)
 
