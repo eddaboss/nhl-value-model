@@ -626,7 +626,9 @@ _DARK_CSS  = """<style>
   [data-testid="stNumberInput"] button {
       background: #141414 !important; border-color: #2C2C2C !important; color: #A0A0A0 !important;
   }
+  [data-testid="stNumberInput"] button svg { fill: #A0A0A0 !important; }
   [data-testid="stNumberInput"] button:hover { border-color: #C8A84B !important; color: #E8E4DC !important; }
+  [data-testid="stNumberInput"] button:hover svg { fill: #E8E4DC !important; }
   /* Dataframe — invert to match dark theme */
   [data-testid="stDataFrameContainer"],
   [data-testid="stDataFrame"],
