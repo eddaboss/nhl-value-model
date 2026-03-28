@@ -1444,8 +1444,8 @@ def tab_kings(df: pd.DataFrame):
     n_expiring        = int((kings["years_left"].fillna(0) <= 1).sum())
 
     st.markdown(
-        f"<div style='background:{_T['card_bg']};border-top:3px solid {KINGS_GOLD};"
-        f"border:1px solid {_T['card_border']};border-radius:3px;padding:16px 20px;margin-bottom:16px;'>",
+        f"<div style='border-top:3px solid {KINGS_GOLD};border-bottom:1px solid {_T['card_border']};"
+        f"margin-bottom:16px;'></div>",
         unsafe_allow_html=True,
     )
     cap_cols = st.columns(5)
@@ -1456,16 +1456,25 @@ def tab_kings(df: pd.DataFrame):
                         delta_color="normal" if cap_space > 0 else "inverse")
     cap_cols[3].metric("Next Season Space", fmt_m(next_yr_space))
     cap_cols[4].metric("Expiring Contracts", f"{n_expiring} players")
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
     # ── Cap Hit vs Predicted Value chart ────────────────────────────────────
-    kings_sorted = kings.sort_values("cap_hit", ascending=False)
+    if "kings_show_ufa" not in st.session_state:
+        st.session_state["kings_show_ufa"] = False
+
+    chart_data = kings.copy()
+    if st.session_state["kings_show_ufa"] and not kings_all[kings_all["cap_hit"].isna()].empty:
+        ufa_kings = kings_all[kings_all["cap_hit"].isna()].copy()
+        ufa_kings["cap_hit"] = 0
+        chart_data = pd.concat([kings, ufa_kings], ignore_index=True)
+
+    kings_sorted = chart_data.sort_values("cap_hit", ascending=False)
     fig = go.Figure()
     fig.add_bar(
         name="Cap Hit",
         x=kings_sorted["name"], y=kings_sorted["cap_hit"],
         marker_color=KINGS_SILVER, opacity=0.9,
-        text=kings_sorted["cap_hit"].apply(fmt_m),
+        text=kings_sorted["cap_hit"].apply(lambda v: fmt_m(v) if v > 0 else "UFA"),
         textposition="outside", textfont=dict(size=11, color=KINGS_SILVER),
     )
     fig.add_bar(
@@ -1482,12 +1491,29 @@ def tab_kings(df: pd.DataFrame):
                    gridcolor=_T["grid_alt"], zeroline=False),
         title=dict(text="Cap Hit vs. Predicted Market Value",
                    font=dict(color=KINGS_GOLD, size=16)),
-        legend=dict(bgcolor=_T["legend_bg"], bordercolor=_T["legend_bg"],
-                    orientation="h", y=1.08, x=0.5, xanchor="center"),
+        showlegend=False,
         height=420,
         margin=dict(l=10, r=10, t=50, b=10),
     )
     st.plotly_chart(fig, use_container_width=True)
+
+    ufa_kings_count = len(kings_all[kings_all["cap_hit"].isna()])
+    if ufa_kings_count > 0:
+        ufa_label = "Hide UFA Players" if st.session_state["kings_show_ufa"] else f"Show UFA / Unsigned ({ufa_kings_count})"
+        if st.button(ufa_label, key="kings_ufa_toggle"):
+            st.session_state["kings_show_ufa"] = not st.session_state["kings_show_ufa"]
+            st.rerun()
+    st.markdown(
+        f"<div style='font-size:.75rem;color:{_T['card_subtext']};font-family:\"IBM Plex Mono\",monospace;"
+        f"letter-spacing:.06em;margin-top:2px;'>"
+        f"<span style='display:inline-block;width:12px;height:12px;background:{KINGS_SILVER};"
+        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Cap Hit"
+        f"&nbsp;&nbsp;"
+        f"<span style='display:inline-block;width:12px;height:12px;background:{KINGS_GOLD};"
+        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Predicted Value"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
 
     # ── Cap Outlook: next season ─────────────────────────────────────────────
     with st.expander("📅 Cap Outlook — Next Season", expanded=False):
@@ -1614,10 +1640,10 @@ def tab_kings(df: pd.DataFrame):
             f"  {hs_html}"
             f"  <div style='flex:1;min-width:0;'>"
             f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
-            f"      <span style='font-size:1.0rem;font-weight:700;color:{KINGS_WHITE};"
+            f"      <span style='font-size:1.0rem;font-weight:700;color:{_T['card_text']};"
             f"font-family:\"Manrope\",sans-serif;'>{name}</span>"
             f"      {est_badge}"
-            f"      <span style='color:#A0A0A0;font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
+            f"      <span style='color:{_T['card_subtext']};font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
             f"letter-spacing:.04em;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
@@ -2016,17 +2042,18 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
             delta_str = f"+${delta/1e6:.2f}M" if delta >= 0 else f"-${abs(delta)/1e6:.2f}M"
         else:
             delta_str = "—"
+        _emvbg = _T["card_bg"]; _emvbd = _T["card_border"]; _emvsub = _T["card_subtext"]
         st.markdown(
-            f"<div style='background:#1a1a2e;border:1px solid #252545;border-radius:2px;"
+            f"<div style='background:{_emvbg};border:1px solid {_emvbd};border-radius:2px;"
             f"border-left:3px solid {pv_color};padding:16px 20px;margin-top:16px;'>"
-            f"<div style='font-size:.78rem;color:#A0A0A0;font-family:\"IBM Plex Mono\",monospace;"
+            f"<div style='font-size:.78rem;color:{_emvsub};font-family:\"IBM Plex Mono\",monospace;"
             f"letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;'>"
             f"Estimated Market Value</div>"
             f"<div style='font-size:1.5rem;font-weight:700;color:{pv_color};"
             f"font-family:\"IBM Plex Mono\",monospace;margin-bottom:8px;'>"
             f"${pv_val/1e6:.2f}M</div>"
-            f"<div style='font-size:.87rem;color:#A0A0A0;font-family:\"IBM Plex Mono\",monospace;'>"
-            f"Current Cap Hit: <span style='color:#5A5A5A;'>{cap_str}</span>"
+            f"<div style='font-size:.87rem;color:{_emvsub};font-family:\"IBM Plex Mono\",monospace;'>"
+            f"Current Cap Hit: <span style='color:{_T['card_text']};'>{cap_str}</span>"
             f"&nbsp;&nbsp;·&nbsp;&nbsp;"
             f"Difference: <span style='color:{pv_color};font-weight:700;'>{delta_str}</span>"
             f"</div></div>",
@@ -2055,25 +2082,27 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 sp_hs = (
                     f"<img src='{sp_hs_url}' width='56' height='56' "
                     f"style='border-radius:50%;object-fit:cover;"
-                    f"border:1px solid #252545;' "
+                    f"border:1px solid {_T['card_border']};' "
                     f"onerror=\"this.style.display='none'\">"
                 )
             clr = "#1FBFA0" if (sp_dlt or 0) >= 0 else "#E84040"
+            _scbg = _T["card_bg"]; _scbd = _T["card_border"]
+            _sctxt = _T["card_text"]; _scsub = _T["card_subtext"]
             sim_cols[col_i].markdown(
-                f"<div style='background:#1a1a2e;border-radius:2px;padding:14px 10px;"
-                f"border:1px solid #252545;border-bottom:2px solid {clr};text-align:center;'>"
+                f"<div style='background:{_scbg};border-radius:2px;padding:14px 10px;"
+                f"border:1px solid {_scbd};border-bottom:2px solid {clr};text-align:center;'>"
                 f"  {sp_hs}"
-                f"  <div style='font-weight:700;color:#E8E4DC;margin-top:7px;"
+                f"  <div style='font-weight:700;color:{_sctxt};margin-top:7px;"
                 f"font-size:.85rem;font-family:\"Manrope\",sans-serif;'>{sp_name}</div>"
-                f"  <div style='color:#A0A0A0;font-size:.78rem;margin:3px 0;"
+                f"  <div style='color:{_scsub};font-size:.78rem;margin:3px 0;"
                 f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.06em;'>"
                 f"    {sp_team} · {sp_pos}"
                 f"    {f'· {sp_age:.0f}' if pd.notna(sp_age) else ''}"
                 f"  </div>"
                 f"  <div style='margin-top:7px;font-size:.78rem;"
                 f"font-family:\"IBM Plex Mono\",monospace;'>"
-                f"    <span style='color:#A0A0A0;'>PRED </span>"
-                f"    <span style='color:#E8E4DC;'>{fmt_m(sp_pv)}</span>"
+                f"    <span style='color:{_scsub};'>PRED </span>"
+                f"    <span style='color:{_sctxt};'>{fmt_m(sp_pv)}</span>"
                 f"  </div>"
                 f"  <div style='color:{clr};font-size:.88rem;font-weight:700;"
                 f"font-family:\"IBM Plex Mono\",monospace;margin-top:2px;'>"
