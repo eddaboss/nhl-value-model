@@ -536,9 +536,9 @@ _DARK_CSS  = """<style>
   [data-baseweb="menu"] { background: #0C0C0C !important; border: 1px solid #2C2C2C !important; }
   [data-baseweb="menu-item"], [role="option"] { color: #E8E4DC !important; background: #0C0C0C !important; }
   [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #141414 !important; }
-  /* Slider */
+  /* Slider track */
   [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #2C2C2C !important; }
-  [data-testid="stSlider"] [data-testid="stThumbValue"] { display: none !important; }
+  /* Tick bar labels */
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #A0A0A0 !important; }
   /* Dataframe — invert iframe to match dark theme */
@@ -681,7 +681,7 @@ _LIGHT_CSS = """<style>
   [data-baseweb="menu"] { background: #FFFFFF !important; border: 1px solid #D8D3C8 !important; }
   [data-baseweb="menu-item"], [role="option"] { color: #1a1a1a !important; background: #FFFFFF !important; }
   [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #F0EBE0 !important; }
-  [data-testid="stSlider"] [data-testid="stThumbValue"] { display: none !important; }
+  /* Tick bar labels */
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #888 !important; }
   .stCaptionContainer p { color: #666 !important; }
@@ -2168,6 +2168,42 @@ def main():
     _dark = st.session_state.get("dark_mode", True)
     _set_theme(_dark)
     _inject_css(_dark)
+
+    # Fix slider thumb gold color + hide duplicate hover tooltip via JS MutationObserver.
+    # CSS cannot reliably target dynamically-rendered baseweb tooltip elements, so we
+    # use an iframe script that patches the parent document on every DOM mutation.
+    _thumb_color = "#5A5A5A" if _dark else "#888888"
+    st.components.v1.html(f"""
+<script>
+(function() {{
+  function fixSliders() {{
+    var doc = window.parent.document;
+    // Override thumb color (config.toml primaryColor bleeds in as gold)
+    doc.querySelectorAll('[data-testid="stSlider"] [role="slider"]').forEach(function(el) {{
+      el.style.setProperty('background', '{_thumb_color}', 'important');
+      el.style.setProperty('box-shadow', 'none', 'important');
+      el.style.setProperty('outline', 'none', 'important');
+      el.style.setProperty('border', 'none', 'important');
+    }});
+    // Hide the floating value tooltip that duplicates tick-bar labels
+    doc.querySelectorAll('[data-testid="stSlider"] [data-testid="stThumbValue"]').forEach(function(el) {{
+      el.style.setProperty('display', 'none', 'important');
+    }});
+    // Also catch baseweb tooltip portals (rendered outside slider container)
+    doc.querySelectorAll('[data-baseweb="tooltip"]').forEach(function(el) {{
+      // Only hide tooltips that contain just a number (slider value, not informational)
+      if (/^\\d+$/.test((el.textContent || '').trim())) {{
+        el.style.setProperty('display', 'none', 'important');
+      }}
+    }});
+  }}
+  fixSliders();
+  new MutationObserver(fixSliders).observe(
+    window.parent.document.body, {{childList: true, subtree: true}}
+  );
+}})();
+</script>
+""", height=0)
 
     # Kick off background data refresh on every cold start (non-blocking)
     start_background_refresh(PROCESSED_DIR)
