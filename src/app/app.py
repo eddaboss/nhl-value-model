@@ -20,7 +20,7 @@ if str(_ROOT) not in sys.path:
 
 
 # ── Background refresh state (module-level, shared across Streamlit reruns) ────
-_refresh_status: dict = {"running": False, "done": False, "error": None, "started_at": None}
+_refresh_status: dict = {"running": False, "done": False, "error": None, "started_at": None, "completed": False}
 _refresh_lock = threading.Lock()
 
 
@@ -80,6 +80,7 @@ def _run_pipeline_background(processed_dir: Path) -> None:
         )
 
         _refresh_status["done"] = True
+        _refresh_status["completed"] = True
         _refresh_status["error"] = None
     except Exception as e:
         _refresh_status["error"] = str(e)
@@ -88,9 +89,9 @@ def _run_pipeline_background(processed_dir: Path) -> None:
 
 
 def start_background_refresh(processed_dir: Path) -> None:
-    """Launch background pipeline thread if not already running."""
+    """Launch background pipeline thread once per process lifetime."""
     with _refresh_lock:
-        if _refresh_status["running"]:
+        if _refresh_status["running"] or _refresh_status["completed"]:
             return
         _refresh_status["running"] = True
         _refresh_status["done"] = False
@@ -537,12 +538,12 @@ _DARK_CSS  = """<style>
   [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #141414 !important; }
   /* Slider */
   [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #2C2C2C !important; }
-  [data-testid="stSlider"] [data-testid="stThumbValue"] { background: #141414 !important; color: #E8E4DC !important; }
+  [data-testid="stSlider"] [data-testid="stThumbValue"] { display: none !important; }
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #A0A0A0 !important; }
-  /* Dataframe */
-  [data-testid="stDataFrameContainer"] { background: #0C0C0C !important; }
-  iframe[title="st_aggrid"], [data-testid="stDataFrame"] { background: #0C0C0C !important; }
+  /* Dataframe — invert iframe to match dark theme */
+  [data-testid="stDataFrameContainer"] { background: #1a1a2e !important; }
+  [data-testid="stDataFrameContainer"] > div { filter: invert(0.88) hue-rotate(180deg); }
   /* Markdown container general text */
   [data-testid="stMainBlockContainer"] p,
   [data-testid="stMainBlockContainer"] li { color: #E8E4DC !important; }
@@ -680,7 +681,7 @@ _LIGHT_CSS = """<style>
   [data-baseweb="menu"] { background: #FFFFFF !important; border: 1px solid #D8D3C8 !important; }
   [data-baseweb="menu-item"], [role="option"] { color: #1a1a1a !important; background: #FFFFFF !important; }
   [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #F0EBE0 !important; }
-  [data-testid="stSlider"] [data-testid="stThumbValue"] { background: #EDE9DF !important; color: #1a1a1a !important; }
+  [data-testid="stSlider"] [data-testid="stThumbValue"] { display: none !important; }
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #888 !important; }
   .stCaptionContainer p { color: #666 !important; }
@@ -1530,18 +1531,17 @@ def tab_kings(df: pd.DataFrame):
 
     # ── Signal legend ────────────────────────────────────────────────────────
     st.markdown("---")
+    badges = "".join(
+        f"<span class='signal-badge' style='background:{clr};color:#fff;"
+        f"white-space:nowrap;margin:3px 4px 3px 0;display:inline-block;'>{lbl}</span>"
+        for lbl, clr in KINGS_SIGNAL_PALETTE.items()
+    )
     st.markdown(
-        f"<div style='color:{KINGS_SILVER};font-size:.8rem;margin-bottom:8px;'>"
-        "Re-sign Signal Legend</div>",
+        f"<div style='color:{KINGS_SILVER};font-size:.8rem;margin-bottom:6px;'>"
+        f"Re-sign Signal Legend</div>"
+        f"<div style='display:flex;flex-wrap:wrap;gap:4px;'>{badges}</div>",
         unsafe_allow_html=True,
     )
-    leg_cols = st.columns(len(KINGS_SIGNAL_PALETTE))
-    for i, (lbl, clr) in enumerate(KINGS_SIGNAL_PALETTE.items()):
-        leg_cols[i].markdown(
-            f"<span class='signal-badge' style='background:{clr};color:#fff;"
-            f"white-space:nowrap;'>{lbl}</span>",
-            unsafe_allow_html=True,
-        )
 
     if kings_all["is_estimated"].any():
         st.caption("*Salary estimated from position/TOI medians — contract data pending verification")
