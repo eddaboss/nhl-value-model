@@ -151,7 +151,7 @@ CAP_CEILING = 95_500_000
 # ── CSS ────────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-  .block-container { padding-top: 1.2rem; padding-bottom: 2rem; }
+  .block-container { padding-top: 3.5rem; padding-bottom: 2rem; }
 
   /* Metric cards */
   [data-testid="stMetric"] {
@@ -1467,15 +1467,6 @@ def main():
         _refresh_status["done"] = False
         st.rerun()
 
-    # While background is running: show a banner. When the thread finishes it sets
-    # _refresh_status["done"] = True, the rerun above fires, mtime cache busts,
-    # and the banner disappears — no polling needed.
-    if _refresh_status["running"]:
-        st.info(
-            "Fetching latest NHL stats — data will refresh automatically when ready.",
-            icon="🔄",
-        )
-
     st.markdown(
         f"<div style='display:flex;align-items:baseline;gap:12px;margin-bottom:0;'>"
         f"<h1 style='margin:0;color:#F0F0FF;font-size:1.8rem;'>🏒 NHL Player Value Model</h1>"
@@ -1485,6 +1476,14 @@ def main():
         unsafe_allow_html=True,
     )
     st.markdown("<div style='height:4px;background:linear-gradient(90deg,#B5975A,#A2AAAD,#010101);border-radius:2px;margin-bottom:16px;'></div>", unsafe_allow_html=True)
+
+    # Banner sits below the title so it's never clipped by Streamlit's top toolbar.
+    # Disappears automatically when the background thread finishes and st.rerun() fires.
+    if _refresh_status["running"]:
+        st.info(
+            "Fetching latest NHL stats — data will refresh automatically when ready.",
+            icon="🔄",
+        )
 
     df        = load_predictions()
     shap_vals = load_shap_values()
