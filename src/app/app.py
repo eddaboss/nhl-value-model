@@ -525,7 +525,7 @@ _DARK_CSS  = """<style>
   .section-header { color: #E8E4DC; }
   .group-label { color: #A0A0A0; border-left-color: #C8A84B; }
   .signal-badge { color: #fff !important; }
-  [data-testid="stExpander"] { border: 1px solid #252545 !important; background-color: #1a1a2e !important; }
+  [data-testid="stExpander"] { border: none !important; background-color: #1a1a2e !important; }
   [data-testid="stExpander"] details { background-color: #1a1a2e !important; }
   [data-testid="stExpander"] details summary { background-color: #141428 !important; color: #E8E4DC !important; }
   [data-testid="stExpander"] details > div { background-color: #1a1a2e !important; }
