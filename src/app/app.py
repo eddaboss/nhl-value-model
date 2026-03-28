@@ -99,6 +99,49 @@ def start_background_refresh(processed_dir: Path) -> None:
     )
     t.start()
 
+# ── Feature label map ──────────────────────────────────────────────────────────
+_FEATURE_LABELS: dict[str, str] = {
+    "toi_per_g":          "Ice Time / Game",
+    "toi_per_g_24":       "Ice Time / Game (Prior Season)",
+    "pp_pts":             "Power Play Points",
+    "pp_pts_24":          "Power Play Points (Prior Season)",
+    "ppg":                "Points Per Game",
+    "ppg_24":             "Points Per Game (Prior Season)",
+    "shooting_pct":       "Shooting %",
+    "shooting_pct_24":    "Shooting % (Prior Season)",
+    "length_of_contract": "Contract Length",
+    "draft_position":     "Draft Position",
+    "draft_year":         "Draft Year",
+    "year_of_contract":   "Contract Year",
+    "plus_minus":         "Plus / Minus",
+    "plus_minus_24":      "Plus / Minus (Prior Season)",
+    "hits":               "Hits",
+    "hits_24":            "Hits (Prior Season)",
+    "blocks":             "Blocked Shots",
+    "blocks_24":          "Blocked Shots (Prior Season)",
+    "fenwick_pct":        "Fenwick %",
+    "oz_start_pct":       "Offensive Zone Start %",
+    "xg":                 "Expected Goals",
+    "xg_24":              "Expected Goals (Prior Season)",
+    "pk_toi":             "Penalty Kill TOI / Game",
+    "pp_toi":             "Power Play TOI / Game",
+    "faceoff_pct":        "Faceoff Win %",
+    "gp":                 "Games Played",
+    "age":                "Age",
+    "g":                  "Goals",
+    "a":                  "Assists",
+    "p":                  "Points",
+    "g60":                "Goals / 60",
+    "p60":                "Points / 60",
+    "shots":              "Shots",
+    "pim":                "Penalty Minutes",
+}
+
+def _label(feature: str) -> str:
+    """Return a human-readable label for a SHAP feature column name."""
+    return _FEATURE_LABELS.get(feature, feature.replace("_", " ").title())
+
+
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="NHL Value Model",
@@ -1220,41 +1263,51 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         st.markdown("**What drives this player's predicted value?**")
         row_shap  = shap_vals[shap_vals["name"] == name].iloc[0].drop("name")
         vals      = row_shap.astype(float)
-        top12_idx = vals.abs().nlargest(12).index   # index of top features by |SHAP|
-        features  = [f.replace("_", " ").title() for f in top12_idx]
+        top12_idx = vals.abs().nlargest(12).index
+        features  = [_label(f) for f in top12_idx]
         # SHAP values are in normalized cap-fraction units — scale back to dollars
         shap_v    = (vals[top12_idx] * CAP_CEILING).tolist()  # signed, in dollars
         base      = float(df["predicted_value"].mean())
-        measure  = ["absolute"] + ["relative"] * len(shap_v) + ["total"]
-        x_labels = ["Base Value"] + features + ["Predicted Value"]
-        y_vals   = [base] + shap_v + [(pv or base)]
+        measure   = ["absolute"] + ["relative"] * len(shap_v) + ["total"]
+        x_labels  = ["Base Value"] + features + ["Predicted Value"]
+        y_vals    = [base] + shap_v + [(pv or base)]
+
+        def _fmt_shap(i, v):
+            if i == 0 or i == len(y_vals) - 1:
+                return f"${v/1e6:.1f}M"
+            return (f"+${v/1e6:.1f}M" if v > 0 else f"-${abs(v)/1e6:.1f}M")
 
         fig_shap = go.Figure(go.Waterfall(
             orientation="h", measure=measure,
             x=y_vals, y=x_labels,
-            connector=dict(line=dict(color="#333", width=1)),
-            increasing=dict(marker_color="#4CAF50"),
-            decreasing=dict(marker_color="#F44336"),
-            totals=dict(marker_color=KINGS_GOLD),
+            connector=dict(line=dict(color="#444455", width=1, dash="dot")),
+            increasing=dict(marker=dict(color="#43A047", line=dict(color="#2E7D32", width=1))),
+            decreasing=dict(marker=dict(color="#E53935", line=dict(color="#B71C1C", width=1))),
+            totals=dict(marker=dict(color=KINGS_GOLD, line=dict(color="#8B6914", width=2))),
             textposition="outside",
-            text=[
-                (f"+{fmt_m(v)}" if v > 0 else fmt_m(v)) if i not in (0, len(y_vals) - 1)
-                else fmt_m(v)
-                for i, v in enumerate(y_vals)
-            ],
+            text=[_fmt_shap(i, v) for i, v in enumerate(y_vals)],
+            textfont=dict(size=11),
         ))
         fig_shap.update_layout(
             paper_bgcolor="#0A0A14", plot_bgcolor="#111120", font_color="#CCCCDD",
-            height=max(400, len(features) * 38 + 80),
-            xaxis=dict(tickformat="$,.0f", title="$ Value", gridcolor="#1E1E30"),
+            height=max(520, len(features) * 42 + 100),
+            xaxis=dict(
+                tickformat="$,.1f",
+                ticksuffix="",
+                title="Value (USD)",
+                gridcolor="#1E1E30",
+                tickvals=[i * 1_000_000 for i in range(0, 20)],
+                ticktext=[f"${i}M" for i in range(0, 20)],
+            ),
             yaxis=dict(autorange="reversed"),
-            margin=dict(l=0, r=80, t=20, b=10),
-            title=dict(text=f"SHAP Waterfall — {name}", font=dict(color="#CCCCEE", size=13)),
+            margin=dict(l=10, r=100, t=40, b=20),
+            title=dict(text=f"SHAP Waterfall — {name}", font=dict(color="#CCCCEE", size=14)),
         )
         st.plotly_chart(fig_shap, use_container_width=True)
         st.caption(
-            "🟢 Green = feature pushes value UP · 🔴 Red = pushes DOWN · "
-            "Starting from league average predicted value."
+            "🟡 Gold = start (Base Value) & end (Predicted Value) · "
+            "🟢 Green = feature pushes value UP · 🔴 Red = pushes value DOWN · "
+            "Base Value is the league-average predicted salary."
         )
 
     # Similar players
@@ -1388,20 +1441,27 @@ def tab_insights(df: pd.DataFrame):
     st.markdown("### What drives predicted player value?")
     top_n = st.slider("Features to show", 5, min(30, len(shap_summary)), 15)
     top   = shap_summary.head(top_n).copy()
-    top["feature"] = top["feature"].str.replace("_", " ").str.title()
+    top["feature"] = top["feature"].apply(_label)
+
+    max_val = top["mean_abs_shap"].max()
+    tick_vals = [i * 500_000 for i in range(0, int(max_val / 500_000) + 2)]
+    tick_text = [f"${v/1e6:.1f}M" for v in tick_vals]
 
     fig = px.bar(
         top.sort_values("mean_abs_shap"),
         x="mean_abs_shap", y="feature", orientation="h",
         color="mean_abs_shap", color_continuous_scale="Tealgrn",
         labels={"mean_abs_shap": "Mean |SHAP| ($)", "feature": ""},
-        height=max(350, top_n * 28),
+        height=max(500, top_n * 34),
     )
     fig.update_layout(
         paper_bgcolor="#0A0A14", plot_bgcolor="#111120",
         font=dict(color="#CCCCDD"), showlegend=False, coloraxis_showscale=False,
-        xaxis=dict(tickformat="$,.0f", gridcolor="#1E1E30"),
-        margin=dict(l=0, r=10, t=10, b=10),
+        xaxis=dict(
+            tickvals=tick_vals, ticktext=tick_text,
+            title="Avg. Dollar Impact on Prediction", gridcolor="#1E1E30",
+        ),
+        margin=dict(l=10, r=20, t=10, b=10),
     )
     st.plotly_chart(fig, use_container_width=True)
     st.caption("Mean absolute SHAP value = average dollar impact of each feature on predictions.")
@@ -1425,24 +1485,39 @@ def tab_insights(df: pd.DataFrame):
 
             row   = shap_vals[shap_vals["name"] == chosen].iloc[0].drop("name").astype(float)
             top12 = row.abs().nlargest(12).index
+            shap_dollars = row[top12] * CAP_CEILING
             pdf   = pd.DataFrame({
-                "Feature": [f.replace("_", " ").title() for f in top12],
-                "SHAP":    row[top12].values,
+                "Feature": [_label(f) for f in top12],
+                "SHAP":    shap_dollars.values,
             }).sort_values("SHAP")
+
+            max_abs = pdf["SHAP"].abs().max()
+            tick_vals2 = sorted(set(
+                [i * 500_000 for i in range(-int(max_abs / 500_000) - 2, int(max_abs / 500_000) + 2)]
+            ))
+            tick_text2 = [
+                (f"+${v/1e6:.1f}M" if v > 0 else (f"-${abs(v)/1e6:.1f}M" if v < 0 else "$0"))
+                for v in tick_vals2
+            ]
 
             fig2 = px.bar(
                 pdf, x="SHAP", y="Feature", orientation="h",
                 color="SHAP", color_continuous_scale="RdYlGn",
                 color_continuous_midpoint=0,
                 labels={"SHAP": "SHAP Value ($)", "Feature": ""},
-                height=420,
+                height=max(500, len(top12) * 42 + 80),
             )
             fig2.update_layout(
                 paper_bgcolor="#0A0A14", plot_bgcolor="#111120",
                 font=dict(color="#CCCCDD"), showlegend=False, coloraxis_showscale=False,
-                xaxis=dict(tickformat="$,.0f", gridcolor="#1E1E30"),
+                xaxis=dict(
+                    tickvals=tick_vals2, ticktext=tick_text2,
+                    title="Dollar Impact on Prediction", gridcolor="#1E1E30",
+                    zeroline=True, zerolinecolor="#555566", zerolinewidth=2,
+                ),
                 title=dict(text=f"SHAP Breakdown — {chosen}",
-                           font=dict(color="#CCCCEE", size=13)),
+                           font=dict(color="#CCCCEE", size=14)),
+                margin=dict(l=10, r=20, t=40, b=10),
             )
             st.plotly_chart(fig2, use_container_width=True)
 
