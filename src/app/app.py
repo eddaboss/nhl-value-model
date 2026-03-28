@@ -364,6 +364,34 @@ KINGS_GOLD   = "#C8A84B"
 KINGS_SILVER = "#8A9499"
 KINGS_WHITE  = "#E8E4DC"
 
+# ── Runtime theme colour tokens — populated by _set_theme() ────────────────────
+_T: dict = {}
+
+
+def _set_theme(dark: bool) -> None:
+    """Populate _T with palette used by Plotly charts and dynamic inline HTML."""
+    global _T
+    if dark:
+        _T.update({
+            "plot_paper":  "#040404",
+            "plot_bg":     "#080808",
+            "plot_font":   "#A0A0A0",
+            "grid":        "#141414",
+            "grid_alt":    "#1A1A28",
+            "zero":        "#1C1C1C",
+            "legend_bg":   "#141414",
+        })
+    else:
+        _T.update({
+            "plot_paper":  "#F4F1EC",
+            "plot_bg":     "#ECEAE0",
+            "plot_font":   "#444444",
+            "grid":        "#D8D3C8",
+            "grid_alt":    "#D8D3C8",
+            "zero":        "#BBBBBB",
+            "legend_bg":   "#E8E4DC",
+        })
+
 # ── Resign signal palettes ─────────────────────────────────────────────────────
 RESIGN_PALETTE = {
     "Must Sign":         "#0E7A3A",
@@ -582,6 +610,17 @@ _LIGHT_CSS = """<style>
   [data-testid="stMarkdownContainer"] .kings-gold { color: #A8861A !important; }
   [data-testid="stMarkdownContainer"] .stat-label { color: #AAAAAA !important; }
   [data-testid="stMarkdownContainer"] .group-label { color: #AAAAAA !important; }
+  /* Override hardcoded dark-mode inline colours in light mode */
+  [style*="color:#E8E4DC"] { color: #1C1C1C !important; }
+  [style*="background:#080808"] { background: #FFFFFF !important; }
+  [style*="background:#0C0C0C"] { background: #FAFAF8 !important; }
+  [style*="background:#141414"] { background: #ECEAE4 !important; }
+  [style*="border:1px solid #141414"] { border-color: #D8D3C8 !important; }
+  [style*="color:#B8C4C8"] { color: #2A4050 !important; }
+  [style*="background:#3A2018"] { background: #FDE8D0 !important; }
+  [style*="background:#2C3A40"] { background: #D4E8F4 !important; }
+  [style*="color:#6BBAD4"] { color: #1A6FA8 !important; }
+  [style*="color:#5A5A5A"] { color: #333333 !important; }
 </style>"""
 
 
@@ -964,13 +1003,13 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                            showarrow=False, font=dict(color="#444", size=14))
 
     fig.update_layout(
-        paper_bgcolor="#040404", plot_bgcolor="#080808",
-        font=dict(family="'IBM Plex Mono', monospace", color="#808080"),
+        paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+        font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]),
         xaxis=dict(tickformat="$,.0f", title="Predicted Market Value",
-                   gridcolor="#141414", zeroline=False),
+                   gridcolor=_T["grid"], zeroline=False),
         yaxis=dict(tickformat="$,.0f", title="Actual Cap Hit (0 = UFA/Unsigned)",
-                   gridcolor="#141414"),
-        legend=dict(bgcolor="#141414", bordercolor="#141414",
+                   gridcolor=_T["grid"]),
+        legend=dict(bgcolor=_T["legend_bg"], bordercolor=_T["legend_bg"],
                     orientation="h", y=1.04, x=0.5, xanchor="center"),
         height=600,
         margin=dict(l=10, r=10, t=30, b=10),
@@ -1066,16 +1105,16 @@ def tab_leaderboards(df: pd.DataFrame):
             height=max(360, n * 28),
         )
         fig.update_layout(
-            paper_bgcolor="#040404", plot_bgcolor="#080808",
-            font=dict(family="'IBM Plex Mono', monospace", color="#808080"), showlegend=False,
+            paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+            font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]), showlegend=False,
             coloraxis_showscale=False,
             yaxis=dict(autorange="reversed"),
             xaxis=dict(
                 tickformat=".1f%" if sort_by == "% Delta" else "$,.0f",
-                title=x_lbl, gridcolor="#141414",
+                title=x_lbl, gridcolor=_T["grid"],
             ),
             margin=dict(l=0, r=10, t=30, b=10),
-            title=dict(text=title, font=dict(family="'IBM Plex Mono', monospace", color="#808080")),
+            title=dict(text=title, font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"])),
         )
         return fig
 
@@ -1244,14 +1283,14 @@ def tab_kings(df: pd.DataFrame):
     )
     fig.update_layout(
         barmode="group",
-        paper_bgcolor="#040404", plot_bgcolor="#080808",
-        font=dict(family="'IBM Plex Mono', monospace", color="#808080"),
-        xaxis=dict(tickangle=-40, gridcolor="#1A1A28"),
+        paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+        font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]),
+        xaxis=dict(tickangle=-40, gridcolor=_T["grid_alt"]),
         yaxis=dict(tickformat="$,.0f", title="",
-                   gridcolor="#1A1A28", zeroline=False),
+                   gridcolor=_T["grid_alt"], zeroline=False),
         title=dict(text="Cap Hit vs. Predicted Market Value",
                    font=dict(color=KINGS_GOLD, size=16)),
-        legend=dict(bgcolor="#141414", bordercolor="#141414",
+        legend=dict(bgcolor=_T["legend_bg"], bordercolor=_T["legend_bg"],
                     orientation="h", y=1.08, x=0.5, xanchor="center"),
         height=420,
         margin=dict(l=10, r=10, t=50, b=10),
@@ -1642,9 +1681,9 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
         fig_pct.update_traces(textposition="inside", textfont_size=14)
         fig_pct.update_layout(
-            paper_bgcolor="#040404", plot_bgcolor="#080808", font_color="#808080",
+            paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"], font_color=_T["plot_font"],
             showlegend=False, coloraxis_showscale=False,
-            xaxis=dict(range=[0, 100], title="Percentile", gridcolor="#141414"),
+            xaxis=dict(range=[0, 100], title="Percentile", gridcolor=_T["grid"]),
             yaxis=dict(title=""),
             margin=dict(l=0, r=0, t=10, b=10),
         )
@@ -1948,11 +1987,11 @@ def tab_insights(df: pd.DataFrame):
         height=max(500, top_n * 34),
     )
     fig.update_layout(
-        paper_bgcolor="#040404", plot_bgcolor="#080808",
-        font=dict(family="'IBM Plex Mono', monospace", color="#808080"), showlegend=False, coloraxis_showscale=False,
+        paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+        font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]), showlegend=False, coloraxis_showscale=False,
         xaxis=dict(
             tickvals=tick_vals, ticktext=tick_text,
-            title="Avg. Dollar Impact on Prediction", gridcolor="#141414",
+            title="Avg. Dollar Impact on Prediction", gridcolor=_T["grid"],
         ),
         margin=dict(l=10, r=20, t=10, b=10),
     )
@@ -2001,15 +2040,15 @@ def tab_insights(df: pd.DataFrame):
                 height=max(500, len(top12) * 42 + 80),
             )
             fig2.update_layout(
-                paper_bgcolor="#040404", plot_bgcolor="#080808",
-                font=dict(family="'IBM Plex Mono', monospace", color="#808080"), showlegend=False, coloraxis_showscale=False,
+                paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+                font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]), showlegend=False, coloraxis_showscale=False,
                 xaxis=dict(
                     tickvals=tick_vals2, ticktext=tick_text2,
-                    title="Dollar Impact on Prediction", gridcolor="#141414",
-                    zeroline=True, zerolinecolor="#1C1C1C", zerolinewidth=2,
+                    title="Dollar Impact on Prediction", gridcolor=_T["grid"],
+                    zeroline=True, zerolinecolor=_T["zero"], zerolinewidth=2,
                 ),
                 title=dict(text=f"SHAP Breakdown — {chosen}",
-                           font=dict(family="'IBM Plex Mono', monospace", color="#808080")),
+                           font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"])),
                 margin=dict(l=10, r=20, t=40, b=10),
             )
             st.plotly_chart(fig2, use_container_width=True)
@@ -2056,7 +2095,9 @@ def main():
     # Initialise theme
     if "dark_mode" not in st.session_state:
         st.session_state["dark_mode"] = True
-    _inject_css(st.session_state.get("dark_mode", True))
+    _dark = st.session_state.get("dark_mode", True)
+    _set_theme(_dark)
+    _inject_css(_dark)
 
     # Kick off background data refresh on every cold start (non-blocking)
     start_background_refresh(PROCESSED_DIR)
