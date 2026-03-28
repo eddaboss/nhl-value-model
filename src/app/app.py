@@ -70,10 +70,11 @@ def _run_pipeline_background(processed_dir: Path) -> None:
         out.to_csv(tmp, index=False)
         tmp.replace(processed_dir / "predictions.csv")
 
-        # Also refresh season_context.json
+        # Also refresh season_context.json (include cap_ceiling so app never needs it hardcoded)
         import json as _json
+        ctx_out = {**ctx, "cap_ceiling": CAP_CEILING}
         (processed_dir / "season_context.json").write_text(
-            _json.dumps(ctx, indent=2), encoding="utf-8"
+            _json.dumps(ctx_out, indent=2), encoding="utf-8"
         )
 
         _refresh_status["done"] = True
@@ -105,8 +106,19 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Cap ceiling (used to scale normalized SHAP values back to dollars) ─────────
-CAP_CEILING = 95_500_000  # 2025-26 NHL salary cap ceiling — must match load.py
+# ── Cap ceiling — read from season_context.json written by pipeline.py ─────────
+# load.py is the single definition; pipeline.py writes it to season_context.json.
+# Fallback only fires before the first pipeline run.
+def _load_cap_ceiling() -> int:
+    p = Path(__file__).parents[2] / "data" / "processed" / "season_context.json"
+    if p.exists():
+        try:
+            return int(json.loads(p.read_text(encoding="utf-8")).get("cap_ceiling", 95_500_000))
+        except Exception:
+            pass
+    return 95_500_000
+
+CAP_CEILING = _load_cap_ceiling()
 
 # ── Kings brand colors ─────────────────────────────────────────────────────────
 KINGS_BLACK  = "#010101"
@@ -288,11 +300,19 @@ def pct_rank(series, val) -> int:
     return round((clean < val).sum() / len(clean) * 100)
 
 
+def _season_str(ctx: dict) -> str:
+    """Convert season_context current_season_id to display string e.g. '2025-26'."""
+    sid = str(ctx.get("current_season_id", 20252026))
+    return f"{sid[:4]}-{sid[6:]}"
+
+
 def headshot_url(player_id, team: str = "") -> str:
+    ctx = load_season_context()
+    season_id = ctx.get("current_season_id", 20252026)
     team = str(team).upper().strip() if team else ""
     if team:
-        return f"https://assets.nhle.com/mugs/nhl/20252026/{team}/{int(player_id)}.png"
-    return f"https://assets.nhle.com/mugs/nhl/20252026/{int(player_id)}.png"
+        return f"https://assets.nhle.com/mugs/nhl/{season_id}/{team}/{int(player_id)}.png"
+    return f"https://assets.nhle.com/mugs/nhl/{season_id}/{int(player_id)}.png"
 
 
 def team_logo_url(team_abbrev: str) -> str:
@@ -771,7 +791,7 @@ def tab_kings(df: pd.DataFrame):
         f"style='flex-shrink:0;' onerror=\"this.style.display='none'\">"
         f"<div>"
         f"<div style='font-size:1.6rem;font-weight:800;color:{KINGS_WHITE};'>"
-        f"Los Angeles Kings — 2025-26 Roster Analysis</div>"
+        f"Los Angeles Kings — {_season_str(load_season_context())} Roster Analysis</div>"
         f"<div style='color:{KINGS_SILVER};font-size:.9rem;margin-top:2px;'>"
         f"Live NHL API · PuckPedia Contract Database · XGBoost Model</div>"
         f"</div></div>",
@@ -1294,15 +1314,15 @@ with known contracts (CV R² = 0.829, RMSE ≈ $1.21M).
 **What goes in:**
 - *Current season stats* — points, TOI/game, power-play points, shooting %, G/60, P/60
   (projected to 82-game pace from actual games played)
-- *Prior season stats* — same metrics from 2024-25, for players with prior data
+- *Prior season stats* — same metrics from the previous season, for players with prior data
 - *Contract structure* — years remaining, contract length
 - *Bio* — age, draft position, draft round
 - *Position* — affects TOI benchmarks (D vs F)
 
 **What comes out:**
 The model predicts a player's **market-rate cap hit** — what they would command
-on the open free-agent market — expressed as a fraction of the current cap ceiling
-($95.5M), then scaled back to dollars.
+on the open free-agent market — expressed as a fraction of the current cap ceiling,
+then scaled back to dollars.
 
 **Value Delta = Predicted Value − Actual Cap Hit**
 - **Positive** → player is worth more than paid → team surplus
@@ -1451,7 +1471,8 @@ def render_footer(df: pd.DataFrame):
         f"<strong>PuckPedia</strong> (contract database) &nbsp;·&nbsp; "
         f"{n_real} real contracts · {n_est} estimated"
         + (f" &nbsp;·&nbsp; Last updated: <strong>{last_ts}</strong>" if last_ts else "")
-        + f"&nbsp;·&nbsp; 2025-26 Season &nbsp;·&nbsp; Cap ceiling: $95.5M"
+        + (f"&nbsp;·&nbsp; {_season_str(load_season_context())} Season"
+           f"&nbsp;·&nbsp; Cap ceiling: ${CAP_CEILING/1e6:.1f}M")
         f"</div>",
         unsafe_allow_html=True,
     )
@@ -1471,7 +1492,7 @@ def main():
         f"<div style='display:flex;align-items:baseline;gap:12px;margin-bottom:0;'>"
         f"<h1 style='margin:0;color:#F0F0FF;font-size:1.8rem;'>🏒 NHL Player Value Model</h1>"
         f"<span style='color:#666688;font-size:.9rem;'>"
-        f"2025-26 · XGBoost + SHAP · Live Data</span>"
+        f"{_season_str(load_season_context())} · XGBoost + SHAP · Live Data</span>"
         f"</div>",
         unsafe_allow_html=True,
     )

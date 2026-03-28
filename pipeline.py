@@ -107,8 +107,9 @@ def main(tune: bool = False, refresh: bool = False, refresh_all: bool = False):
 
     # ── 6. Save season context for app status indicator ───────────────────────
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    ctx_out = {**ctx, "cap_ceiling": CAP_CEILING}   # single source of truth for app
     with open(PROCESSED_DIR / "season_context.json", "w") as f:
-        json.dump(ctx, f, indent=2)
+        json.dump(ctx_out, f, indent=2)
     print(f"Saved season_context.json  ({ctx['mode']})")
 
     # ── 7. SHAP artifacts ──────────────────────────────────────────────────────

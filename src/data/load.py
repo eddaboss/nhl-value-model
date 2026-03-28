@@ -263,6 +263,16 @@ def load_and_merge(
         contracts_all = get_all_contracts()
         print(f"  contracts.db: {len(contracts_all)} players loaded")
 
+    def _compute_contract_timing(expiry_year, length_of_contract, season_end_year):
+        """Compute years_left and year_of_contract dynamically from permanent contract facts."""
+        if expiry_year is None or length_of_contract is None:
+            return None, None
+        expiry = int(expiry_year)
+        length = int(length_of_contract)
+        years_left      = max(0, expiry - season_end_year)
+        year_of_contract = max(1, min(length, length - years_left + 1))
+        return years_left, year_of_contract
+
     contract_rows = []
     for pid in player_ids:
         row    = {"player_id": int(pid)}
@@ -270,11 +280,14 @@ def load_and_merge(
         if cdata and cdata.get("cap_hit") is not None:
             row["cap_hit"]            = cdata.get("cap_hit")
             row["length_of_contract"] = cdata.get("contract_length") or cdata.get("length_of_contract")
-            row["year_of_contract"]   = cdata.get("year_of_contract")
             row["expiry_year"]        = cdata.get("expiry_year")
             row["expiry_status"]      = cdata.get("expiry_status")
-            row["years_left"]         = cdata.get("years_left")
             row["is_estimated"]       = bool(cdata.get("is_estimated", 0))
+            yl, yoc = _compute_contract_timing(
+                row["expiry_year"], row["length_of_contract"], season_end_year
+            )
+            row["years_left"]       = yl if yl is not None else cdata.get("years_left")
+            row["year_of_contract"] = yoc if yoc is not None else cdata.get("year_of_contract")
         elif cdata and cdata.get("expiry_status") == "UFA":
             # Confirmed UFA with no active contract (correct, not a scrape failure)
             row.update({

@@ -8,5 +8,6 @@
   "threshold": 656.0,
   "use_blend": false,
   "mode": "current_only",
-  "description": "Using 2025-26 season only (projected to 82-game pace, 72 games played)"
+  "description": "Using 2025-26 season only (projected to 82-game pace, 72 games played)",
+  "cap_ceiling": 95500000
 }

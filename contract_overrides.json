@@ -1,67 +1,54 @@
 {
   "_comment": "Manual contract overrides. Keys are NHL player_id (string). These ALWAYS win over the database.",
+  "_comment2": "Only store permanent facts: cap_hit, length_of_contract, expiry_year, expiry_status. years_left and year_of_contract are computed dynamically from expiry_year and the current season — do NOT hardcode them here.",
   "_example": {
     "8471675": {
       "cap_hit": 8500000,
       "length_of_contract": 1,
       "expiry_year": 2026,
-      "expiry_status": "UFA",
-      "years_left": 0,
-      "year_of_contract": 1
+      "expiry_status": "UFA"
     }
   },
   "8478550": {
-    "_note": "Artemi Panarin — 7yr $11.642M deal expires end of 2025-26 (UFA); scraper grabbed his 2yr extension starting 2026-27 instead of current-season contract",
+    "_note": "Artemi Panarin — 7yr $11.642M deal expires end of 2025-26; scraper grabbed his 2yr extension starting 2026-27 instead",
     "cap_hit": 11642857,
     "length_of_contract": 7,
     "expiry_year": 2026,
-    "expiry_status": "UFA",
-    "years_left": 0,
-    "year_of_contract": 7
+    "expiry_status": "UFA"
   },
   "8480012": {
-    "_note": "Elias Pettersson (C, born 1998) — 8yr $11.6M deal 2023-24 through 2030-31; slug elias-pettersson → wrong Pettersson (D born 2004); scraper misses the C",
+    "_note": "Elias Pettersson (C, born 1998) — 8yr $11.6M deal 2023-24 through 2030-31; slug collision with D-Pettersson (born 2004)",
     "cap_hit": 11600000,
     "length_of_contract": 8,
     "expiry_year": 2031,
-    "expiry_status": "UFA",
-    "years_left": 5,
-    "year_of_contract": 3
+    "expiry_status": "UFA"
   },
   "8482175": {
-    "_note": "JJ Peterka — NHL API stores first name as 'JJ' (legal: John-Jason), slug jj-peterka → 404; correct slug john-jason-peterka confirmed $7.7M 5yr UFA 2030",
+    "_note": "JJ Peterka — NHL API first name is 'JJ' (legal: John-Jason), slug jj-peterka -> 404; correct slug john-jason-peterka confirmed $7.7M 5yr UFA 2030",
     "cap_hit": 7700000,
     "length_of_contract": 5,
     "expiry_year": 2030,
-    "expiry_status": "UFA",
-    "years_left": 4,
-    "year_of_contract": 1
+    "expiry_status": "UFA"
   },
   "8477960": {
     "_note": "Kempe current bridge deal $5.5M/yr — scraper grabbed his 2026-27 extension instead",
     "cap_hit": 5500000,
     "length_of_contract": 3,
     "expiry_year": 2026,
-    "expiry_status": "UFA",
-    "years_left": 0,
-    "year_of_contract": 3
+    "expiry_status": "UFA"
   },
   "8482730": {
     "_note": "Clarke — puckpedia sidebar pp-ufa widget triggered UFA; he is RFA on expiry",
     "cap_hit": 863334,
     "length_of_contract": 3,
     "expiry_year": 2026,
-    "expiry_status": "RFA",
-    "years_left": 0,
-    "year_of_contract": 3
+    "expiry_status": "RFA"
   },
   "8484801": {
     "_note": "Celebrini — same sidebar pp-ufa issue; he is RFA on expiry",
     "cap_hit": 975000,
     "length_of_contract": 3,
     "expiry_year": 2027,
-    "expiry_status": "RFA",
-    "years_left": 1,
-    "year_of_contract": 2
+    "expiry_status": "RFA"
   }
 }
