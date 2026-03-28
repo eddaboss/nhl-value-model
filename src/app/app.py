@@ -373,23 +373,25 @@ def _set_theme(dark: bool) -> None:
     global _T
     if dark:
         _T.update({
+            "page_text":   "#E8E4DC",
             "plot_paper":  "#040404",
-            "plot_bg":     "#080808",
+            "plot_bg":     "#0d0d1a",
             "plot_font":   "#A0A0A0",
-            "grid":        "#141414",
-            "grid_alt":    "#1A1A28",
-            "zero":        "#1C1C1C",
-            "legend_bg":   "#141414",
+            "grid":        "#1e1e35",
+            "grid_alt":    "#1e1e35",
+            "zero":        "#2a2a4a",
+            "legend_bg":   "#1a1a2e",
         })
     else:
         _T.update({
-            "plot_paper":  "#F4F1EC",
-            "plot_bg":     "#ECEAE0",
-            "plot_font":   "#444444",
+            "page_text":   "#1C1C1C",
+            "plot_paper":  "rgba(0,0,0,0)",
+            "plot_bg":     "#EDE9E0",
+            "plot_font":   "#333333",
             "grid":        "#D8D3C8",
             "grid_alt":    "#D8D3C8",
-            "zero":        "#BBBBBB",
-            "legend_bg":   "#E8E4DC",
+            "zero":        "#AAAAAA",
+            "legend_bg":   "#1a1a2e",
         })
 
 # ── Resign signal palettes ─────────────────────────────────────────────────────
@@ -490,16 +492,16 @@ _DARK_CSS  = """<style>
   [data-testid="stMetricLabel"] { color: #A0A0A0 !important; }
   [data-testid="stMetricValue"] { color: #E8E4DC !important; }
   [data-testid="stMetricDelta"] { color: #888 !important; }
-  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #040404 !important; border-right: 1px solid #141414 !important; }
+  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #0d0d1a !important; border-right: 1px solid #1e1e35 !important; }
   [data-testid="stSidebar"] label, [data-testid="stSidebar"] p,
   [data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
   [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #A0A0A0 !important; }
-  [data-baseweb="tab-list"] { border-bottom: 1px solid #141414 !important; }
-  [data-baseweb="tab"] { color: #A0A0A0 !important; border-right: 1px solid #141414 !important; }
+  [data-baseweb="tab-list"] { border-bottom: 1px solid #1e1e35 !important; }
+  [data-baseweb="tab"] { color: #A0A0A0 !important; border-right: 1px solid #1e1e35 !important; }
   [aria-selected="true"][data-baseweb="tab"] { color: #C8A84B !important; border-bottom: 2px solid #C8A84B !important; }
-  .player-card { background: #0C0C0C; border: 1px solid #141414; border-left-color: #C8A84B; }
-  .kings-card  { background: #080808; border: 1px solid #141414; border-left-color: #C8A84B; }
-  .kings-card:hover { background: #0E0E0E; }
+  .player-card { background: #1a1a2e; border: 1px solid #252545; border-left-color: #C8A84B; }
+  .kings-card  { background: #1a1a2e; border: 1px solid #252545; border-left-color: #C8A84B; }
+  .kings-card:hover { background: #1e2235; }
   .stat-label { color: #A0A0A0; }
   .stat-value { color: #E8E4DC; }
   .delta-pos  { color: #1FBFA0; }
@@ -510,13 +512,13 @@ _DARK_CSS  = """<style>
   .section-header { color: #E8E4DC; }
   .group-label { color: #A0A0A0; border-left-color: #C8A84B; }
   .signal-badge { color: #fff !important; }
-  [data-testid="stExpander"] { border: 1px solid #141414 !important; background-color: #080808 !important; }
+  [data-testid="stExpander"] { border: 1px solid #252545 !important; background-color: #1a1a2e !important; }
   [data-testid="stCaptionContainer"] p { color: #A0A0A0 !important; }
   [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #E8E4DC !important; }
   input, [data-baseweb="input"] input { background: #0C0C0C !important; border-color: #1C1C1C !important; color: #E8E4DC !important; }
   ::-webkit-scrollbar-track { background: #040404; }
   ::-webkit-scrollbar-thumb { background: #1C1C1C; }
-  hr { border-color: #141414 !important; }
+  hr { border-color: #1e1e35 !important; }
   /* ── Widget overrides (config.toml base=light → must flip all to dark) ── */
   /* Buttons */
   [data-testid="stButton"] button {
@@ -599,85 +601,91 @@ _LIGHT_CSS = """<style>
   p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'Manrope', sans-serif !important; }
   footer { visibility: hidden; }
 
+  /* ════ LIGHT MODE PALETTE ════ */
   :root { --font: 'Manrope', sans-serif; --font-mono: 'IBM Plex Mono', monospace; }
+
+  /* Page surfaces — cream */
   .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #F4F1EC !important; }
+
+  /* Metrics */
   [data-testid="stMetric"] { border-top: 1px solid #A8861A !important; }
-  [data-testid="stMetricLabel"] { color: #999 !important; }
-  [data-testid="stMetricValue"] { color: #1C1C1C !important; }
-  [data-testid="stMetricDelta"] { color: #666 !important; }
+  [data-testid="stMetricLabel"] { color: #555 !important; }
+  [data-testid="stMetricValue"] { color: #1a1a1a !important; }
+  [data-testid="stMetricDelta"] { color: #555 !important; }
+
+  /* Sidebar — cream bg, DARK readable text */
   [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #EDE9DF !important; border-right: 1px solid #D8D3C8 !important; }
-  [data-testid="stSidebar"] label, [data-testid="stSidebar"] p,
-  [data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
-  [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #555 !important; }
+  [data-testid="stSidebar"] * { color: #1a1a1a !important; }
+  [data-testid="stSidebar"] .stCaptionContainer p { color: #555 !important; }
+
+  /* Tabs */
   [data-baseweb="tab-list"] { border-bottom: 1px solid #D8D3C8 !important; }
-  [data-baseweb="tab"] { color: #777777 !important; border-right: 1px solid #D8D3C8 !important; }
+  [data-baseweb="tab"] { color: #666 !important; border-right: 1px solid #D8D3C8 !important; }
   [aria-selected="true"][data-baseweb="tab"] { color: #A8861A !important; border-bottom: 2px solid #A8861A !important; }
-  .player-card { background: #FFFFFF; border: 1px solid #E0DBD0; border-left-color: #A8861A; }
-  .kings-card  { background: #FAF8F4; border: 1px solid #E0DBD0; border-left-color: #A8861A; }
-  .kings-card:hover { background: #F5F2EC; }
-  .stat-label { color: #AAAAAA; }
-  .stat-value { color: #1C1C1C; }
-  .delta-pos  { color: #0D7A60; }
-  .delta-neg  { color: #C02828; }
-  .pct-pos    { color: #0D9E7C; }
-  .pct-neg    { color: #D43A3A; }
-  .kings-gold { color: #A8861A; font-weight: 700; }
-  .section-header { color: #1C1C1C; }
-  .group-label { color: #AAAAAA; border-left-color: #A8861A; }
+
+  /* ── CARDS: dark navy on cream — intentional editorial contrast ── */
+  .player-card { background: #1a1a2e; border: 1px solid #252545; border-left-color: #A8861A; }
+  .kings-card  { background: #1a1a2e; border: 1px solid #252545; border-left-color: #A8861A; }
+  .kings-card:hover { background: #1e2235; }
+
+  /* Text ON dark navy cards stays white */
+  .stat-label { color: #9090b0; }
+  .stat-value { color: #E8E4DC; }
+  .delta-pos  { color: #1FBFA0; }
+  .delta-neg  { color: #E84040; }
+  .pct-pos    { color: #3ED4B6; }
+  .pct-neg    { color: #EF7070; }
+  .kings-gold { color: #C8A84B; font-weight: 700; }
+
+  /* Section headers sit on cream page — use dark text */
+  .section-header { color: #1a1a1a; }
+  .group-label { color: #9090b0; border-left-color: #A8861A; }
   .signal-badge { color: #fff !important; }
-  [data-testid="stExpander"] { border: 1px solid #E0DBD0 !important; background-color: #FAFAF8 !important; }
-  [data-testid="stCaptionContainer"] p { color: #BBBBBB !important; }
-  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #1C1C1C !important; }
-  input, [data-baseweb="input"] input { background: #FFFFFF !important; border-color: #D8D3C8 !important; color: #1C1C1C !important; }
+
+  /* Expanders — light */
+  [data-testid="stExpander"] { border: 1px solid #D8D3C8 !important; background-color: #F8F5EE !important; }
+  details summary p { color: #1a1a1a !important; }
+
+  /* Captions and general page text */
+  [data-testid="stCaptionContainer"] p { color: #666 !important; }
+  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #1a1a1a !important; }
+  [data-testid="stMarkdownContainer"] p { color: #1a1a1a !important; }
+  [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #333 !important; }
+
+  /* Inputs */
+  input, [data-baseweb="input"] input { background: #FFFFFF !important; border-color: #D8D3C8 !important; color: #1a1a1a !important; }
   ::-webkit-scrollbar-track { background: #F4F1EC; }
   ::-webkit-scrollbar-thumb { background: #D8D3C8; }
   hr { border-color: #E0DBD0 !important; }
-  /* Override inline dark colours in custom HTML for light mode */
-  [data-testid="stMarkdownContainer"] span:not([class]),
-  [data-testid="stMarkdownContainer"] div:not([class]) { color: #1C1C1C !important; }
-  [data-testid="stMarkdownContainer"] .delta-pos { color: #0D7A60 !important; }
-  [data-testid="stMarkdownContainer"] .delta-neg { color: #C02828 !important; }
-  [data-testid="stMarkdownContainer"] .pct-pos   { color: #0D9E7C !important; }
-  [data-testid="stMarkdownContainer"] .pct-neg   { color: #D43A3A !important; }
-  [data-testid="stMarkdownContainer"] .kings-gold { color: #A8861A !important; }
-  [data-testid="stMarkdownContainer"] .stat-label { color: #AAAAAA !important; }
-  [data-testid="stMarkdownContainer"] .group-label { color: #AAAAAA !important; }
-  /* Override hardcoded dark-mode inline colours in light mode */
-  [style*="color:#E8E4DC"] { color: #1C1C1C !important; }
-  [style*="background:#080808"] { background: #FFFFFF !important; }
-  [style*="background:#0C0C0C"] { background: #FAFAF8 !important; }
-  [style*="background:#141414"] { background: #ECEAE4 !important; }
-  [style*="color:#B8C4C8"] { color: #2A4050 !important; }
-  [style*="background:#3A2018"] { background: #FDE8D0 !important; }
-  [style*="background:#2C3A40"] { background: #D4E8F4 !important; }
-  [style*="color:#6BBAD4"] { color: #1A6FA8 !important; }
-  [style*="color:#5A5A5A"] { color: #333333 !important; }
-  /* ── General content text ── */
-  [data-testid="stMainBlockContainer"] p,
-  [data-testid="stMainBlockContainer"] li { color: #1C1C1C !important; }
-  [data-testid="stWidgetLabel"] p,
-  [data-testid="stWidgetLabel"] label { color: #555 !important; }
-  /* ── Button: make sure theme toggle and all buttons look right ── */
+
+  /* ── CLASS OVERRIDES for dark-card classes on light page ── */
+  /* Ensure stMarkdownContainer class styles match dark-card intent */
+  [data-testid="stMarkdownContainer"] .stat-value { color: #E8E4DC !important; }
+  [data-testid="stMarkdownContainer"] .stat-label  { color: #9090b0 !important; }
+  [data-testid="stMarkdownContainer"] .delta-pos   { color: #1FBFA0 !important; }
+  [data-testid="stMarkdownContainer"] .delta-neg   { color: #E84040 !important; }
+  [data-testid="stMarkdownContainer"] .kings-gold  { color: #C8A84B !important; }
+  [data-testid="stMarkdownContainer"] .group-label { color: #9090b0 !important; }
+
+  /* ── WIDGET OVERRIDES (Streamlit base=light, just need our custom colours) ── */
   [data-testid="stButton"] button {
-      background: #EDE9DF !important; color: #1C1C1C !important;
+      background: #EDE9DF !important; color: #1a1a1a !important;
       border: 1px solid #C8C3B8 !important; border-radius: 0 !important;
       font-family: 'Manrope', sans-serif !important;
   }
   [data-testid="stButton"] button:hover { background: #E0DBD0 !important; border-color: #A8861A !important; }
-  /* ── Selectbox ── */
   [data-baseweb="select"] > div { background: #FFFFFF !important; border-color: #C8C3B8 !important; }
-  [data-baseweb="select"] span, [data-baseweb="select"] div { color: #1C1C1C !important; }
+  [data-baseweb="select"] span { color: #1a1a1a !important; }
   [data-baseweb="popover"] { background: #FFFFFF !important; }
   [data-baseweb="menu"] { background: #FFFFFF !important; border: 1px solid #D8D3C8 !important; }
-  [data-baseweb="menu-item"], [role="option"] { color: #1C1C1C !important; background: #FFFFFF !important; }
+  [data-baseweb="menu-item"], [role="option"] { color: #1a1a1a !important; background: #FFFFFF !important; }
   [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #F0EBE0 !important; }
-  /* ── Slider ── */
-  [data-testid="stSlider"] [data-testid="stThumbValue"] { background: #EDE9DF !important; color: #1C1C1C !important; }
+  [data-testid="stSlider"] [data-testid="stThumbValue"] { background: #EDE9DF !important; color: #1a1a1a !important; }
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #888 !important; }
-  /* ── Caption ── */
-  .stCaptionContainer p { color: #777 !important; }
+  .stCaptionContainer p { color: #666 !important; }
 </style>"""
+
 
 
 def _inject_css(dark: bool = True) -> None:
@@ -822,8 +830,8 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
         )
 
         cols[i].markdown(
-            f"<div style='background:#141414;border-radius:2px;padding:12px 8px;"
-            f"text-align:center;border:1px solid #141414;border-bottom:2px solid {clr};'>"
+            f"<div style='background:#1a1a2e;border-radius:2px;padding:12px 8px;"
+            f"text-align:center;border:1px solid #252545;border-bottom:2px solid {clr};'>"
             f"  {hs_html}"
             f"  <div style='font-weight:700;color:#E8E4DC;font-size:.8rem;"
             f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
@@ -979,7 +987,7 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
 
 # ── Tab 1: League Overview ─────────────────────────────────────────────────────
 def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
-    st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>League-Wide Value vs. Cap Hit</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>League-Wide Value vs. Cap Hit</div>", unsafe_allow_html=True)
 
     df_all = df[df["predicted_value"].notna()].copy()
     df_all = add_delta_pct(df_all)
@@ -1124,7 +1132,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
 # ── Tab 2: Leaderboards ────────────────────────────────────────────────────────
 def tab_leaderboards(df: pd.DataFrame):
-    st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Value Leaderboards</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Value Leaderboards</div>", unsafe_allow_html=True)
 
     df_c   = df[df["cap_hit"].notna() & df["value_delta"].notna()].copy()
     df_c   = add_delta_pct(df_c)
@@ -1248,7 +1256,7 @@ def tab_leaderboards(df: pd.DataFrame):
                 "<div style='display:flex;align-items:center;gap:10px;'>"
                 "<span style='font-size:1.1rem;font-weight:700;color:#C8A84B;'>"
                 "🔶 UFA / Unsigned Players</span>"
-                "<span style='background:#3A2018;color:#B8C4C8;padding:2px 8px;"
+                "<span style='background:#8B6914;color:#FFF8E0;padding:2px 8px;"
                 "border-radius:2px;font-size:.88rem;'>No current contract — predicted value only</span>"
                 "</div>",
                 unsafe_allow_html=True,
@@ -1276,7 +1284,7 @@ def tab_kings(df: pd.DataFrame):
     kings_logo = team_logo_url("LAK")
     st.markdown(
         f"<div style='display:flex;align-items:center;gap:18px;margin-bottom:12px;"
-        f"padding:18px 22px;background:#080808;border-left:4px solid {KINGS_GOLD};'>"
+        f"padding:18px 22px;background:#1a1a2e;border-left:4px solid {KINGS_GOLD};'>"
         f"<img src='{kings_logo}' width='64' height='64' "
         f"style='flex-shrink:0;opacity:.95;' onerror=\"this.style.display='none'\">"
         f"<div>"
@@ -1308,7 +1316,7 @@ def tab_kings(df: pd.DataFrame):
     n_expiring        = int((kings["years_left"].fillna(0) <= 1).sum())
 
     st.markdown(
-        f"<div style='background:#080808;border-top:3px solid {KINGS_GOLD};"
+        f"<div style='background:#1a1a2e;border-top:3px solid {KINGS_GOLD};"
         "border-radius:3px;padding:16px 20px;margin-bottom:16px;'>",
         unsafe_allow_html=True,
     )
@@ -1677,10 +1685,10 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         ext_start_str = f"{int(ext_start)-1}-{str(int(ext_start))[-2:]}" if ext_start else "?"
         ext_exp_str  = f"{int(ext_exp)-1}-{str(int(ext_exp))[-2:]}" if ext_exp else "?"
         st.markdown(
-            f"<div style='background:#0A1520;border:1px solid #152E42;border-radius:3px;"
+            f"<div style='background:#1a1a2e;border:1px solid #252545;border-radius:3px;"
             f"padding:10px 14px;margin:8px 0;font-size:13px;'>"
             f"<span style='color:#6BBAD4;font-weight:700;'>✅ Extension Signed</span>"
-            f"<span style='color:#5A5A5A;margin-left:10px;'>"
+            f"<span style='color:#A0A0A0;margin-left:10px;'>"
             f"{ext_yrs_str} · {ext_ch_str}/yr · {ext_start_str} → {ext_exp_str}"
             f"{' · ' + ext_stat if ext_stat else ''}"
             f"</span></div>",
@@ -1761,7 +1769,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
         st.markdown(
             f"<div style='margin:18px 0 4px 0;font-family:\"Bebas Neue\",cursive;"
-            f"font-size:1.1rem;font-weight:700;color:#E8E4DC;letter-spacing:0.04em;'>"
+            f"font-size:1.1rem;font-weight:700;color:{_T['page_text']};letter-spacing:0.04em;'>"
             f"What drives {name}'s value?</div>"
             f"<div style='color:#A0A0A0;font-size:.87rem;margin-bottom:14px;"
             f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.04em;'>"
@@ -1771,7 +1779,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
         # Section 1 — league average
         st.markdown(
-            f"<div style='background:#141414;border-radius:2px;border:1px solid #141414;"
+            f"<div style='background:#1a1a2e;border-radius:2px;border:1px solid #252545;"
             f"padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;"
             f"justify-content:space-between;'>"
             f"<span style='font-size:.82rem;color:#A0A0A0;font-family:\"IBM Plex Mono\",monospace;"
@@ -1787,7 +1795,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 .vd-row{position:relative;margin:5px 0;cursor:default;}
 .vd-tip{
   visibility:hidden;opacity:0;
-  background:#141414;color:#E8E4DC;
+  background:#1a1a2e;color:#E8E4DC;
   border:1px solid #707070;border-radius:2px;
   padding:8px 12px;font-size:11px;line-height:1.6;
   position:absolute;z-index:9999;
@@ -1841,7 +1849,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                     for f, v in pos_factors.items()
                 )
                 st.markdown(
-                    f"<div style='background:#0E0E0E;border-radius:2px;border:1px solid #141414;"
+                    f"<div style='background:#1a1a2e;border-radius:2px;border:1px solid #252545;"
                     f"padding:10px 12px;'>{rows}</div>",
                     unsafe_allow_html=True,
                 )
@@ -1865,7 +1873,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                     for f, v in neg_factors.items()
                 )
                 st.markdown(
-                    f"<div style='background:#0E0E0E;border-radius:2px;border:1px solid #141414;"
+                    f"<div style='background:#1a1a2e;border-radius:2px;border:1px solid #252545;"
                     f"padding:10px 12px;'>{rows}</div>",
                     unsafe_allow_html=True,
                 )
@@ -1879,7 +1887,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         else:
             delta_str = "—"
         st.markdown(
-            f"<div style='background:#141414;border:1px solid #141414;border-radius:2px;"
+            f"<div style='background:#1a1a2e;border:1px solid #252545;border-radius:2px;"
             f"border-left:3px solid {pv_color};padding:16px 20px;margin-top:16px;'>"
             f"<div style='font-size:.78rem;color:#A0A0A0;font-family:\"IBM Plex Mono\",monospace;"
             f"letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;'>"
@@ -1917,13 +1925,13 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 sp_hs = (
                     f"<img src='{sp_hs_url}' width='56' height='56' "
                     f"style='border-radius:50%;object-fit:cover;"
-                    f"border:1px solid #141414;' "
+                    f"border:1px solid #252545;' "
                     f"onerror=\"this.style.display='none'\">"
                 )
             clr = "#1FBFA0" if (sp_dlt or 0) >= 0 else "#E84040"
             sim_cols[col_i].markdown(
-                f"<div style='background:#141414;border-radius:2px;padding:14px 10px;"
-                f"border:1px solid #141414;border-bottom:2px solid {clr};text-align:center;'>"
+                f"<div style='background:#1a1a2e;border-radius:2px;padding:14px 10px;"
+                f"border:1px solid #252545;border-bottom:2px solid {clr};text-align:center;'>"
                 f"  {sp_hs}"
                 f"  <div style='font-weight:700;color:#E8E4DC;margin-top:7px;"
                 f"font-size:.85rem;font-family:\"Manrope\",sans-serif;'>{sp_name}</div>"
@@ -1983,7 +1991,7 @@ The model is retrained nightly from live NHL API stats.
 
 
 def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame):
-    st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Player Search</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Player Search</div>", unsafe_allow_html=True)
 
     all_names = sorted(df["name"].dropna().tolist())
     search1 = st.text_input(
@@ -2018,7 +2026,7 @@ def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame):
 
 # ── Tab 5: Model Insights ──────────────────────────────────────────────────────
 def tab_insights(df: pd.DataFrame):
-    st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Model Insights — SHAP Feature Importance</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Model Insights — SHAP Feature Importance</div>", unsafe_allow_html=True)
     shap_summary = load_shap_summary()
     shap_vals    = load_shap_values()
 
@@ -2026,7 +2034,7 @@ def tab_insights(df: pd.DataFrame):
         st.info("Run `py -3 pipeline.py` to generate SHAP values.")
         return
 
-    st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:1.5rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 12px;font-weight:400;'>What drives predicted player value?</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:1.5rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 12px;font-weight:400;'>What drives predicted player value?</div>", unsafe_allow_html=True)
     top_n = st.slider("Features to show", 5, min(30, len(shap_summary)), 15)
     top   = shap_summary.head(top_n).copy()
     top["feature"] = top["feature"].apply(_label)
@@ -2056,7 +2064,7 @@ def tab_insights(df: pd.DataFrame):
 
     if not shap_vals.empty and "name" in shap_vals.columns:
         st.markdown("---")
-        st.markdown("<div style='font-family:\"Bebas Neue\",cursive;font-size:1.5rem;color:#E8E4DC;letter-spacing:0.04em;margin:0 0 12px;font-weight:400;'>Player-Level Explanation</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:1.5rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 12px;font-weight:400;'>Player-Level Explanation</div>", unsafe_allow_html=True)
         chosen = st.selectbox("Select a player",
                                sorted(df["name"].dropna().tolist()),
                                key="insights_player")
