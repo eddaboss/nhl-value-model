@@ -177,144 +177,144 @@ def _driver_tooltip(feat: str, player: pd.Series, name: str, positive: bool) -> 
 
     tips: dict[str, str] = {
         "toi_per_g": (
-            f"{name} averages {toi} minutes per game — among the highest in the league, reflecting elite trust from coaching staff and a top-line role."
+            f"{name} averages {toi} minutes per game — one of the highest totals in the league. Coaches allocate ice time purely on merit, making this one of the most honest signals of how much a team values a player."
             if positive else
-            f"{name} averages only {toi} minutes per game, indicating a depth or fourth-line role which the market prices significantly lower."
+            f"{name} averages {toi} minutes per game, indicating a depth role. Ice time is allocated by coaches based on performance and trust — lower minutes reflect a more limited role in the lineup."
         ) if toi else (
-            f"{name} logs high ice time, reflecting elite trust from coaching staff and a top-line role."
+            f"{name} logs elite ice time. Coaches allocate ice time purely on merit, making this one of the most honest signals of how much a team values a player."
             if positive else
-            f"{name} logs limited ice time, indicating a depth or fourth-line role which the market prices significantly lower."
+            f"{name} logs limited ice time, indicating a depth role. Ice time is allocated by coaches based on performance and trust."
         ),
         "g": (
-            f"{name} has scored {goals} goals this season, an elite pace that directly drives market value up."
+            f"{name} has scored {goals} goals this season — an elite pace that directly signals offensive value to any team."
             if positive else
-            f"{name} has scored {goals} goals this season. Lower goal totals reduce predicted value, though role and usage context matters."
+            f"{name} has scored {goals} goals this season. Lower goal totals reduce predicted value, though role and deployment context always matters when interpreting raw counts."
         ) if goals else (
-            f"{name}'s goal-scoring pace is an elite factor that directly drives market value up."
+            f"{name}'s goal-scoring pace directly signals elite offensive value."
             if positive else
-            f"{name}'s lower goal totals reduce predicted value, though role and usage context matters."
+            f"{name}'s lower goal totals reduce predicted value, though role and deployment context always matters."
         ),
         "ppg": (
             f"{name} is producing at {ppg_v} points per game — an elite offensive rate that commands a premium on the open market."
             if positive else
-            f"{name} is producing at {ppg_v} points per game. Below-average production at their usage level pulls predicted value down."
+            f"{name} is producing at {ppg_v} points per game, below average for a player at this usage level. Consistent point production is one of the strongest drivers of market value."
         ) if ppg_v else (
             f"{name} is producing at an elite offensive rate that commands a premium on the open market."
             if positive else
-            f"{name}'s below-average production at their usage level pulls predicted value down."
+            f"{name}'s production is below average for their usage level. Consistent point production is one of the strongest drivers of market value."
         ),
         "pp_toi": (
-            f"{name} averages {pp_toi_v} minutes of power play time per game. PP deployment is one of the strongest signals of a player's offensive value to their team."
+            f"{name} averages {pp_toi_v} minutes of power play time per game. Power play deployment is one of the clearest signals of offensive trust — coaches only put their best offensive players on the ice with the man advantage."
             if positive else
-            f"{name} receives minimal power play time, suggesting a more defensive or depth role. PP deployment strongly correlates with market value."
+            f"{name} receives minimal power play time. Since power play deployment reflects a coach's offensive trust, limited PP time suggests a more defensive or depth role in the lineup."
         ) if pp_toi_v else (
-            f"{name} receives significant power play time. PP deployment is one of the strongest signals of offensive value to a team."
+            f"{name} receives significant power play time — one of the clearest signals of offensive trust from coaching staff."
             if positive else
-            f"{name} receives minimal power play time, suggesting a more defensive or depth role. PP deployment strongly correlates with market value."
+            f"{name} receives minimal power play time, suggesting a more defensive or depth role in the lineup."
         ),
         "pk_toi": (
-            f"{name} averages {pk_toi_v} minutes of PK time per game — a strong signal of defensive trust and two-way value. Elite PK players command a premium."
+            f"{name} averages {pk_toi_v} minutes of PK time per game. Elite penalty killers are genuinely valued across the league — coaches only deploy players they trust completely in high-pressure defensive situations."
             if positive else
-            f"{name} sees little penalty kill time. While not all valuable players kill penalties, PK deployment adds contract leverage."
+            f"{name} sees little penalty kill time. Not all valuable players kill penalties, but PK deployment adds demonstrable two-way value that teams factor into contracts."
         ) if pk_toi_v else (
-            f"{name} logs significant penalty kill time — a strong signal of defensive trust and two-way value."
+            f"{name} logs significant penalty kill time. Elite PK players are genuinely valued — coaches only deploy players they trust completely in high-pressure defensive situations."
             if positive else
-            f"{name} sees little penalty kill time. While not all valuable players kill penalties, PK deployment adds contract leverage."
+            f"{name} sees little penalty kill time. Not all valuable players kill penalties, but PK deployment adds demonstrable two-way value that teams factor into contracts."
         ),
         "fenwick_pct": (
-            f"When {name} is on the ice, their team controls {fen_v}% of unblocked shot attempts. This suggests they drive play in the right direction, though zone starts and competition level also affect this number."
+            f"When {name} is on the ice, their team controls {fen_v}% of unblocked shot attempts. Fenwick% is a strong indicator of puck possession and shot attempt control, though zone starts and quality of competition also affect this number."
             if positive else
-            f"The team is outshot when {name} is on the ice at {fen_v}% Fenwick. Note this can reflect tough defensive zone deployment rather than poor play — context matters."
+            f"The team is outshot when {name} is on the ice at {fen_v}% Fenwick. This is worth noting but should be read with context — players deployed primarily in defensive zone situations will naturally have lower Fenwick% numbers regardless of their individual quality."
         ) if fen_v else (
-            f"When {name} is on the ice, their team controls a strong share of unblocked shot attempts, suggesting they drive play in the right direction."
+            f"When {name} is on the ice, their team controls a strong share of unblocked shot attempts — a good indicator of puck possession and shot attempt control."
             if positive else
-            f"The team is outshot when {name} is on the ice. Note this can reflect tough defensive zone deployment rather than poor play."
+            f"The team is outshot when {name} is on the ice. Players deployed primarily in defensive situations will naturally have lower Fenwick% regardless of their individual quality."
         ),
         "xg": (
-            f"{name} has generated {xg_v} expected goals this season based on shot quality and location — a strong indicator of genuine offensive threat regardless of shooting luck."
+            f"{name} has generated {xg_v} expected goals based on shot quality and location — a more reliable measure of offensive threat than raw goals, since it removes the influence of shooting luck."
             if positive else
-            f"{name} has generated {xg_v} expected goals. Lower xG suggests fewer high-danger scoring chances, which the model weighs as a negative regardless of raw goal totals."
+            f"{name} has generated {xg_v} expected goals. Lower xG suggests fewer high danger scoring chances, which is a more reliable negative signal than a low goal total alone since it accounts for shot quality."
         ) if xg_v else (
-            f"{name} generates strong expected goals numbers based on shot quality and location — a genuine offensive threat regardless of shooting luck."
+            f"{name} generates strong expected goals numbers — a more reliable offensive measure than raw goals since it accounts for shot quality and removes shooting luck."
             if positive else
-            f"{name}'s lower xG suggests fewer high-danger scoring chances, which the model weighs as a negative regardless of raw goal totals."
+            f"{name}'s lower xG suggests fewer high-danger scoring chances, a more reliable signal than raw goal totals since it accounts for shot quality."
         ),
         "oz_start_pct": (
-            f"{name} starts {oz_v}% of shifts in the offensive zone, reflecting an offensive deployment role."
+            f"{name} starts {oz_v}% of shifts in the offensive zone. High offensive zone deployment reflects a coach's decision to use this player as an offensive weapon."
             if positive else
-            f"{name} starts only {oz_v}% of shifts in the offensive zone — often a sign of trusted defensive deployment rather than poor play. Shutdown forwards and defensive defensemen typically have low OZ start percentages by design."
+            f"{name} starts only {oz_v}% of shifts in the offensive zone. This is often intentional — shutdown forwards and defensive defensemen are deliberately deployed in their own end to protect leads and neutralize top opposing lines. Low OZ% can signal defensive value rather than poor play."
         ) if oz_v else (
-            f"{name} starts a high share of shifts in the offensive zone, reflecting an offensive deployment role."
+            f"{name} starts a high share of shifts in the offensive zone, reflecting a coach's decision to use them as an offensive weapon."
             if positive else
-            f"{name} starts few shifts in the offensive zone — often a sign of trusted defensive deployment rather than poor play."
+            f"{name} starts few shifts in the offensive zone — often intentional. Shutdown forwards and defensive defensemen are deliberately deployed in their own end, so low OZ% can signal defensive value rather than poor play."
         ),
         "plus_minus": (
-            f"{name} has a plus/minus of {pm}. Note this stat is heavily team-dependent — it reflects goals for and against while on ice but is influenced by teammates and goaltending as much as individual play."
+            f"{name} has a plus/minus of {pm}. This traditional stat counts goals for and against while a player is on the ice at 5v5, but is heavily influenced by teammates, goaltending, and deployment — most modern analytics departments treat it as a weak individual performance signal."
             if positive else
-            f"{name} has a plus/minus of {pm}. This stat is heavily influenced by team quality and deployment — a negative number does not necessarily indicate poor individual performance."
+            f"{name} has a plus/minus of {pm}. Important context: plus/minus is considered one of the least reliable individual stats in modern hockey analytics because it depends heavily on teammates, goaltending quality, and deployment. A negative number does not necessarily reflect poor individual performance."
         ) if pm else (
-            f"{name}'s positive plus/minus reflects on-ice goal differential, though this stat is heavily influenced by teammates and goaltending."
+            f"{name}'s plus/minus is positive, though this stat is heavily influenced by teammates, goaltending, and deployment — most modern analytics departments treat it as a weak individual signal."
             if positive else
-            f"{name}'s negative plus/minus is heavily influenced by team quality and deployment — it does not necessarily indicate poor individual performance."
+            f"{name}'s plus/minus is negative. Important context: plus/minus is considered one of the least reliable individual stats in modern analytics — it depends heavily on teammates and goaltending, not just individual play."
         ),
         "length_of_contract": (
-            f"{loc_v} years remaining on this contract. Longer term deals typically reflect higher organizational value and carry more salary leverage — though this also reflects how the current model prices contracts rather than pure performance."
+            f"{loc_v} years remaining on this contract. Players can only negotiate a new contract when their current deal expires — years remaining reflects how long ago this contract was signed and what the market valued this player at that point in time."
             if positive else
-            "Fewer years remaining reduces contract leverage. Players approaching free agency sometimes see market value adjustments based on term."
+            "Fewer years remaining means this contract is near expiration. The cap hit reflects what the market valued this player at when the deal was signed — which may be higher or lower than their current production level."
         ) if loc_v else (
-            "Longer term deal reflects higher organizational value and carries more salary leverage."
+            "More years remaining means this contract was signed more recently and likely reflects current market value more accurately."
             if positive else
-            "Fewer years remaining reduces contract leverage. Players approaching free agency sometimes see market value adjustments based on term."
+            "Fewer years remaining means this contract is near expiration and may not reflect current market value."
         ),
         "draft_position": (
-            f"Selected {dp_v}th overall — high draft pedigree still factors into market pricing, particularly for younger players early in their careers."
+            f"Selected {dp_v}th overall. High draft position reflects strong organizational investment early in a player's career and still factors into market pricing, particularly for younger players who have not yet established a long NHL track record."
             if positive else
-            "A later draft position carries less historical market premium. Note this factor becomes less relevant as a player builds an NHL track record."
+            "A later draft position carries less historical market premium. For veterans with long NHL careers, draft position becomes increasingly irrelevant as their track record speaks for itself."
         ) if dp_v else (
-            "High draft pedigree still factors into market pricing, particularly for younger players early in their careers."
+            "High draft pedigree factors into market pricing, particularly for younger players who have not yet established a long NHL track record."
             if positive else
-            "A later draft position carries less historical market premium. Note this factor becomes less relevant as a player builds an NHL track record."
+            "A later draft position carries less historical market premium, though this becomes increasingly irrelevant as a player builds their NHL track record."
         ),
         "age": (
-            f"At {age_v} years old, {name} is in their prime earning years — typically ages 24 to 30 command peak market value."
+            f"At {age_v} years old, {name} is in their prime earning years. NHL players typically peak between ages 24 and 29, and the market prices players in this window at a premium."
             if positive else
-            f"At {age_v} years old, {name} is past typical peak earning years. The market generally discounts players over 30 due to expected decline, though exceptions exist."
+            f"At {age_v} years old, {name} is past the typical NHL prime earning window. The market generally discounts players over 30 due to expected performance decline, though elite players regularly outperform age-based expectations."
         ) if age_v else (
-            f"{name} is in their prime earning years — typically ages 24 to 30 command peak market value."
+            f"{name} is in their prime earning years. NHL players typically peak between ages 24 and 29, and the market prices players in this window at a premium."
             if positive else
-            f"{name} is past typical peak earning years. The market generally discounts older players due to expected decline, though exceptions exist."
+            f"{name} is past the typical NHL prime earning window. The market generally discounts older players due to expected decline, though elite players regularly outperform age-based expectations."
         ),
         "shooting_pct": (
-            f"{name} converts {spct}% of their shots — above average finishing that adds offensive value. Note that elite playmakers sometimes have lower shooting percentages because they shoot less and set up more."
+            f"{name} converts {spct}% of their shots this season. Strong shooting percentage adds offensive value, though elite playmakers sometimes have lower shooting percentages because they shoot less frequently and focus on setting up teammates."
             if positive else
-            f"{name} converts {spct}% of their shots. Lower shooting percentage can reflect poor finishing, a playmaking rather than shooting role, or small sample size variance."
+            f"{name} converts {spct}% of their shots. Low shooting percentage can reflect poor finishing, a primary playmaking role rather than a shooting role, or natural variance over a season — it should not be read in isolation."
         ) if spct else (
-            f"{name}'s above-average shooting percentage adds offensive value."
+            f"{name}'s strong shooting percentage adds offensive value, though elite playmakers sometimes shoot less because they focus on setting up teammates."
             if positive else
-            f"{name}'s lower shooting percentage can reflect poor finishing, a playmaking role, or small sample size variance."
+            f"{name}'s low shooting percentage can reflect poor finishing, a primary playmaking role, or natural variance over a season."
         ),
         "hits": (
-            f"{name} has recorded {hits_v} hits this season. Physical play adds value in certain systems, though modern analytics teams weight this factor less heavily than traditional scouting."
+            f"{name} has recorded {hits_v} hits this season. Physical play is valued in certain systems and by certain organizations, though modern NHL analytics research shows that hits correlate weakly with team success and winning percentage."
             if positive else
-            f"{name} has recorded {hits_v} hits. Note that hits are weighted lightly in this model — analytics research shows limited correlation between hitting and team success."
+            f"{name} has recorded {hits_v} hits. Hits are weighted lightly in this model because analytics research shows limited correlation between physical play and team performance. Low hit totals often simply reflect an offensive or perimeter playing style rather than lack of value."
         ) if hits_v else (
-            f"{name}'s physical play adds value in certain systems, though modern analytics teams weight this factor less heavily than traditional scouting."
+            f"{name}'s physical play is valued in certain systems, though modern analytics research shows hits correlate weakly with team success."
             if positive else
-            f"{name}'s hit totals are weighted lightly in this model — analytics research shows limited correlation between hitting and team success."
+            f"{name}'s hit totals are weighted lightly in this model. Low hit totals often reflect an offensive playing style rather than lack of value."
         ),
         "blocks": (
-            f"{name} has blocked {blk_v} shots — a signal of defensive commitment and willingness to sacrifice the body in the defensive zone."
+            f"{name} has blocked {blk_v} shots — a clear signal of defensive commitment and willingness to sacrifice their body in the defensive zone to protect their goaltender."
             if positive else
-            "Fewer blocked shots may reflect offensive deployment rather than lack of defensive effort — forwards and offensive defensemen naturally block fewer shots."
+            "Fewer blocked shots typically reflects offensive zone deployment rather than lack of defensive effort. Forwards and offensive defensemen naturally block fewer shots because they spend less time defending in their own end."
         ) if blk_v else (
-            f"{name}'s shot-blocking numbers signal defensive commitment and willingness to sacrifice the body in the defensive zone."
+            f"{name}'s shot-blocking is a clear signal of defensive commitment and willingness to sacrifice their body in the defensive zone."
             if positive else
-            "Fewer blocked shots may reflect offensive deployment rather than lack of defensive effort."
+            "Fewer blocked shots typically reflects offensive deployment rather than lack of defensive effort. Forwards and offensive defensemen naturally block fewer shots."
         ),
         "ppg_24": (
-            f"{name} produced at {_get('ppg')} points per game last season, providing a strong baseline that validates their current production."
+            f"{name} produced at {_get('ppg')} points per game last season. Strong prior year production validates current performance and shows consistent output over time rather than a one-season outlier."
             if positive else
-            f"{name} produced at {_get('ppg')} points per game last season. Prior year production factors into market value as teams assess consistency over time."
+            f"{name} produced at {_get('ppg')} points per game last season. Lower prior year production factors into the model as an indicator of whether current output represents genuine improvement or a one-season spike."
         ),
     }
 
