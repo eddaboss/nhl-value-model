@@ -91,6 +91,11 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     if "has_prior_market_data" not in df.columns:
         df["has_prior_market_data"] = df["ppg_24"].notna()
 
+    # ── Faceoff% — null out for non-centers (wings/D take almost no faceoffs) ──
+    # Leaving 0.0 for non-centers pollutes the feature; NaN → imputed to median.
+    if "faceoff_pct" in df.columns and "pos" in df.columns:
+        df.loc[df["pos"] != "C", "faceoff_pct"] = np.nan
+
     # ── Ensure numeric types ───────────────────────────────────────────────────
     for col in NUMERIC_FEATURES:
         if col in df.columns:

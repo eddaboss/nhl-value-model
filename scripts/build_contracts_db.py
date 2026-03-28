@@ -59,14 +59,29 @@ def _load_stats_lookup() -> dict[int, dict]:
     return result
 
 
-def seed_from_cache(roster: dict, season_end_year: int) -> int:
+def _build_birth_years(stats_lookup: dict) -> dict[int, int]:
+    """Extract {player_id: birth_year} from the stats lookup for slug disambiguation."""
+    result = {}
+    for pid, data in stats_lookup.items():
+        bd = data.get("birth_date", "")
+        if bd and len(bd) >= 4:
+            try:
+                result[int(pid)] = int(bd[:4])
+            except (ValueError, TypeError):
+                pass
+    return result
+
+
+def seed_from_cache(roster: dict, season_end_year: int,
+                    birth_years: dict | None = None) -> int:
     """
     Load the puckpedia contracts cache and upsert everything into contracts.db.
     Returns number of records upserted.
     """
     if not _cache_valid():
         print("  No valid contracts cache — running full PuckPedia scrape first...")
-        contracts = scrape_contracts(roster, season_end_year, force_refresh=False)
+        contracts = scrape_contracts(roster, season_end_year, force_refresh=False,
+                                     birth_years=birth_years)
     else:
         contracts = _load_cache()
         print(f"  Seeding from cache: {len(contracts)} players")
@@ -137,13 +152,15 @@ def main(full: bool = False, missing_only: bool = False, show_kings: bool = Fals
     print(f"Roster: {len(roster)} players")
 
     stats_lookup = _load_stats_lookup()
+    birth_years  = _build_birth_years(stats_lookup)
 
     # ── Step 1: Seed DB from existing puckpedia cache ──────────────────────────
     if not missing_only:
         if full:
             print("\n[1/3] Full mode — clearing DB and re-seeding from fresh PuckPedia scrape...")
             from src.data.puckpedia_scraper import scrape_contracts
-            contracts = scrape_contracts(roster, season_end_year, force_refresh=True)
+            contracts = scrape_contracts(roster, season_end_year, force_refresh=True,
+                                         birth_years=birth_years)
             name_lookup = {int(info["player_id"]): info.get("display_name", "")
                            for info in roster.values() if info.get("player_id")}
             for pid, cdata in contracts.items():
@@ -152,7 +169,7 @@ def main(full: bool = False, missing_only: bool = False, show_kings: bool = Fals
                            source="puckpedia", is_estimated=False)
         else:
             print("\n[1/3] Seeding DB from existing contracts cache...")
-            seed_from_cache(roster, season_end_year)
+            seed_from_cache(roster, season_end_year, birth_years=birth_years)
     else:
         print("\n[1/3] Missing-only mode — skipping seed step")
 

@@ -13,6 +13,7 @@ import json
 import re
 import time
 import unicodedata
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from datetime import datetime
@@ -24,8 +25,11 @@ STANDINGS_URL = f"{BASE}/standings/now"
 ROSTER_URL    = f"{BASE}/roster/{{team}}/{{season}}"
 PLAYER_URL    = f"{BASE}/player/{{player_id}}/landing"
 
-ROSTER_CACHE = RAW_DIR / "nhl_roster_cache.json"
-STATS_CACHE  = RAW_DIR / "stats_cache.json"
+ROSTER_CACHE       = RAW_DIR / "nhl_roster_cache.json"
+STATS_CACHE        = RAW_DIR / "stats_cache.json"
+SUPPLEMENTAL_CACHE = RAW_DIR / "supplemental_stats_cache.json"
+
+STATS_REST_BASE = "https://api.nhle.com/stats/rest/en/skater"
 
 _HEADERS = {"User-Agent": "nhl-value-model/2.0"}
 
@@ -61,6 +65,18 @@ def parse_toi(avg_toi: str) -> float:
     try:
         parts = str(avg_toi).split(":")
         return int(parts[0]) + int(parts[1]) / 60
+    except Exception:
+        return 0.0
+
+
+def _parse_toi_total(val) -> float:
+    """Parse total season TOI — handles MM:SS string or integer/float seconds."""
+    if val is None:
+        return 0.0
+    if isinstance(val, str) and ":" in val:
+        return parse_toi(val)   # MM:SS → decimal minutes
+    try:
+        return float(val) / 60  # seconds → minutes
     except Exception:
         return 0.0
 
@@ -313,6 +329,104 @@ def fetch_player_stats(player_id: int, season_ids: list[int]) -> dict:
     return result
 
 
+# ── Supplemental stats from NHL stats REST API ────────────────────────────────
+def _fetch_stats_rest_report(report: str, season_id: int) -> list[dict]:
+    """
+    Bulk-fetch one skater report from api.nhle.com/stats/rest/en/skater/.
+    Paginates automatically (server caps at 100 rows per page).
+    Returns list of player dicts.
+    """
+    exp = urllib.parse.quote(
+        f"gameTypeId=2 and seasonId>={season_id} and seasonId<={season_id}"
+    )
+    all_rows: list[dict] = []
+    start = 0
+    limit = 100   # server enforces this cap regardless of what we request
+    while True:
+        url = (f"{STATS_REST_BASE}/{report}"
+               f"?cayenneExp={exp}&limit={limit}&start={start}")
+        try:
+            data = _get(url)
+        except Exception as e:
+            print(f"  WARNING: supplemental/{report} s={season_id} "
+                  f"start={start} failed: {e}")
+            break
+        rows = data.get("data", [])
+        all_rows.extend(rows)
+        total = data.get("total", 0)
+        start += len(rows)
+        if not rows or start >= total:
+            break
+    return all_rows
+
+
+def fetch_supplemental_stats(
+    season_ids: list[int],
+    force_refresh: bool = False,
+) -> dict:
+    """
+    Bulk-fetch hits, blockedShots, pp_toi, pk_toi from the NHL stats REST API
+    for the requested season(s).
+
+    Uses two reports per season (realtime + timeonice) — no per-player loop.
+
+    Returns:
+        {season_id (int): {player_id (int): {gp, hits, blocks, pp_toi, pk_toi}}}
+    """
+    cache: dict = {}
+    if SUPPLEMENTAL_CACHE.exists() and not force_refresh:
+        with open(SUPPLEMENTAL_CACHE, encoding="utf-8") as f:
+            raw = json.load(f)
+        # Re-key everything as ints
+        cache = {
+            int(k): {int(pid): v for pid, v in sv.items()}
+            for k, sv in raw.get("seasons", {}).items()
+        }
+        if all(sid in cache for sid in season_ids):
+            total = sum(len(v) for v in cache.values())
+            print(f"  Supplemental stats cache hit: {total} records")
+            return cache
+
+    result: dict = {}
+    for season_id in season_ids:
+        print(f"  Fetching supplemental stats (realtime + timeonice) "
+              f"for season {season_id}…")
+
+        rt_rows  = _fetch_stats_rest_report("realtime",  season_id)
+        toi_rows = _fetch_stats_rest_report("timeonice", season_id)
+
+        rt_by_pid  = {r["playerId"]: r for r in rt_rows}
+        toi_by_pid = {r["playerId"]: r for r in toi_rows}
+
+        season_data: dict = {}
+        for pid in set(rt_by_pid) | set(toi_by_pid):
+            rt  = rt_by_pid.get(pid,  {})
+            toi = toi_by_pid.get(pid, {})
+            gp  = rt.get("gamesPlayed") or toi.get("gamesPlayed") or 0
+            # ppTimeOnIcePerGame / shTimeOnIcePerGame are in seconds → minutes
+            season_data[pid] = {
+                "gp":     gp,
+                "hits":   rt.get("hits",         0) or 0,
+                "blocks": rt.get("blockedShots",  0) or 0,
+                "pp_toi": round((toi.get("ppTimeOnIcePerGame") or 0) / 60, 4),
+                "pk_toi": round((toi.get("shTimeOnIcePerGame") or 0) / 60, 4),
+            }
+        print(f"    {len(season_data)} skaters loaded for {season_id}")
+        result[season_id] = season_data
+
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    with open(SUPPLEMENTAL_CACHE, "w", encoding="utf-8") as f:
+        json.dump({
+            "fetched_at": datetime.utcnow().isoformat(),
+            "seasons": {
+                str(k): {str(pid): v for pid, v in sv.items()}
+                for k, sv in result.items()
+            },
+        }, f)
+
+    return result
+
+
 def load_all_player_stats(
     player_ids: list[int],
     season_ids: list[int],
@@ -330,10 +444,10 @@ def load_all_player_stats(
             raw = json.load(f)
         cache = {int(k): v for k, v in raw.get("players", {}).items()}
         # Check if we have all needed player IDs and seasons
+        # Cache keys are ints (converted on load above); season_ids are also ints.
         needed = [pid for pid in player_ids
                   if pid not in cache or
-                  any(sid not in cache[pid] for sid in season_ids
-                      if str(sid) not in str(list(cache[pid].keys())))]
+                  any(sid not in cache[pid] for sid in season_ids)]
         if not needed:
             print(f"  Stats cache hit: {len(cache)} players")
             return cache

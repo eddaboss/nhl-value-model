@@ -9,5 +9,32 @@
       "years_left": 0,
       "year_of_contract": 1
     }
+  },
+  "8477960": {
+    "_note": "Kempe current bridge deal $5.5M/yr — scraper grabbed his 2026-27 extension instead",
+    "cap_hit": 5500000,
+    "length_of_contract": 3,
+    "expiry_year": 2026,
+    "expiry_status": "UFA",
+    "years_left": 0,
+    "year_of_contract": 3
+  },
+  "8482730": {
+    "_note": "Clarke — puckpedia sidebar pp-ufa widget triggered UFA; he is RFA on expiry",
+    "cap_hit": 863334,
+    "length_of_contract": 3,
+    "expiry_year": 2026,
+    "expiry_status": "RFA",
+    "years_left": 0,
+    "year_of_contract": 3
+  },
+  "8484801": {
+    "_note": "Celebrini — same sidebar pp-ufa issue; he is RFA on expiry",
+    "cap_hit": 975000,
+    "length_of_contract": 3,
+    "expiry_year": 2027,
+    "expiry_status": "RFA",
+    "years_left": 1,
+    "year_of_contract": 2
   }
 }

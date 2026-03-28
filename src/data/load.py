@@ -28,12 +28,14 @@ from src.data.nhl_api import (
     build_roster_lookup,
     get_season_context,
     load_all_player_stats,
+    fetch_supplemental_stats,
 )
 from src.data.contracts_db import (
     get_all_contracts,
     player_ids_in_db,
     DB_PATH,
 )
+from src.data.moneypuck import load_moneypuck_stats
 
 PROCESSED_DIR = Path(__file__).parents[2] / "data" / "processed"
 
@@ -121,16 +123,80 @@ def _build_stats_df(
     return pd.DataFrame(rows)
 
 
+# ── Supplemental stats (hits, blocks, pp_toi, pk_toi) ─────────────────────────
+_SUPP_COUNT_KEYS = {"hits", "blocks"}   # season totals → project by gp
+_SUPP_RATE_KEYS  = {"pp_toi", "pk_toi"} # per-game rates → no projection
+
+
+def _build_supplemental_df(
+    player_ids: list[int],
+    ctx: dict,
+    force_refresh: bool = False,
+) -> pd.DataFrame:
+    """
+    Fetch hits, blocks, pp_toi, pk_toi from the NHL stats REST API (bulk).
+    Applies the same season-projection and blending logic as _build_stats_df.
+    Returns a DataFrame keyed by player_id with those four columns + _24 variants.
+    """
+    cur_sid       = ctx["current_season_id"]
+    prev_sid      = ctx["prev_season_id"]
+    season_length = ctx["season_length"]
+    avg_gp        = ctx["avg_games_per_team"]
+    use_blend     = ctx["use_blend"]
+
+    supp = fetch_supplemental_stats([cur_sid, prev_sid], force_refresh=force_refresh)
+    cur_data  = supp.get(cur_sid,  {})
+    prior_data = supp.get(prev_sid, {})
+
+    all_keys = list(_SUPP_COUNT_KEYS | _SUPP_RATE_KEYS)
+
+    rows = []
+    for pid in player_ids:
+        cur   = cur_data.get(pid,   {})
+        prior = prior_data.get(pid, {})
+        row   = {"player_id": pid}
+
+        if cur:
+            gp    = max(cur.get("gp") or 1, 1)
+            scale = season_length / gp if gp < season_length else 1.0
+
+            if use_blend and prior:
+                blend_w = avg_gp / season_length
+                for k in _SUPP_COUNT_KEYS:
+                    cur_proj = (cur.get(k) or 0) * scale
+                    row[k] = round(blend_w * cur_proj + (1 - blend_w) * (prior.get(k) or 0), 2)
+                for k in _SUPP_RATE_KEYS:
+                    row[k] = round(blend_w * (cur.get(k) or 0) + (1 - blend_w) * (prior.get(k) or 0), 4)
+            else:
+                for k in _SUPP_COUNT_KEYS:
+                    row[k] = round((cur.get(k) or 0) * scale, 2)
+                for k in _SUPP_RATE_KEYS:
+                    row[k] = cur.get(k) or 0
+        else:
+            for k in all_keys:
+                row[k] = None
+
+        # Prior-season _24 suffixes
+        for k in all_keys:
+            row[f"{k}_24"] = prior.get(k) if prior else None
+
+        rows.append(row)
+
+    return pd.DataFrame(rows)
+
+
 # ── Age from birth_date ────────────────────────────────────────────────────────
-def _age_from_birth(birth_str: str, season_end_year: int) -> float | None:
-    """Approximate age as of the end of the season."""
+def _age_from_birth(birth_str: str) -> float | None:
+    """Current age in decimal years as of today.
+    The NHL API /v1/player landing endpoint does not expose currentAge;
+    only birthDate is available, so we calculate from that using today's date."""
     if not birth_str:
         return None
     try:
         from datetime import date
-        bd = date.fromisoformat(birth_str)
-        ref = date(season_end_year, 9, 30)   # Oct 1 of season start
-        return (ref - bd).days / 365.25
+        bd  = date.fromisoformat(birth_str)
+        ref = date.today()
+        return round((ref - bd).days / 365.25, 4)
     except Exception:
         return None
 
@@ -229,11 +295,30 @@ def load_and_merge(
     df_contracts = pd.DataFrame(contract_rows)
     df_contracts["player_id"] = df_contracts["player_id"].astype(int)
 
-    # ── 5. Join on player_id ──────────────────────────────────────────────────
+    # ── 5. MoneyPuck advanced stats ────────────────────────────────────────────
+    blend_w = (ctx["avg_games_per_team"] / ctx["season_length"]
+               if ctx["use_blend"] else 1.0)
+    df_mp = load_moneypuck_stats(
+        cur_season_id=ctx["current_season_id"],
+        prev_season_id=ctx["prev_season_id"],
+        use_blend=ctx["use_blend"],
+        blend_w=blend_w,
+        season_length=ctx["season_length"],
+        force_refresh=force_refresh,
+    )
+
+    # ── 6. Supplemental stats (hits, blocks, pp_toi, pk_toi) ─────────────────
+    df_supp = _build_supplemental_df(player_ids, ctx, force_refresh=force_refresh)
+    df_supp["player_id"] = df_supp["player_id"].astype(int)
+
+    # ── 7. Join on player_id ──────────────────────────────────────────────────
     df = df_roster.merge(df_stats, on="player_id", how="left")
     df = df.merge(df_contracts, on="player_id", how="left")
+    df = df.merge(df_supp, on="player_id", how="left")
+    if not df_mp.empty:
+        df = df.merge(df_mp, on="player_id", how="left")
 
-    # ── 6. Post-join cleanup ──────────────────────────────────────────────────
+    # ── 8. Post-join cleanup ──────────────────────────────────────────────────
     # Clean display name: "FirstName LastName" is already in the right format
     df["name"] = df["display_name"]
     df = df.drop(columns=["display_name"])
@@ -241,10 +326,8 @@ def load_and_merge(
     # Remove goalies (position G)
     df = df[df["pos"] != "G"].copy()
 
-    # Age from birth_date
-    df["age"] = df["birth_date"].apply(
-        lambda b: _age_from_birth(b, season_end_year)
-    )
+    # Age from birth_date (current age as of today — NHL API has no currentAge field)
+    df["age"] = df["birth_date"].apply(_age_from_birth)
 
     # Flags
     df["has_contract_data"]     = df["cap_hit"].notna()
@@ -261,12 +344,15 @@ def load_and_merge(
     n_est      = df["is_estimated"].sum()
     n_prior    = df["has_prior_market_data"].sum()
     n_ufa      = ((~df["has_contract_data"]) & (df["expiry_status"] == "UFA")).sum()
+    n_mp       = int(df["xgf60"].notna().sum()) if "xgf60" in df.columns else 0
 
     print(f"Loaded {n_total} skaters — "
           f"{n_contract} with contracts "
           f"({n_est} estimated*), "
           f"{n_ufa} confirmed UFA, "
           f"{n_prior} with prior-season stats")
+    print(f"MoneyPuck coverage: {n_mp}/{n_total} players "
+          f"({n_mp/n_total*100:.1f}%)")
     print(f"Duplicate rows: {df.duplicated('name').sum()}")
 
     return df, ctx

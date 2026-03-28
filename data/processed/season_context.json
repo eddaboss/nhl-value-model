@@ -2,11 +2,11 @@
   "current_season_id": 20252026,
   "prev_season_id": 20242025,
   "n_teams": 32,
-  "total_team_games": 2272,
-  "avg_games_per_team": 71.0,
+  "total_team_games": 2298,
+  "avg_games_per_team": 71.8125,
   "season_length": 82,
   "threshold": 656.0,
   "use_blend": false,
   "mode": "current_only",
-  "description": "Using 2025-26 season only (projected to 82-game pace, 71 games played)"
+  "description": "Using 2025-26 season only (projected to 82-game pace, 72 games played)"
 }

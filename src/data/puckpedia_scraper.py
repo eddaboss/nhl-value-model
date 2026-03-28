@@ -72,53 +72,99 @@ def _display_to_slug(display_name: str) -> str:
     return slug
 
 
+def _extract_birth_year(html: str) -> Optional[int]:
+    """Extract birth year from PuckPedia's JSON-LD structured data block."""
+    m = re.search(r'"birthDate"\s*:\s*"(\d{4})-\d{2}-\d{2}"', html)
+    return int(m.group(1)) if m else None
+
+
 def _parse_contract(html: str, season_end_year: int) -> Optional[dict]:
     """
     Parse contract data from a PuckPedia player page.
 
-    Looks for the standard summary sentence:
-      "[Name] is signed to a {N} year, ${TCV} contract with a cap hit of
-       ${CAP} per season, playing for the {Team}. His contract expires at
-       the end of the {YYYY-YY} season, making [Name] an Unrestricted/
-       Restricted Free Agent."
+    Two known page formats:
+      (A) Prose: "is signed to N year ... contract [extension] with a cap hit
+          of $X per season"
+      (B) Tabular: year-range headers followed by "Cap Hit $X" rows
+
+    Known pitfalls fixed here:
+      1. Future extensions appear before the current contract on some pages.
+         We strip the "next contract begins" block before searching.
+      2. Expiry status must be extracted from the expiry sentence specifically,
+         NOT from the full-page HTML (sidebar widgets contain class="pp-ufa"
+         for UFA eligibility year, which is unrelated to the current contract).
 
     Returns a contract dict, or None if no active contract is found.
     """
-    # ── Cap hit + contract length ──────────────────────────────────────────────
+    # ── Strip future-extension block to avoid matching next-contract cap hits ──
+    # PuckPedia writes "His next contract begins for the YYYY-YY season..."
+    # for players who have already signed an extension.
+    html_cur = re.sub(
+        r'[Hh]is next contract begins[^.]*\.',
+        '', html, flags=re.DOTALL
+    )
+
+    # ── Cap hit + contract length (prose format) ───────────────────────────────
     m = re.search(
         r'is signed to (?:a )?(\d+) year[^$]+'
         r'\$[\d,]+ contract(?:\s+extension)?\s+with a cap hit of \$([\d,]+) per season',
-        html, re.IGNORECASE
+        html_cur, re.IGNORECASE
     )
-    if not m:
-        return None
-
-    contract_years = int(m.group(1))
-    cap_hit        = int(m.group(2).replace(',', ''))
+    if m:
+        contract_years = int(m.group(1))
+        cap_hit        = int(m.group(2).replace(',', ''))
+    else:
+        # ── Fallback: tabular format ──────────────────────────────────────────
+        # PuckPedia shows year headers (e.g. "2024-25 2025-26") then
+        # "Cap Hit $X,XXX,XXX".  Find the block containing the current season.
+        cur_season_str = (
+            f"{season_end_year - 1}-{str(season_end_year)[-2:]}"  # "2025-26"
+        )
+        tab_m = re.search(
+            rf'{re.escape(cur_season_str)}.{{0,600}}?Cap Hit \$([\d,]+)',
+            html_cur, re.IGNORECASE | re.DOTALL
+        )
+        if not tab_m:
+            return None
+        cap_hit        = int(tab_m.group(1).replace(',', ''))
+        contract_years = None   # cannot reliably extract from tabular format
 
     # ── Expiry year ────────────────────────────────────────────────────────────
     exp_m = re.search(
         r'expires at the end of the (\d{4})-\d{2} season',
-        html, re.IGNORECASE
+        html_cur, re.IGNORECASE
     )
     if exp_m:
         expiry_year = int(exp_m.group(1)) + 1   # "2025-26" → 2026
     else:
         expiry_year = season_end_year            # fallback: assume expiring this year
 
-    # ── Expiry status ──────────────────────────────────────────────────────────
-    if 'Unrestricted Free Agent' in html or "class='pp-ufa'" in html or 'class="pp-ufa"' in html:
-        expiry_status = 'UFA'
-    elif 'Restricted Free Agent' in html or "class='pp-rfa'" in html or 'class="pp-rfa"' in html:
-        expiry_status = 'RFA'
-    elif 'pp-udfa' in html or 'UDFA' in html:
+    # ── Expiry status — from the expiry sentence ONLY ─────────────────────────
+    # Do NOT search the entire HTML: sidebar widgets contain class="pp-ufa"
+    # for UFA-eligibility-year info that is unrelated to the contract status.
+    status_m = re.search(
+        r'expires at the end of[^.]*?(Unrestricted|Restricted)\s+Free Agent',
+        html_cur, re.IGNORECASE
+    )
+    if status_m:
+        word = status_m.group(1).lower()
+        expiry_status = 'UFA' if word == 'unrestricted' else 'RFA'
+    elif re.search(r'making \w+ (?:a |an )?UDFA', html_cur, re.IGNORECASE):
         expiry_status = 'UDFA'
     else:
-        expiry_status = 'UFA'
+        # Last-resort full-page search (order: RFA before UFA to be conservative)
+        if re.search(r'Restricted Free Agent', html_cur, re.IGNORECASE):
+            expiry_status = 'RFA'
+        elif re.search(r'Unrestricted Free Agent', html_cur, re.IGNORECASE):
+            expiry_status = 'UFA'
+        else:
+            expiry_status = 'UFA'
 
     # ── Derived contract fields ────────────────────────────────────────────────
-    years_left       = expiry_year - season_end_year    # ≥ 0
-    year_of_contract = max(1, contract_years - years_left)
+    years_left = max(0, expiry_year - season_end_year)
+    year_of_contract = (
+        max(1, contract_years - years_left) if contract_years else None
+    )
 
     return {
         'cap_hit':            cap_hit,
@@ -160,30 +206,50 @@ def _save_cache(contracts: dict) -> None:
 def _fetch_one(player: dict, season_end_year: int) -> tuple[int, Optional[dict], bool]:
     """
     Fetch and parse one player's contract page.
-    Retries once on failure.  Returns (player_id, contract_or_None, had_error).
+
+    Disambiguation: PuckPedia appends -2, -3, ... to slugs for players who
+    share a name (e.g. two active NHLers named Elias Pettersson).  When the
+    player dict contains a 'birth_year' key we verify the page's JSON-LD
+    birthDate field; if it doesn't match we try slug-2, slug-3, slug-4 before
+    giving up.  Without birth_year we accept the first successful parse.
+
+    Retries once per URL on transient errors.
+    Returns (player_id, contract_or_None, had_error).
     """
-    pid  = player['player_id']
-    slug = _display_to_slug(player['display_name'])
-    url  = f"{BASE_URL}/{slug}"
-    scraper = _get_scraper()
+    pid        = player['player_id']
+    base_slug  = _display_to_slug(player['display_name'])
+    birth_year = player.get('birth_year')   # int or None
+    scraper    = _get_scraper()
 
-    time.sleep(REQUEST_DELAY)   # polite per-request delay
+    # Suffixes to try: '' (base), '-2', '-3', '-4'
+    suffixes = [''] + [f'-{i}' for i in range(2, 5)]
 
-    for attempt in range(2):
-        try:
-            resp = scraper.get(url, timeout=15)
-            if resp.status_code == 200:
-                return pid, _parse_contract(resp.text, season_end_year), False
-            if resp.status_code == 404:
-                return pid, None, False
-            # Other HTTP error — retry once
-            if attempt == 0:
-                time.sleep(1.0)
-        except Exception:
-            if attempt == 0:
-                time.sleep(1.0)
+    time.sleep(REQUEST_DELAY)
 
-    return pid, None, True   # both attempts failed
+    for suffix in suffixes:
+        slug = base_slug + suffix
+        url  = f"{BASE_URL}/{slug}"
+
+        for attempt in range(2):
+            try:
+                resp = scraper.get(url, timeout=15)
+                if resp.status_code == 404:
+                    break   # this suffix doesn't exist — stop trying it
+                if resp.status_code == 200:
+                    # If we know the expected birth year, verify we have the right page
+                    if birth_year is not None:
+                        page_year = _extract_birth_year(resp.text)
+                        if page_year is not None and page_year != birth_year:
+                            break   # wrong player — try next suffix
+                    return pid, _parse_contract(resp.text, season_end_year), False
+                # Other HTTP error — retry once
+                if attempt == 0:
+                    time.sleep(1.0)
+            except Exception:
+                if attempt == 0:
+                    time.sleep(1.0)
+
+    return pid, None, True   # all suffixes exhausted or all attempts failed
 
 
 # ── Main scrape function ───────────────────────────────────────────────────────
@@ -191,6 +257,7 @@ def scrape_contracts(
     roster_lookup: dict,
     season_end_year: int,
     force_refresh: bool = False,
+    birth_years: Optional[dict] = None,
 ) -> dict:
     """
     Scrape PuckPedia for contract data for all players in roster_lookup.
@@ -201,6 +268,9 @@ def scrape_contracts(
                       (from nhl_api.build_roster_lookup)
     season_end_year : e.g. 2026 for the 2025-26 season
     force_refresh   : ignore the 24-hour cache
+    birth_years     : optional player_id (int) → birth_year (int) mapping.
+                      When provided, used to verify each PuckPedia page and
+                      try slug-2 / slug-3 suffixes for name-collision players.
 
     Returns
     -------
@@ -218,7 +288,7 @@ def scrape_contracts(
               "Run: pip install cloudscraper")
         return {}
 
-    # Build unique player list from roster lookup
+    # Build unique player list from roster lookup, optionally enriched with birth_year
     players_seen: dict[int, str] = {}
     for info in roster_lookup.values():
         pid  = info.get('player_id')
@@ -226,8 +296,12 @@ def scrape_contracts(
         if pid and name:
             players_seen[int(pid)] = name
 
-    players = [{'player_id': pid, 'display_name': name}
-               for pid, name in players_seen.items()]
+    _birth_years = birth_years or {}
+    players = [
+        {'player_id': pid, 'display_name': name,
+         **({"birth_year": _birth_years[pid]} if pid in _birth_years else {})}
+        for pid, name in players_seen.items()
+    ]
 
     print(f"Scraping {len(players)} player contracts from PuckPedia "
           f"({MAX_WORKERS} workers, cached 24 h)...")
