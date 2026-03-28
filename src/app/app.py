@@ -1467,16 +1467,13 @@ def main():
         _refresh_status["done"] = False
         st.rerun()
 
-    # While background is running: show a top-of-page banner and auto-refresh
-    # every 30 s so the user sees the update without touching anything.
+    # While background is running: show a banner. When the thread finishes it sets
+    # _refresh_status["done"] = True, the rerun above fires, mtime cache busts,
+    # and the banner disappears — no polling needed.
     if _refresh_status["running"]:
         st.info(
             "Fetching latest NHL stats — data will refresh automatically when ready.",
             icon="🔄",
-        )
-        st.markdown(
-            '<meta http-equiv="refresh" content="30">',
-            unsafe_allow_html=True,
         )
 
     st.markdown(
