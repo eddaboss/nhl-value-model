@@ -1082,7 +1082,19 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
     event = st.plotly_chart(fig, use_container_width=True,
                             on_select="rerun", key="overview_scatter")
 
-    # Show clicked player mini-card
+    # ── UFA toggle + color key sit immediately below the chart, always together ─
+    _ufa_label = "🔶  Hide UFA / Unsigned" if show_ufa else "🔶  Show UFA / Unsigned"
+    if st.button(_ufa_label, key="overview_ufa_toggle"):
+        st.session_state["overview_show_ufa"] = not show_ufa
+        st.rerun()
+    st.caption(
+        "🟢 Below the dashed line = underpaid &nbsp;·&nbsp; "
+        "🔴 Above = overpaid &nbsp;·&nbsp; "
+        "🔶 Diamonds on x-axis = UFA / no current contract &nbsp;·&nbsp; "
+        "Click any marker for a quick summary."
+    )
+
+    # ── Show clicked player details below the key area ────────────────────────
     if event and event.get("selection") and event["selection"].get("points"):
         pts = event["selection"]["points"]
         if pts:
@@ -1099,19 +1111,6 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                 dv = p.get("value_delta")
                 mc4.metric("Delta", fmt_delta(dv),
                            delta_color="normal" if (dv or 0) >= 0 else "inverse")
-
-    # ── UFA toggle button + color key — stacked, left-aligned below chart ────
-    _ufa_label = "🔶  Hide UFA / Unsigned" if show_ufa else "🔶  Show UFA / Unsigned"
-    if st.button(_ufa_label, key="overview_ufa_toggle"):
-        st.session_state["overview_show_ufa"] = not show_ufa
-        st.rerun()
-
-    st.caption(
-        "🟢 Below the dashed line = underpaid &nbsp;·&nbsp; "
-        "🔴 Above = overpaid &nbsp;·&nbsp; "
-        "🔶 Diamonds on x-axis = UFA / no current contract &nbsp;·&nbsp; "
-        "Click any marker for a quick summary."
-    )
 
     # ── Most Interesting Players ──────────────────────────────────────────────
     if not df_c.empty:
