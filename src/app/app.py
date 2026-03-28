@@ -431,6 +431,62 @@ KINGS_SIGNAL_PALETTE = {
     "UFA":              "#2A1A10",
 }
 
+TEAM_NAMES = {
+    "ANA": "Anaheim Ducks",       "BOS": "Boston Bruins",
+    "BUF": "Buffalo Sabres",      "CGY": "Calgary Flames",
+    "CAR": "Carolina Hurricanes", "CHI": "Chicago Blackhawks",
+    "COL": "Colorado Avalanche",  "CBJ": "Columbus Blue Jackets",
+    "DAL": "Dallas Stars",        "DET": "Detroit Red Wings",
+    "EDM": "Edmonton Oilers",     "FLA": "Florida Panthers",
+    "LAK": "Los Angeles Kings",   "MIN": "Minnesota Wild",
+    "MTL": "Montréal Canadiens",  "NSH": "Nashville Predators",
+    "NJD": "New Jersey Devils",   "NYI": "New York Islanders",
+    "NYR": "New York Rangers",    "OTT": "Ottawa Senators",
+    "PHI": "Philadelphia Flyers", "PIT": "Pittsburgh Penguins",
+    "SEA": "Seattle Kraken",      "SJS": "San Jose Sharks",
+    "STL": "St. Louis Blues",     "TBL": "Tampa Bay Lightning",
+    "TOR": "Toronto Maple Leafs", "UTA": "Utah Hockey Club",
+    "VAN": "Vancouver Canucks",   "VGK": "Vegas Golden Knights",
+    "WSH": "Washington Capitals", "WPG": "Winnipeg Jets",
+}
+
+# primary = main accent (borders, highlights, chart bars)
+# secondary = secondary chart bar color
+TEAM_COLORS = {
+    "ANA": {"primary": "#FC4C02", "secondary": "#A2AAAD"},
+    "BOS": {"primary": "#FCB514", "secondary": "#1a1a2e"},
+    "BUF": {"primary": "#FCB514", "secondary": "#003087"},
+    "CGY": {"primary": "#C8102E", "secondary": "#F1BE48"},
+    "CAR": {"primary": "#CC0000", "secondary": "#A4A9AD"},
+    "CHI": {"primary": "#CF0A2C", "secondary": "#FF671B"},
+    "COL": {"primary": "#6F263D", "secondary": "#236192"},
+    "CBJ": {"primary": "#CE1126", "secondary": "#002654"},
+    "DAL": {"primary": "#006847", "secondary": "#8F8F8C"},
+    "DET": {"primary": "#CE1126", "secondary": "#FFFFFF"},
+    "EDM": {"primary": "#FF4C00", "secondary": "#041E42"},
+    "FLA": {"primary": "#C8102E", "secondary": "#B9975B"},
+    "LAK": {"primary": "#C8A84B", "secondary": "#8A9499"},
+    "MIN": {"primary": "#A6192E", "secondary": "#154734"},
+    "MTL": {"primary": "#AF1E2D", "secondary": "#192168"},
+    "NSH": {"primary": "#FFB81C", "secondary": "#041E42"},
+    "NJD": {"primary": "#CE1126", "secondary": "#000000"},
+    "NYI": {"primary": "#F47D30", "secondary": "#00539B"},
+    "NYR": {"primary": "#0038A8", "secondary": "#CE1126"},
+    "OTT": {"primary": "#C52032", "secondary": "#C69214"},
+    "PHI": {"primary": "#F74902", "secondary": "#1a1a2e"},
+    "PIT": {"primary": "#FCB514", "secondary": "#1a1a2e"},
+    "SEA": {"primary": "#99D9D9", "secondary": "#001628"},
+    "SJS": {"primary": "#006D75", "secondary": "#EA7200"},
+    "STL": {"primary": "#003087", "secondary": "#FCB514"},
+    "TBL": {"primary": "#002868", "secondary": "#FFFFFF"},
+    "TOR": {"primary": "#00205B", "secondary": "#FFFFFF"},
+    "UTA": {"primary": "#6CAEDF", "secondary": "#D09C47"},
+    "VAN": {"primary": "#00843D", "secondary": "#00205B"},
+    "VGK": {"primary": "#B4975A", "secondary": "#333F42"},
+    "WSH": {"primary": "#C8102E", "secondary": "#041E42"},
+    "WPG": {"primary": "#004C97", "secondary": "#AC162C"},
+}
+
 PERCENTILE_STATS = [
     ("ppg",       "Points/Game"),
     ("p60",       "Points/60 min"),
@@ -1412,6 +1468,293 @@ def tab_leaderboards(df: pd.DataFrame):
             )
 
 
+# ── Tab 3: Teams (generic, all 32 teams) ──────────────────────────────────────
+def tab_team(df: pd.DataFrame, team_code: str):
+    tc        = TEAM_COLORS.get(team_code, TEAM_COLORS["LAK"])
+    T_PRIMARY = tc["primary"]
+    T_SECOND  = tc["secondary"]
+    team_name = TEAM_NAMES.get(team_code, team_code)
+    team_logo = team_logo_url(team_code)
+
+    _kbg = _T["card_bg"]; _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
+    st.markdown(
+        f"<div style='display:flex;align-items:center;gap:18px;margin-bottom:12px;"
+        f"padding:18px 22px;background:{_kbg};border-left:4px solid {T_PRIMARY};border:1px solid {_T['card_border']};'>"
+        f"<img src='{team_logo}' width='64' height='64' "
+        f"style='flex-shrink:0;opacity:.95;' onerror=\"this.style.display='none'\">"
+        f"<div>"
+        f"<div style='font-size:1.5rem;font-weight:700;color:{_ktxt};"
+        f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
+        f"{team_name}</div>"
+        f"<div style='color:{_ksub};font-size:.78rem;margin-top:5px;"
+        f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.14em;text-transform:uppercase;'>"
+        f"{_season_str(load_season_context())} Roster Analysis &nbsp;·&nbsp; XGBoost Model</div>"
+        f"</div></div>",
+        unsafe_allow_html=True,
+    )
+
+    team_all = df[df["team"] == team_code].copy()
+    if team_all.empty:
+        st.warning(f"No {team_name} players found in predictions. Run pipeline.py first.")
+        return
+
+    team_all = add_delta_pct(team_all)
+    team_all["team_signal"] = team_all.apply(kings_resign_signal, axis=1)
+    team = team_all[team_all["cap_hit"].notna()].copy()
+
+    # ── Cap summary ──────────────────────────────────────────────────────────
+    total_committed   = team["cap_hit"].sum()
+    cap_space         = CAP_CEILING - total_committed
+    next_yr_committed = team[team["years_left"].fillna(0) >= 1]["cap_hit"].sum()
+    next_yr_space     = CAP_CEILING - next_yr_committed
+    n_expiring        = int((team["years_left"].fillna(0) <= 1).sum())
+
+    st.markdown(
+        f"<div style='border-top:3px solid {T_PRIMARY};border-bottom:1px solid {_T['card_border']};"
+        f"margin-bottom:16px;'></div>",
+        unsafe_allow_html=True,
+    )
+    cap_cols = st.columns(5)
+    cap_cols[0].metric("Roster Players",      len(team_all))
+    cap_cols[1].metric("Cap Committed",        fmt_m(total_committed))
+    cap_cols[2].metric("Cap Space",            fmt_m(cap_space),
+                        delta="+space" if cap_space > 0 else "over cap",
+                        delta_color="normal" if cap_space > 0 else "inverse")
+    cap_cols[3].metric("Next Season Space",    fmt_m(next_yr_space))
+    cap_cols[4].metric("Expiring Contracts",   f"{n_expiring} players")
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+
+    # ── Cap Hit vs Predicted Value chart ─────────────────────────────────────
+    ufa_key = f"team_{team_code}_show_ufa"
+    if ufa_key not in st.session_state:
+        st.session_state[ufa_key] = False
+
+    chart_data = team.copy()
+    if st.session_state[ufa_key]:
+        ufa_players = team_all[team_all["cap_hit"].isna()].copy()
+        if not ufa_players.empty:
+            ufa_players["cap_hit"] = 0
+            chart_data = pd.concat([team, ufa_players], ignore_index=True)
+
+    sorted_data = chart_data.sort_values("cap_hit", ascending=False)
+    fig = go.Figure()
+    fig.add_bar(
+        name="Cap Hit",
+        x=sorted_data["name"], y=sorted_data["cap_hit"],
+        marker_color=T_SECOND, opacity=0.9,
+        text=sorted_data["cap_hit"].apply(lambda v: fmt_m(v) if v > 0 else "UFA"),
+        textposition="outside", textfont=dict(size=11, color=T_SECOND),
+    )
+    fig.add_bar(
+        name="Predicted Value",
+        x=sorted_data["name"], y=sorted_data["predicted_value"],
+        marker_color=T_PRIMARY, opacity=0.9,
+    )
+    fig.update_layout(
+        barmode="group",
+        paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+        font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]),
+        xaxis=dict(tickangle=-40, gridcolor=_T["grid_alt"]),
+        yaxis=dict(tickformat="$,.0f", title="", gridcolor=_T["grid_alt"], zeroline=False),
+        title=dict(text="Cap Hit vs. Predicted Market Value",
+                   font=dict(color=T_PRIMARY, size=16)),
+        showlegend=False,
+        height=420,
+        margin=dict(l=10, r=10, t=50, b=10),
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    ufa_count = len(team_all[team_all["cap_hit"].isna()])
+    if ufa_count > 0:
+        ufa_label = "Hide UFA Players" if st.session_state[ufa_key] else f"Show UFA / Unsigned ({ufa_count})"
+        if st.button(ufa_label, key=f"{team_code}_ufa_btn"):
+            st.session_state[ufa_key] = not st.session_state[ufa_key]
+            st.rerun()
+    st.markdown(
+        f"<div style='font-size:.75rem;color:{_T['card_subtext']};font-family:\"IBM Plex Mono\",monospace;"
+        f"letter-spacing:.06em;margin-top:2px;'>"
+        f"<span style='display:inline-block;width:12px;height:12px;background:{T_SECOND};"
+        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Cap Hit"
+        f"&nbsp;&nbsp;"
+        f"<span style='display:inline-block;width:12px;height:12px;background:{T_PRIMARY};"
+        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Predicted Value"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+
+    # ── Cap Outlook expander ──────────────────────────────────────────────────
+    with st.expander("📅 Cap Outlook — Next Season", expanded=False):
+        next_yr_players = team[team["years_left"].fillna(0) >= 2].copy()
+        expiring        = team[team["years_left"].fillna(0) <= 1].copy()
+        ufa_team        = team_all[team_all["cap_hit"].isna()].copy()
+
+        next_committed = next_yr_players["cap_hit"].sum()
+        next_space     = CAP_CEILING - next_committed
+        n_need_deals   = len(expiring) + len(ufa_team)
+
+        oc1, oc2, oc3, oc4 = st.columns(4)
+        oc1.metric("Committed Next Season", fmt_m(next_committed))
+        oc2.metric("Projected Cap Space",   fmt_m(next_space))
+        oc3.metric("Contracts Expiring",    len(expiring))
+        oc4.metric("Deals Needed",          n_need_deals)
+
+        if not expiring.empty:
+            st.markdown(
+                f"<div style='color:{T_PRIMARY};font-weight:600;font-size:.85rem;"
+                "margin:10px 0 6px;'>Expiring Contracts</div>",
+                unsafe_allow_html=True,
+            )
+            exp_disp = expiring[["name", "pos", "age", "cap_hit",
+                                  "predicted_value", "team_signal"]].copy()
+            exp_disp["age"]             = exp_disp["age"].apply(lambda v: f"{v:.0f}" if pd.notna(v) else "?")
+            exp_disp["cap_hit"]         = exp_disp["cap_hit"].apply(fmt_m)
+            exp_disp["predicted_value"] = exp_disp["predicted_value"].apply(fmt_m)
+            exp_disp = exp_disp.rename(columns={
+                "name": "Player", "pos": "Pos", "age": "Age",
+                "cap_hit": "Current Cap Hit", "predicted_value": "Predicted Value",
+                "team_signal": "Re-sign Signal",
+            })
+            st.dataframe(exp_disp, use_container_width=True, hide_index=True)
+
+    # ── Roster breakdown ──────────────────────────────────────────────────────
+    st.markdown(
+        f"<div style='color:{T_PRIMARY};font-size:1.0rem;font-weight:700;"
+        "margin:14px 0 10px;font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;'>"
+        "Player Breakdown</div>",
+        unsafe_allow_html=True,
+    )
+
+    tbl = team_all.sort_values("value_delta", ascending=False, na_position="last").copy()
+
+    def _render_group(group_df, group_label):
+        if group_df.empty:
+            return
+        st.markdown(f"<div class='group-label'>{group_label}</div>", unsafe_allow_html=True)
+        for _, row in group_df.iterrows():
+            _render_player_row(row)
+
+    def _render_player_row(row):
+        pid       = row.get("player_id")
+        name      = row.get("name", "?")
+        pos       = row.get("pos", "?")
+        age       = row.get("age")
+        age_str   = f"{age:.0f}" if pd.notna(age) else "?"
+        ch        = row.get("cap_hit")
+        pv        = row.get("predicted_value")
+        delta     = row.get("value_delta")
+        delta_pct = row.get("value_delta_pct")
+        exp_yr    = row.get("expiry_year")
+        exp_st    = row.get("expiry_status") or "—"
+        yrs       = row.get("years_left")
+        signal    = row.get("team_signal", "—")
+        is_est    = bool(row.get("is_estimated", False))
+        has_data  = bool(row.get("has_contract_data", False))
+
+        ch_str = (fmt_m(ch) + ("*" if is_est else "")) if has_data and pd.notna(ch) else "UFA"
+        pv_str = fmt_m(pv) if pd.notna(pv) else "—"
+        sig_color = KINGS_SIGNAL_PALETTE.get(signal, "#2C3A40")
+
+        delta_str = "—"
+        pct_str   = ""
+        if pd.notna(delta):
+            sign = "+" if delta >= 0 else ""
+            clr  = "#1FBFA0" if delta >= 0 else "#E84040"
+            delta_str = f"<span style='color:{clr};font-weight:700;'>{sign}{fmt_m(delta)}</span>"
+            if pd.notna(delta_pct):
+                pct_str = f"<span style='color:{clr};font-size:.8rem;'>({sign}{delta_pct:.1f}%)</span>"
+
+        exp_str = f"{int(exp_yr)}" if pd.notna(exp_yr) else "—"
+        yrs_str = f"{int(yrs)}" if pd.notna(yrs) else "—"
+
+        hs_html = ""
+        if pid and pd.notna(pid):
+            hs_url = headshot_url(pid, team_code)
+            hs_html = (
+                f"<img src='{hs_url}' width='48' height='48' "
+                f"style='border-radius:50%;object-fit:cover;"
+                f"border:2px solid {T_PRIMARY};flex-shrink:0;' "
+                f"onerror=\"this.style.display='none'\">"
+            )
+
+        est_badge = (
+            f"<span style='background:#2C3A40;color:#B8C4C8;padding:1px 5px;"
+            f"border-radius:2px;font-size:.82rem;margin-left:4px;' "
+            f"title='Salary estimated'>est*</span>"
+        ) if is_est else ""
+
+        has_ext = bool(row.get("has_extension", False))
+        ext_note = ""
+        if has_ext:
+            ext_ch_val  = row.get("extension_cap_hit")
+            ext_start_v = row.get("extension_start_year")
+            ext_len_v   = row.get("extension_length")
+            ext_ch_s    = f"${ext_ch_val/1e6:.2f}M" if ext_ch_val else "?"
+            ext_yr_s    = f"{int(ext_start_v)-1}-{str(int(ext_start_v))[-2:]}" if ext_start_v else "?"
+            ext_len_s   = f"{int(ext_len_v)}-yr" if ext_len_v else ""
+            ext_note    = (
+                f"<div style='margin-top:5px;font-size:11px;color:#6BBAD4;'>"
+                f"✅ Extension signed — {ext_len_s} {ext_ch_s}/yr starting {ext_yr_s}</div>"
+            )
+
+        _rtxt = _T["card_text"]; _rsub = _T["card_subtext"]
+        st.markdown(
+            f"<div class='kings-card' style='display:flex;align-items:center;gap:16px;'>"
+            f"  {hs_html}"
+            f"  <div style='flex:1;min-width:0;'>"
+            f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
+            f"      <span style='font-size:1.0rem;font-weight:700;color:{_rtxt};"
+            f"font-family:\"Manrope\",sans-serif;'>{name}</span>"
+            f"      {est_badge}"
+            f"      <span style='color:{_rsub};font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
+            f"letter-spacing:.04em;'>{pos} · {age_str}</span>"
+            f"    </div>"
+            f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
+            f"      <div><div class='stat-label'>Cap Hit</div>"
+            f"           <div class='stat-value'>{ch_str}</div></div>"
+            f"      <div><div class='stat-label'>Pred. Value</div>"
+            f"           <div class='stat-value'>{pv_str}</div></div>"
+            f"      <div><div class='stat-label'>Value Delta</div>"
+            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"IBM Plex Mono\",monospace;'>"
+            f"             {delta_str} {pct_str}</div></div>"
+            f"      <div><div class='stat-label'>Expiry</div>"
+            f"           <div class='stat-value'>{exp_str} ({exp_st})</div></div>"
+            f"      <div><div class='stat-label'>Yrs Left</div>"
+            f"           <div class='stat-value'>{yrs_str}</div></div>"
+            f"    </div>"
+            f"    {ext_note}"
+            f"  </div>"
+            f"  <div style='text-align:center;flex-shrink:0;'>"
+            f"    <div class='stat-label'>Signal</div>"
+            f"    <span class='signal-badge' style='background:{sig_color};color:#fff;"
+            f"display:inline-block;margin-top:6px;'>{signal}</span>"
+            f"  </div>"
+            f"</div>",
+            unsafe_allow_html=True,
+        )
+
+    fwds = tbl[tbl["pos"].isin(["C", "L", "R"])]
+    dmen = tbl[tbl["pos"] == "D"]
+    _render_group(fwds, "Forwards")
+    _render_group(dmen, "Defensemen")
+
+    # ── Signal legend ─────────────────────────────────────────────────────────
+    st.markdown("---")
+    badges = "".join(
+        f"<span class='signal-badge' style='background:{clr};color:#fff;"
+        f"white-space:nowrap;margin:3px 4px 3px 0;display:inline-block;'>{lbl}</span>"
+        for lbl, clr in KINGS_SIGNAL_PALETTE.items()
+    )
+    st.markdown(
+        f"<div style='color:{_T['card_subtext']};font-size:.8rem;margin-bottom:6px;'>"
+        f"Re-sign Signal Legend</div>"
+        f"<div style='display:flex;flex-wrap:wrap;gap:4px;'>{badges}</div>",
+        unsafe_allow_html=True,
+    )
+
+    if team_all["is_estimated"].any():
+        st.caption("*Salary estimated from position/TOI medians — contract data pending verification")
+
+
 # ── Tab 3: LA Kings ────────────────────────────────────────────────────────────
 def tab_kings(df: pd.DataFrame):
     # Kings-specific header with logo
@@ -2378,7 +2721,7 @@ def main():
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "🌐 League Overview",
         "📊 Leaderboards",
-        "👑 LA Kings",
+        "🏒 Teams",
         "🔍 Player Search",
         "🧠 Model Insights",
     ])
@@ -2388,7 +2731,12 @@ def main():
     with tab2:
         tab_leaderboards(filtered)
     with tab3:
-        tab_kings(df)
+        _all_team_codes = sorted([t for t in df["team"].dropna().unique() if t in TEAM_NAMES])
+        _team_labels    = [f"{TEAM_NAMES.get(t, t)} ({t})" for t in _all_team_codes]
+        _default_idx    = _all_team_codes.index("LAK") if "LAK" in _all_team_codes else 0
+        _sel_label = st.selectbox("Select Team", _team_labels, index=_default_idx, key="team_tab_sel")
+        _sel_code  = _all_team_codes[_team_labels.index(_sel_label)]
+        tab_team(df, _sel_code)
     with tab4:
         tab_player_search(df, shap_vals)
     with tab5:
