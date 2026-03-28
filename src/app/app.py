@@ -142,6 +142,327 @@ def _label(feature: str) -> str:
     return _FEATURE_LABELS.get(feature, feature.replace("_", " ").title())
 
 
+def _driver_tooltip(feat: str, player: pd.Series, name: str, positive: bool) -> str:
+    """Return a plain-English sentence explaining why a feature drives value up or down."""
+    import textwrap
+
+    def _get(col, fmt=".1f"):
+        v = player.get(col)
+        if v is None or (isinstance(v, float) and pd.isna(v)):
+            return None
+        try:
+            return format(float(v), fmt)
+        except Exception:
+            return str(v)
+
+    toi     = _get("toi_per_g")
+    goals   = _get("g", ".0f")
+    assists = _get("a", ".0f")
+    points  = _get("p", ".0f")
+    ppg_v   = _get("ppg")
+    age_v   = _get("age", ".0f")
+    pm      = _get("plus_minus", "+.0f")
+    spct    = _get("shooting_pct")
+    g60_v   = _get("g60")
+    p60_v   = _get("p60")
+    shots_v = _get("shots", ".0f")
+    pp_pts_v= _get("pp_pts", ".0f")
+    hits_v  = _get("hits", ".0f")
+    blk_v   = _get("blocks", ".0f")
+    xg_v    = _get("xg")
+    fen_v   = _get("fenwick_pct")
+    oz_v    = _get("oz_start_pct")
+    pp_toi_v= _get("pp_toi")
+    pk_toi_v= _get("pk_toi")
+    fo_v    = _get("faceoff_pct")
+    loc_raw = player.get("length_of_contract")
+    loc_v   = int(float(loc_raw)) if loc_raw and not (isinstance(loc_raw, float) and pd.isna(loc_raw)) else None
+    dp_v    = _get("draft_position", ".0f")
+
+    is_prior = feat.endswith("_24")
+    base_feat = feat[:-3] if is_prior else feat
+    prior_pfx = "Last season: " if is_prior else ""
+
+    tips: dict[str, str] = {
+        "toi_per_g": (
+            f"Averaging {toi} min/game puts {name} among the league's top deployment players, signaling high trust from coaching staff."
+            if positive else
+            f"Averaging only {toi} min/game suggests a limited role, which the market prices lower."
+        ) if toi else (
+            "High ice time signals strong trust from coaching staff."
+            if positive else
+            "Limited ice time suggests a depth or specialized role."
+        ),
+        "g": (
+            f"{name} has scored {goals} goals this season, outpacing most players at their position."
+            if positive else
+            f"{goals} goals this season is below average for a player with this much ice time."
+        ) if goals else (
+            "Strong goal-scoring output boosts predicted market value."
+            if positive else
+            "Below-average goal production pulls predicted value down."
+        ),
+        "a": (
+            f"{name} has {assists} assists this season, showing strong playmaking ability."
+            if positive else
+            "Fewer assists than expected limits the offensive upside the market rewards."
+        ) if assists else (
+            "Strong playmaking boosts predicted market value."
+            if positive else
+            "Below-average assists reduce predicted value."
+        ),
+        "p": (
+            f"{name} has {points} points this season, placing them among the top offensive contributors."
+            if positive else
+            "Point totals below league norms at this salary tier reduce predicted value."
+        ) if points else (
+            "Strong point totals boost predicted market value."
+            if positive else
+            "Below-average point totals reduce predicted value."
+        ),
+        "ppg": (
+            f"{name} is producing at {ppg_v} points per game, an elite offensive pace."
+            if positive else
+            f"Producing at {ppg_v} points per game is below average for a player at this salary level."
+        ) if ppg_v else (
+            "Elite points-per-game rate signals consistent offensive production."
+            if positive else
+            "Below-average points-per-game rate reduces market value."
+        ),
+        "age": (
+            f"At {age_v} years old, {name} is in their prime earning years."
+            if positive else
+            f"At {age_v} years old, {name} is on the back half of a typical NHL career, which the market discounts."
+        ) if age_v else (
+            "Prime age is a positive factor in market pricing."
+            if positive else
+            "Age is a factor the market discounts for older players."
+        ),
+        "length_of_contract": (
+            f"A {loc_v}-year contract signals the team committed to this player long term, which correlates with higher market value."
+            if positive else
+            "A shorter remaining contract reduces leverage in negotiations, pulling predicted value down."
+        ) if loc_v else (
+            "Long-term contract commitment correlates with higher market value."
+            if positive else
+            "Shorter contract length reduces market leverage."
+        ),
+        "draft_position": (
+            f"Being selected {dp_v}th overall reflects high organizational investment and long-term expectations."
+            if positive else
+            "A later draft position means lower initial expectations, which still factors into market pricing."
+        ) if dp_v else (
+            "High draft pedigree is a positive factor in market pricing."
+            if positive else
+            "Draft position factors into long-term market expectations."
+        ),
+        "draft_year": (
+            "Being drafted recently means the player is still in their developmental upside window."
+            if positive else
+            "Draft year context suggests the player may be past their expected development peak."
+        ),
+        "year_of_contract": (
+            "Early contract years correlate with upside potential that the market rewards."
+            if positive else
+            "Later contract years reduce remaining upside, pulling predicted value down."
+        ),
+        "pp_toi": (
+            f"{name} averages {pp_toi_v} min of power play time per game, indicating they are a key offensive weapon."
+            if positive else
+            "Limited power play time suggests a more defensive or depth role."
+        ) if pp_toi_v else (
+            "Strong power play deployment signals offensive importance to the team."
+            if positive else
+            "Limited power play time suggests a more defensive or depth role."
+        ),
+        "pk_toi": (
+            f"{name} averages {pk_toi_v} min of PK time per game, showing the team trusts them in high-pressure defensive situations."
+            if positive else
+            "Minimal penalty kill usage suggests a limited two-way role."
+        ) if pk_toi_v else (
+            "Strong PK deployment reflects two-way trust from coaching staff."
+            if positive else
+            "Minimal penalty kill usage suggests a limited two-way role."
+        ),
+        "fenwick_pct": (
+            f"When {name} is on the ice, the team controls {fen_v}% of shot attempts, meaning they drive play in the right direction."
+            if positive else
+            f"The team is outshot when {name} is on the ice, which advanced metrics penalize."
+        ) if fen_v else (
+            "Strong shot-attempt control when on the ice is a positive advanced metric."
+            if positive else
+            "Being outshot when on the ice is penalized by advanced metrics."
+        ),
+        "xg": (
+            f"{name} has generated {xg_v} expected goals this season, meaning their shot quality and volume is elite."
+            if positive else
+            f"Lower expected goals suggests {name} is not generating high-quality scoring chances."
+        ) if xg_v else (
+            "Elite expected goals generation reflects strong shot quality and volume."
+            if positive else
+            "Below-average expected goals suggests limited high-quality scoring chances."
+        ),
+        "oz_start_pct": (
+            f"Starting {oz_v}% of shifts in the offensive zone shows the team uses {name} as an offensive weapon."
+            if positive else
+            f"Starting most shifts in the defensive zone means {name} faces tougher assignments, which can suppress offensive numbers."
+        ) if oz_v else (
+            "High offensive zone start % reflects offensive deployment trust."
+            if positive else
+            "Defensive zone deployment can suppress offensive numbers."
+        ),
+        "plus_minus": (
+            f"A plus/minus of {pm} means {name} is on the ice for more goals for than against."
+            if positive else
+            f"A plus/minus of {pm} means {name} has been on the ice for more goals against than for."
+        ) if pm else (
+            "Positive plus/minus reflects strong on-ice goal differential."
+            if positive else
+            "Negative plus/minus indicates more goals against than for when on the ice."
+        ),
+        "shooting_pct": (
+            f"{name} converts {spct}% of their shots, above the league average, indicating elite finishing ability."
+            if positive else
+            f"A shooting percentage of {spct}% is below average, suggesting some regression or inefficiency."
+        ) if spct else (
+            "Above-average shooting % indicates elite finishing ability."
+            if positive else
+            "Below-average shooting % suggests regression or inefficiency."
+        ),
+        "hits": (
+            f"{name} has recorded {hits_v} hits this season, showing physical presence that teams value."
+            if positive else
+            "Below-average physical play in terms of hits."
+        ) if hits_v else (
+            "Strong physical presence is valued by teams."
+            if positive else
+            "Below-average physical play in terms of hits."
+        ),
+        "blocks": (
+            f"{name} has blocked {blk_v} shots this season, demonstrating defensive commitment."
+            if positive else
+            "Few blocked shots suggests limited defensive zone presence."
+        ) if blk_v else (
+            "Strong shot-blocking demonstrates defensive commitment."
+            if positive else
+            "Few blocked shots suggests limited defensive zone presence."
+        ),
+        "g60": (
+            f"{name} scores at {g60_v} goals per 60 min, showing elite scoring efficiency per unit of ice time."
+            if positive else
+            f"A goals-per-60 rate of {g60_v} is below what the market expects at this salary level."
+        ) if g60_v else (
+            "High goals-per-60 rate signals efficient scoring."
+            if positive else
+            "Below-average goals-per-60 rate reduces market value."
+        ),
+        "p60": (
+            f"{name} produces at {p60_v} points per 60 min, reflecting strong offensive efficiency."
+            if positive else
+            f"A points-per-60 rate of {p60_v} suggests limited offensive impact relative to ice time."
+        ) if p60_v else (
+            "Strong points-per-60 reflects elite offensive efficiency."
+            if positive else
+            "Below-average points-per-60 suggests limited offensive impact."
+        ),
+        "shots": (
+            f"{name} has put {shots_v} shots on net this season, generating consistent offensive pressure."
+            if positive else
+            "Below-average shot volume limits offensive impact."
+        ) if shots_v else (
+            "High shot volume generates consistent offensive pressure."
+            if positive else
+            "Below-average shot volume limits offensive impact."
+        ),
+        "pp_pts": (
+            f"{name} has {pp_pts_v} power play points this season, showing they are a key part of the power play."
+            if positive else
+            "Limited power play production suggests a smaller role on the man advantage."
+        ) if pp_pts_v else (
+            "Strong power play point production signals offensive importance."
+            if positive else
+            "Limited power play production suggests a smaller role on the man advantage."
+        ),
+        "faceoff_pct": (
+            f"Winning {fo_v}% of faceoffs gives {name}'s team better possession starts across the game."
+            if positive else
+            "A faceoff win rate below 50% means opponents gain more possession starts."
+        ) if fo_v else (
+            "Strong faceoff win rate gives the team better possession starts."
+            if positive else
+            "Below-average faceoff win rate cedes possession to opponents."
+        ),
+        "pim": (
+            "Penalty minutes can reflect physical, aggressive play that teams value in certain roles."
+            if positive else
+            "High penalty minutes hurt on-ice impact by giving opponents power play opportunities."
+        ),
+    }
+
+    sentence = tips.get(base_feat)
+    if sentence is None:
+        lbl = _label(feat)
+        sentence = (
+            f"{lbl} is a positive factor in {name}'s market value."
+            if positive else
+            f"{lbl} is pulling {name}'s estimated value down."
+        )
+
+    full = f"{prior_pfx}{sentence}" if is_prior else sentence
+    # Wrap at ~65 chars for tooltip readability
+    wrapped = "<br>".join(textwrap.wrap(full, width=65))
+    return wrapped
+
+
+def _driver_chart(
+    factors: pd.Series,
+    player: pd.Series,
+    name: str,
+    positive: bool,
+    max_abs: float,
+) -> "go.Figure | None":
+    """Build a Plotly horizontal bar chart for value drivers with hover tooltips."""
+    if factors.empty:
+        return None
+
+    color   = "#43A047" if positive else "#E53935"
+    labels  = [_label(f) for f in factors.index]
+    values  = factors.abs().tolist()
+    sign    = "+" if positive else "-"
+    texts   = [f"{sign}${v/1e6:.2f}M" for v in values]
+    tips    = [_driver_tooltip(f, player, name, positive) for f in factors.index]
+
+    fig = go.Figure(go.Bar(
+        y=labels,
+        x=values,
+        orientation="h",
+        marker=dict(color=color, opacity=0.85, line=dict(color=color, width=0)),
+        customdata=[[t] for t in tips],
+        hovertemplate="<b>%{y}</b><br>%{customdata[0]}<extra></extra>",
+        text=texts,
+        textposition="outside",
+        textfont=dict(color=color, size=11),
+    ))
+    fig.update_layout(
+        paper_bgcolor="#0D0D1A",
+        plot_bgcolor="#0D0D1A",
+        font=dict(color="#CCCCDD", size=12),
+        height=max(200, len(factors) * 54 + 40),
+        xaxis=dict(visible=False, range=[0, max_abs * 1.45]),
+        yaxis=dict(title="", autorange="reversed", tickfont=dict(size=12)),
+        margin=dict(l=0, r=85, t=5, b=5),
+        hoverlabel=dict(
+            bgcolor="#1C1C30",
+            bordercolor="#4A4A6F",
+            font_size=12,
+            font_color="#FFFFFF",
+            namelength=0,
+        ),
+        showlegend=False,
+    )
+    return fig
+
+
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="NHL Value Model",
@@ -1290,62 +1611,33 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         # Section 2 — side-by-side factors
         col_up, col_dn = st.columns(2)
 
-        def _factor_row(label: str, val: float, max_v: float, positive: bool) -> str:
-            bar_pct  = int(abs(val) / max_v * 100) if max_v > 0 else 0
-            bar_pct  = max(bar_pct, 3)
-            color    = "#43A047" if positive else "#E53935"
-            sign_str = f"+${val/1e6:.2f}M" if positive else f"-${abs(val)/1e6:.2f}M"
-            return (
-                f"<div style='margin:6px 0;'>"
-                f"<div style='display:flex;justify-content:space-between;"
-                f"align-items:center;margin-bottom:3px;'>"
-                f"<span style='font-size:12px;color:#CCCCDD;'>{label}</span>"
-                f"<span style='font-size:12px;color:{color};font-weight:600;'>{sign_str}</span>"
-                f"</div>"
-                f"<div style='height:12px;width:{bar_pct}%;background:{color};"
-                f"border-radius:3px;opacity:0.85;'></div>"
-                f"</div>"
-            )
-
         with col_up:
             st.markdown(
                 "<div style='color:#43A047;font-weight:700;font-size:13px;"
-                "margin-bottom:8px;'>↑ Pushing value UP</div>",
+                "margin-bottom:4px;'>↑ Pushing value UP</div>",
                 unsafe_allow_html=True,
             )
-            if pos_factors.empty:
+            fig_up = _driver_chart(pos_factors, player, name, True, max_abs)
+            if fig_up:
+                st.plotly_chart(fig_up, use_container_width=True,
+                                config={"displayModeBar": False})
+            else:
                 st.markdown("<span style='color:#555566;font-size:12px;'>None</span>",
                             unsafe_allow_html=True)
-            else:
-                rows = "".join(
-                    _factor_row(_label(f), v, max_abs, True)
-                    for f, v in pos_factors.items()
-                )
-                st.markdown(
-                    f"<div style='background:#0D0D1A;border-radius:8px;padding:10px 12px;'>"
-                    f"{rows}</div>",
-                    unsafe_allow_html=True,
-                )
 
         with col_dn:
             st.markdown(
                 "<div style='color:#E53935;font-weight:700;font-size:13px;"
-                "margin-bottom:8px;'>↓ Pushing value DOWN</div>",
+                "margin-bottom:4px;'>↓ Pushing value DOWN</div>",
                 unsafe_allow_html=True,
             )
-            if neg_factors.empty:
+            fig_dn = _driver_chart(neg_factors, player, name, False, max_abs)
+            if fig_dn:
+                st.plotly_chart(fig_dn, use_container_width=True,
+                                config={"displayModeBar": False})
+            else:
                 st.markdown("<span style='color:#555566;font-size:12px;'>None</span>",
                             unsafe_allow_html=True)
-            else:
-                rows = "".join(
-                    _factor_row(_label(f), v, max_abs, False)
-                    for f, v in neg_factors.items()
-                )
-                st.markdown(
-                    f"<div style='background:#0D0D1A;border-radius:8px;padding:10px 12px;'>"
-                    f"{rows}</div>",
-                    unsafe_allow_html=True,
-                )
 
         # Section 3 — result
         pv_val   = pv or base
