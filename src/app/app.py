@@ -541,6 +541,17 @@ _DARK_CSS  = """<style>
   /* Tick bar labels */
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #A0A0A0 !important; }
+  /* Number input */
+  [data-testid="stNumberInput"] input {
+      background: #0C0C0C !important; color: #E8E4DC !important;
+      border-color: #2C2C2C !important; border-radius: 0 !important;
+      font-family: 'IBM Plex Mono', monospace !important;
+  }
+  [data-testid="stNumberInput"] input:focus { border-color: #C8A84B !important; box-shadow: none !important; }
+  [data-testid="stNumberInput"] button {
+      background: #141414 !important; border-color: #2C2C2C !important; color: #A0A0A0 !important;
+  }
+  [data-testid="stNumberInput"] button:hover { border-color: #C8A84B !important; color: #E8E4DC !important; }
   /* Dataframe — invert to match dark theme */
   [data-testid="stDataFrameContainer"],
   [data-testid="stDataFrame"],
