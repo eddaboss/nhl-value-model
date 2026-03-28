@@ -2729,6 +2729,40 @@ def main():
         "🧠 Model Insights",
     ])
 
+    # Persist active tab across reruns (theme toggle, UFA toggle, etc.) via
+    # sessionStorage in the parent window — survives st.rerun() without full navigation.
+    st.markdown("""
+<script>
+(function() {
+  var _KEY = '_st_active_tab';
+  function restoreTab() {
+    var idx = parseInt(sessionStorage.getItem(_KEY) || '0');
+    if (idx <= 0) return;
+    var tabs = window.parent.document.querySelectorAll('[data-baseweb="tab"]');
+    if (tabs.length > idx) {
+      tabs[idx].click();
+    } else {
+      setTimeout(restoreTab, 80);
+    }
+  }
+  function attachListeners() {
+    var tabs = window.parent.document.querySelectorAll('[data-baseweb="tab"]');
+    tabs.forEach(function(tab, i) {
+      if (!tab.dataset._stTabBound) {
+        tab.dataset._stTabBound = '1';
+        tab.addEventListener('click', function() {
+          sessionStorage.setItem(_KEY, String(i));
+        });
+      }
+    });
+  }
+  setTimeout(function() { restoreTab(); attachListeners(); }, 250);
+  var _obs = new MutationObserver(function() { attachListeners(); });
+  _obs.observe(window.parent.document.body, { childList: true, subtree: true });
+})();
+</script>
+""", unsafe_allow_html=True)
+
     with tab1:
         tab_overview(filtered, df)
     with tab2:
