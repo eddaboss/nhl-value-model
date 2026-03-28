@@ -1465,14 +1465,14 @@ def render_footer(df: pd.DataFrame):
     n_est  = int(df["is_estimated"].sum()) if "is_estimated" in df.columns else 0
 
     st.markdown("---")
+    _last_updated = (f" &nbsp;·&nbsp; Last updated: <strong>{last_ts}</strong>" if last_ts else "")
+    _season_info = f"&nbsp;·&nbsp; {_season_str(load_season_context())} Season &nbsp;·&nbsp; Cap ceiling: ${CAP_CEILING/1e6:.1f}M"
     st.markdown(
         f"<div style='color:#555566;font-size:.78rem;text-align:center;padding:8px 0 4px;'>"
         f"Data: <strong>NHL API</strong> (rosters, stats, headshots) &nbsp;·&nbsp; "
         f"<strong>PuckPedia</strong> (contract database) &nbsp;·&nbsp; "
         f"{n_real} real contracts · {n_est} estimated"
-        + (f" &nbsp;·&nbsp; Last updated: <strong>{last_ts}</strong>" if last_ts else "")
-        + (f"&nbsp;·&nbsp; {_season_str(load_season_context())} Season"
-           f"&nbsp;·&nbsp; Cap ceiling: ${CAP_CEILING/1e6:.1f}M")
+        f"{_last_updated}{_season_info}"
         f"</div>",
         unsafe_allow_html=True,
     )
