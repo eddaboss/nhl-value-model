@@ -1288,7 +1288,9 @@ def tab_leaderboards(df: pd.DataFrame):
         rows_html = ""
         for _, row in data.iterrows():
             delta_v = row.get(delta_col, 0) or 0
-            row_bg  = "background:#1a1a2e;" if delta_v >= 0 else "background:#1a1a2e;"
+            _rbg = _T["card_bg"]
+            _ctxt = _T["card_text"]
+            row_bg  = f"background:{_rbg};"
             cells = ""
             for c in cols:
                 v = row.get(c)
@@ -1305,7 +1307,7 @@ def tab_leaderboards(df: pd.DataFrame):
                     color = "#1FBFA0" if (v or 0) >= 0 else "#E84040"
                     txt = f"<span style='color:{color};'>{fmt_pct(v)}</span>"
                 elif c == "name":
-                    txt = f"<span style='color:#E8E4DC;font-weight:700;'>{v}</span>"
+                    txt = f"<span style='color:{_ctxt};font-weight:700;'>{v}</span>"
                 elif c == "team":
                     txt = f"<span style='color:#C8A84B;'>{v}</span>"
                 else:
@@ -1407,16 +1409,17 @@ def tab_leaderboards(df: pd.DataFrame):
 def tab_kings(df: pd.DataFrame):
     # Kings-specific header with logo
     kings_logo = team_logo_url("LAK")
+    _kbg = _T["card_bg"]; _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
     st.markdown(
         f"<div style='display:flex;align-items:center;gap:18px;margin-bottom:12px;"
-        f"padding:18px 22px;background:#1a1a2e;border-left:4px solid {KINGS_GOLD};'>"
+        f"padding:18px 22px;background:{_kbg};border-left:4px solid {KINGS_GOLD};border:1px solid {_T['card_border']};'>"
         f"<img src='{kings_logo}' width='64' height='64' "
         f"style='flex-shrink:0;opacity:.95;' onerror=\"this.style.display='none'\">"
         f"<div>"
-        f"<div style='font-size:1.5rem;font-weight:700;color:{KINGS_WHITE};"
+        f"<div style='font-size:1.5rem;font-weight:700;color:{_ktxt};"
         f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
         f"Los Angeles Kings</div>"
-        f"<div style='color:#A0A0A0;font-size:.78rem;margin-top:5px;"
+        f"<div style='color:{_ksub};font-size:.78rem;margin-top:5px;"
         f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.14em;text-transform:uppercase;'>"
         f"{_season_str(load_season_context())} Roster Analysis &nbsp;·&nbsp; XGBoost Model</div>"
         f"</div></div>",
@@ -1441,8 +1444,8 @@ def tab_kings(df: pd.DataFrame):
     n_expiring        = int((kings["years_left"].fillna(0) <= 1).sum())
 
     st.markdown(
-        f"<div style='background:#1a1a2e;border-top:3px solid {KINGS_GOLD};"
-        "border-radius:3px;padding:16px 20px;margin-bottom:16px;'>",
+        f"<div style='background:{_T['card_bg']};border-top:3px solid {KINGS_GOLD};"
+        f"border:1px solid {_T['card_border']};border-radius:3px;padding:16px 20px;margin-bottom:16px;'>",
         unsafe_allow_html=True,
     )
     cap_cols = st.columns(5)
@@ -1738,16 +1741,17 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
             f"onerror=\"this.style.display='none'\">"
         )
 
+    _pctxt = _T["card_text"]; _pcsub = _T["card_subtext"]
     st.markdown(
         f"<div class='player-card'>"
         f"  <div style='display:flex;gap:18px;align-items:center;'>"
         f"    {hs_html}"
         f"    <div>"
-        f"      <div style='font-size:1.5rem;font-weight:700;color:#E8E4DC;"
+        f"      <div style='font-size:1.5rem;font-weight:700;color:{_pctxt};"
         f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
         f"        {name}{prior_badge}{contract_badge}"
         f"      </div>"
-        f"      <div style='color:#A0A0A0;margin-top:5px;font-size:.87rem;"
+        f"      <div style='color:{_pcsub};margin-top:5px;font-size:.87rem;"
         f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
         f"        {team} &nbsp;·&nbsp; {pos} &nbsp;·&nbsp; Age {age}"
         f"      </div>"
@@ -1808,11 +1812,12 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         ext_yrs_str  = f"{int(ext_len)}-yr" if ext_len else ""
         ext_start_str = f"{int(ext_start)-1}-{str(int(ext_start))[-2:]}" if ext_start else "?"
         ext_exp_str  = f"{int(ext_exp)-1}-{str(int(ext_exp))[-2:]}" if ext_exp else "?"
+        _extbg = _T["card_bg"]; _extbd = _T["card_border"]; _extsub = _T["card_subtext"]
         st.markdown(
-            f"<div style='background:#1a1a2e;border:1px solid #252545;border-radius:3px;"
+            f"<div style='background:{_extbg};border:1px solid {_extbd};border-radius:3px;"
             f"padding:10px 14px;margin:8px 0;font-size:13px;'>"
             f"<span style='color:#6BBAD4;font-weight:700;'>✅ Extension Signed</span>"
-            f"<span style='color:#A0A0A0;margin-left:10px;'>"
+            f"<span style='color:{_extsub};margin-left:10px;'>"
             f"{ext_yrs_str} · {ext_ch_str}/yr · {ext_start_str} → {ext_exp_str}"
             f"{' · ' + ext_stat if ext_stat else ''}"
             f"</span></div>",
@@ -1837,7 +1842,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     total    = len(df)
     rank_pct = pct_rank(df["predicted_value"], pv or 0)
     st.markdown(
-        f"<div style='color:#A0A0A0;font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
+        f"<div style='color:{_T['card_subtext']};font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
         f"letter-spacing:.04em;'>LEAGUE RANK BY PREDICTED VALUE: "
         f"<span style='color:#C8A84B;font-weight:700;'>#{rank} of {total}</span> "
         f"&nbsp;·&nbsp; TOP <span style='color:#C8A84B;font-weight:700;'>{100-rank_pct}%</span></div>",
@@ -1902,11 +1907,12 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
 
         # Section 1 — league average
+        _vdbg = _T["card_bg"]; _vdbd = _T["card_border"]; _vdsub = _T["card_subtext"]; _vdtxt = _T["card_text"]
         st.markdown(
-            f"<div style='background:#1a1a2e;border-radius:2px;border:1px solid #252545;"
+            f"<div style='background:{_vdbg};border-radius:2px;border:1px solid {_vdbd};"
             f"padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;"
             f"justify-content:space-between;'>"
-            f"<span style='font-size:.82rem;color:#A0A0A0;font-family:\"IBM Plex Mono\",monospace;"
+            f"<span style='font-size:.82rem;color:{_vdsub};font-family:\"IBM Plex Mono\",monospace;"
             f"letter-spacing:.12em;text-transform:uppercase;'>League Average</span>"
             f"<strong style='color:#C8A84B;font-family:\"IBM Plex Mono\",monospace;"
             f"font-size:.95rem;'>${base/1e6:.2f}M</strong></div>",
@@ -1914,13 +1920,13 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
 
         # Section 2 — side-by-side factors with CSS hover tooltips
-        st.markdown("""
+        st.markdown(f"""
 <style>
-.vd-row{position:relative;margin:5px 0;cursor:default;}
-.vd-tip{
+.vd-row{{position:relative;margin:5px 0;cursor:default;}}
+.vd-tip{{
   visibility:hidden;opacity:0;
-  background:#1a1a2e;color:#E8E4DC;
-  border:1px solid #707070;border-radius:2px;
+  background:{_vdbg};color:{_vdtxt};
+  border:1px solid {_vdbd};border-radius:2px;
   padding:8px 12px;font-size:11px;line-height:1.6;
   position:absolute;z-index:9999;
   bottom:115%;left:0;
@@ -1928,8 +1934,8 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
   white-space:normal;pointer-events:none;
   transition:opacity .12s ease;
   font-family:'Manrope',sans-serif;
-}
-.vd-row:hover .vd-tip{visibility:visible;opacity:1;}
+}}
+.vd-row:hover .vd-tip{{visibility:visible;opacity:1;}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -1944,7 +1950,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 f"<div class='vd-tip'><strong>{lbl}</strong><br>{safe_tip}</div>"
                 f"<div style='display:flex;justify-content:space-between;"
                 f"align-items:center;margin-bottom:3px;'>"
-                f"<span style='font-size:12px;color:#E8E4DC;'>{lbl}</span>"
+                f"<span style='font-size:12px;color:{_T['card_text']};'>{lbl}</span>"
                 f"<span style='font-size:12px;color:{color};font-weight:600;'>{sign_str}</span>"
                 f"</div>"
                 f"<div style='height:12px;width:{bar_pct}%;background:{color};"
@@ -1973,7 +1979,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                     for f, v in pos_factors.items()
                 )
                 st.markdown(
-                    f"<div style='background:#1a1a2e;border-radius:2px;border:1px solid #252545;"
+                    f"<div style='background:{_vdbg};border-radius:2px;border:1px solid {_vdbd};"
                     f"padding:10px 12px;'>{rows}</div>",
                     unsafe_allow_html=True,
                 )
@@ -1997,7 +2003,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                     for f, v in neg_factors.items()
                 )
                 st.markdown(
-                    f"<div style='background:#1a1a2e;border-radius:2px;border:1px solid #252545;"
+                    f"<div style='background:{_vdbg};border-radius:2px;border:1px solid {_vdbd};"
                     f"padding:10px 12px;'>{rows}</div>",
                     unsafe_allow_html=True,
                 )
