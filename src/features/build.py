@@ -122,3 +122,26 @@ def get_feature_matrix(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series | None
     X = df[num_present + cat_present]
     y = df[TARGET] if TARGET in df.columns else None
     return X, y
+
+
+def resign_label(row) -> str:
+    """Re-signing signal used by both pipeline.py and the Streamlit app."""
+    age        = row.get("age", 30)
+    delta      = row.get("value_delta", 0)
+    expiry     = str(row.get("expiry_status", "")).upper()
+    years_left = row.get("years_left", 1)
+
+    expiring   = expiry in ("UFA", "RFA") or (pd.notna(years_left) and years_left <= 1)
+    underpaid  = delta > 500_000
+    overpaid   = delta < -1_000_000
+    young      = age <= 27
+    prime      = 27 < age <= 32
+    aging      = age > 32
+
+    if expiring and underpaid and (young or prime):   return "Must Sign"
+    if expiring and young and not overpaid:           return "Priority RFA"
+    if not expiring and underpaid:                    return "Locked In (Value)"
+    if expiring and aging and overpaid:               return "Let Walk"
+    if not expiring and overpaid and aging:           return "Buyout Candidate"
+    if expiring and not overpaid and not underpaid:   return "Fair Deal"
+    return "Monitor"

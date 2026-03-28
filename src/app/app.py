@@ -10,6 +10,10 @@ import plotly.graph_objects as go
 import streamlit as st
 from pathlib import Path
 
+from src.data.load import load_and_merge, CAP_CEILING
+from src.features.build import build_features, get_feature_matrix, resign_label
+from src.models.train import load_model
+
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="NHL Value Model",
@@ -116,22 +120,50 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 PROCESSED_DIR = Path(__file__).parents[2] / "data" / "processed"
+MODELS_DIR    = Path(__file__).parents[2] / "models"
+
+_KEEP_COLS = [
+    "name", "team", "pos", "age",
+    "cap_hit", "predicted_value", "value_delta",
+    "expiry_status", "expiry_year", "years_left", "length_of_contract",
+    "gp", "g", "a", "p", "ppg",
+    "toi_per_g", "plus_minus", "pim",
+    "g60", "p60", "pp_pts", "shots", "shooting_pct",
+    "resign_signal", "player_id",
+    "has_contract_data", "has_prior_market_data", "is_estimated",
+]
 
 
 # ── Data loaders ───────────────────────────────────────────────────────────────
-@st.cache_data(ttl=86400)
+@st.cache_data(ttl=3600)   # refresh live data every hour
 def load_predictions() -> pd.DataFrame:
-    path = PROCESSED_DIR / "predictions.csv"
-    if not path.exists():
-        st.error("predictions.csv not found — run `py -3 pipeline.py` first.")
-        st.stop()
-    df = pd.read_csv(path)
+    """
+    Build predictions from live sources every hour.
+    - NHL API stats:  fetched live (24-hour disk cache in data/raw/)
+    - Contracts:      read from data/contracts.db (committed to repo)
+    - Model:          loaded from models/xgb.pkl (committed to repo)
+    No manual pipeline run needed — the app always serves fresh data.
+    """
+    df_raw, _ctx = load_and_merge()
+    df = build_features(df_raw)
+    X, _ = get_feature_matrix(df)
+
+    model = load_model("xgb")
+    df["predicted_value"] = model.predict(X) * CAP_CEILING
+    df["value_delta"] = df.apply(
+        lambda r: r["predicted_value"] - r["cap_hit"]
+        if r.get("has_contract_data") else None, axis=1
+    )
+    df["resign_signal"] = df.apply(resign_label, axis=1)
+
+    out = df[[c for c in _KEEP_COLS if c in df.columns]].copy()
     for col in ["cap_hit", "predicted_value", "value_delta"]:
-        df[col] = pd.to_numeric(df[col], errors="coerce")
-    if "is_estimated" not in df.columns:
-        df["is_estimated"] = False
-    df["is_estimated"] = df["is_estimated"].fillna(False).astype(bool)
-    return df
+        if col in out.columns:
+            out[col] = pd.to_numeric(out[col], errors="coerce")
+    if "is_estimated" not in out.columns:
+        out["is_estimated"] = False
+    out["is_estimated"] = out["is_estimated"].fillna(False).astype(bool)
+    return out
 
 
 @st.cache_data

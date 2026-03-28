@@ -21,34 +21,11 @@ warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 from src.data.load import load_and_merge, save_processed, CAP_CEILING
-from src.features.build import build_features, get_feature_matrix
+from src.features.build import build_features, get_feature_matrix, resign_label
 from src.models.train import build_pipelines, evaluate, train_and_save, tune_xgb
 from src.models.explain import save_shap_artifacts
 
 PROCESSED_DIR = Path(__file__).parent / "data" / "processed"
-
-
-def resign_label(row) -> str:
-    """Simple re-signing signal for the Kings page."""
-    age        = row.get("age", 30)
-    delta      = row.get("value_delta", 0)
-    expiry     = str(row.get("expiry_status", "")).upper()
-    years_left = row.get("years_left", 1)
-
-    expiring   = expiry in ("UFA", "RFA") or (pd.notna(years_left) and years_left <= 1)
-    underpaid  = delta > 500_000
-    overpaid   = delta < -1_000_000
-    young      = age <= 27
-    prime      = 27 < age <= 32
-    aging      = age > 32
-
-    if expiring and underpaid and (young or prime):   return "Must Sign"
-    if expiring and young and not overpaid:           return "Priority RFA"
-    if not expiring and underpaid:                    return "Locked In (Value)"
-    if expiring and aging and overpaid:               return "Let Walk"
-    if not expiring and overpaid and aging:           return "Buyout Candidate"
-    if expiring and not overpaid and not underpaid:   return "Fair Deal"
-    return "Monitor"
 
 
 def main(tune: bool = False, refresh: bool = False, refresh_all: bool = False):
