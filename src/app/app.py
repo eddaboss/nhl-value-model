@@ -414,54 +414,6 @@ def _driver_tooltip(feat: str, player: pd.Series, name: str, positive: bool) -> 
     return wrapped
 
 
-def _driver_chart(
-    factors: pd.Series,
-    player: pd.Series,
-    name: str,
-    positive: bool,
-    max_abs: float,
-) -> "go.Figure | None":
-    """Build a Plotly horizontal bar chart for value drivers with hover tooltips."""
-    if factors.empty:
-        return None
-
-    color   = "#43A047" if positive else "#E53935"
-    labels  = [_label(f) for f in factors.index]
-    values  = factors.abs().tolist()
-    sign    = "+" if positive else "-"
-    texts   = [f"{sign}${v/1e6:.2f}M" for v in values]
-    tips    = [_driver_tooltip(f, player, name, positive) for f in factors.index]
-
-    fig = go.Figure(go.Bar(
-        y=labels,
-        x=values,
-        orientation="h",
-        marker=dict(color=color, opacity=0.85, line=dict(color=color, width=0)),
-        customdata=[[t] for t in tips],
-        hovertemplate="<b>%{y}</b><br>%{customdata[0]}<extra></extra>",
-        text=texts,
-        textposition="outside",
-        textfont=dict(color=color, size=11),
-    ))
-    fig.update_layout(
-        paper_bgcolor="#0D0D1A",
-        plot_bgcolor="#0D0D1A",
-        font=dict(color="#CCCCDD", size=12),
-        height=max(200, len(factors) * 54 + 40),
-        xaxis=dict(visible=False, range=[0, max_abs * 1.45]),
-        yaxis=dict(title="", autorange="reversed", tickfont=dict(size=12)),
-        margin=dict(l=0, r=85, t=5, b=5),
-        hoverlabel=dict(
-            bgcolor="#1C1C30",
-            bordercolor="#4A4A6F",
-            font_size=12,
-            font_color="#FFFFFF",
-            namelength=0,
-        ),
-        showlegend=False,
-    )
-    return fig
-
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -1608,36 +1560,87 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
             unsafe_allow_html=True,
         )
 
-        # Section 2 — side-by-side factors
+        # Section 2 — side-by-side factors with CSS hover tooltips
+        st.markdown("""
+<style>
+.vd-row{position:relative;margin:6px 0;cursor:default;}
+.vd-tip{
+  visibility:hidden;opacity:0;
+  background:#1C1C30;color:#fff;
+  border:1px solid #4A4A6F;border-radius:6px;
+  padding:8px 12px;font-size:12px;line-height:1.5;
+  position:absolute;z-index:9999;
+  bottom:115%;left:0;
+  min-width:240px;max-width:340px;
+  white-space:normal;pointer-events:none;
+  transition:opacity .15s ease;
+}
+.vd-row:hover .vd-tip{visibility:visible;opacity:1;}
+</style>
+""", unsafe_allow_html=True)
+
+        def _factor_row(lbl: str, val: float, max_v: float, positive: bool, tip: str) -> str:
+            bar_pct  = int(abs(val) / max_v * 100) if max_v > 0 else 0
+            bar_pct  = max(bar_pct, 3)
+            color    = "#43A047" if positive else "#E53935"
+            sign_str = f"+${val/1e6:.2f}M" if positive else f"-${abs(val)/1e6:.2f}M"
+            safe_tip = tip.replace('"', "&quot;").replace("<br>", " ")
+            return (
+                f"<div class='vd-row'>"
+                f"<div class='vd-tip'><strong>{lbl}</strong><br>{safe_tip}</div>"
+                f"<div style='display:flex;justify-content:space-between;"
+                f"align-items:center;margin-bottom:3px;'>"
+                f"<span style='font-size:12px;color:#CCCCDD;'>{lbl}</span>"
+                f"<span style='font-size:12px;color:{color};font-weight:600;'>{sign_str}</span>"
+                f"</div>"
+                f"<div style='height:12px;width:{bar_pct}%;background:{color};"
+                f"border-radius:3px;opacity:0.85;'></div>"
+                f"</div>"
+            )
+
         col_up, col_dn = st.columns(2)
 
         with col_up:
             st.markdown(
                 "<div style='color:#43A047;font-weight:700;font-size:13px;"
-                "margin-bottom:4px;'>↑ Pushing value UP</div>",
+                "margin-bottom:8px;'>↑ Pushing value UP</div>",
                 unsafe_allow_html=True,
             )
-            fig_up = _driver_chart(pos_factors, player, name, True, max_abs)
-            if fig_up:
-                st.plotly_chart(fig_up, use_container_width=True,
-                                config={"displayModeBar": False})
-            else:
+            if pos_factors.empty:
                 st.markdown("<span style='color:#555566;font-size:12px;'>None</span>",
                             unsafe_allow_html=True)
+            else:
+                rows = "".join(
+                    _factor_row(_label(f), v, max_abs, True,
+                                _driver_tooltip(f, player, name, True))
+                    for f, v in pos_factors.items()
+                )
+                st.markdown(
+                    f"<div style='background:#0D0D1A;border-radius:8px;padding:10px 12px;'>"
+                    f"{rows}</div>",
+                    unsafe_allow_html=True,
+                )
 
         with col_dn:
             st.markdown(
                 "<div style='color:#E53935;font-weight:700;font-size:13px;"
-                "margin-bottom:4px;'>↓ Pushing value DOWN</div>",
+                "margin-bottom:8px;'>↓ Pushing value DOWN</div>",
                 unsafe_allow_html=True,
             )
-            fig_dn = _driver_chart(neg_factors, player, name, False, max_abs)
-            if fig_dn:
-                st.plotly_chart(fig_dn, use_container_width=True,
-                                config={"displayModeBar": False})
-            else:
+            if neg_factors.empty:
                 st.markdown("<span style='color:#555566;font-size:12px;'>None</span>",
                             unsafe_allow_html=True)
+            else:
+                rows = "".join(
+                    _factor_row(_label(f), v, max_abs, False,
+                                _driver_tooltip(f, player, name, False))
+                    for f, v in neg_factors.items()
+                )
+                st.markdown(
+                    f"<div style='background:#0D0D1A;border-radius:8px;padding:10px 12px;'>"
+                    f"{rows}</div>",
+                    unsafe_allow_html=True,
+                )
 
         # Section 3 — result
         pv_val   = pv or base
