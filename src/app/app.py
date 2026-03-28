@@ -20,7 +20,7 @@ if str(_ROOT) not in sys.path:
 
 
 # ── Background refresh state (module-level, shared across Streamlit reruns) ────
-_refresh_status: dict = {"running": False, "done": False, "error": None}
+_refresh_status: dict = {"running": False, "done": False, "error": None, "started_at": None}
 _refresh_lock = threading.Lock()
 
 
@@ -93,6 +93,7 @@ def start_background_refresh(processed_dir: Path) -> None:
         _refresh_status["running"] = True
         _refresh_status["done"] = False
         _refresh_status["error"] = None
+        _refresh_status["started_at"] = time.time()
     t = threading.Thread(
         target=_run_pipeline_background, args=(processed_dir,), daemon=True
     )
@@ -1500,11 +1501,18 @@ def main():
 
     # Banner sits below the title so it's never clipped by Streamlit's top toolbar.
     # Disappears automatically when the background thread finishes and st.rerun() fires.
+    _started = _refresh_status.get("started_at")
+    _timed_out = _started and (time.time() - _started) > 600  # 10 min timeout
+    if _timed_out:
+        _refresh_status["running"] = False
+        _refresh_status["error"] = "Data fetch timed out after 10 minutes."
     if _refresh_status["running"]:
         st.info(
             "Fetching latest NHL stats — data will refresh automatically when ready.",
             icon="🔄",
         )
+    elif _refresh_status["error"] and _timed_out:
+        st.warning("Data fetch timed out. Showing last cached data.", icon="⚠️")
 
     df        = load_predictions()
     shap_vals = load_shap_values()
