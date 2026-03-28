@@ -1,52 +1,10 @@
 [
   {
-    "player_id": 8480448,
-    "name": "Parker Kelly",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 1150000,
-    "logged_at": "2026-03-26T10:40:41.024950+00:00"
-  },
-  {
     "player_id": 8476856,
     "name": "Mathew Dumba",
     "reason": "All scrape sources failed \u2014 estimated from estimated",
     "estimated_cap_hit": 2900000,
     "logged_at": "2026-03-26T10:40:41.114282+00:00"
-  },
-  {
-    "player_id": 8482929,
-    "name": "Emil Lilleberg",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 2900000,
-    "logged_at": "2026-03-26T10:40:41.214782+00:00"
-  },
-  {
-    "player_id": 8482655,
-    "name": "J.J. Moser",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 2900000,
-    "logged_at": "2026-03-26T10:40:41.240929+00:00"
-  },
-  {
-    "player_id": 8480246,
-    "name": "Nick Perbix",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 2900000,
-    "logged_at": "2026-03-26T10:40:41.257341+00:00"
-  },
-  {
-    "player_id": 8478493,
-    "name": "Joel Eriksson Ek",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 4050000,
-    "logged_at": "2026-03-26T10:40:41.284518+00:00"
-  },
-  {
-    "player_id": 8478470,
-    "name": "Samuel Montembeault",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 1150000,
-    "logged_at": "2026-03-26T10:40:41.416176+00:00"
   },
   {
     "player_id": 8479944,
@@ -56,60 +14,11 @@
     "logged_at": "2026-03-26T10:40:41.444364+00:00"
   },
   {
-    "player_id": 8482475,
-    "name": "Egor Chinakhov",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 1150000,
-    "logged_at": "2026-03-26T10:40:41.461166+00:00"
-  },
-  {
-    "player_id": 8474037,
-    "name": "James van Riemsdyk",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 1150000,
-    "logged_at": "2026-03-26T10:40:41.500039+00:00"
-  },
-  {
-    "player_id": 8481716,
-    "name": "Dmitri Voronkov",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 1150000,
-    "logged_at": "2026-03-26T10:40:41.516657+00:00"
-  },
-  {
-    "player_id": 8482245,
-    "name": "Artem Zub",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 2900000,
-    "logged_at": "2026-03-26T10:40:41.605490+00:00"
-  },
-  {
-    "player_id": 8485512,
-    "name": "Tim Washe",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 1150000,
-    "logged_at": "2026-03-26T10:40:41.702524+00:00"
-  },
-  {
-    "player_id": 8481178,
-    "name": "Egor Zamula",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 2900000,
-    "logged_at": "2026-03-26T10:40:41.737000+00:00"
-  },
-  {
     "player_id": 8482783,
     "name": "Aleksei Kolosov",
     "reason": "All scrape sources failed \u2014 estimated from estimated",
     "estimated_cap_hit": 975000,
     "logged_at": "2026-03-26T10:40:41.747829+00:00"
-  },
-  {
-    "player_id": 8477845,
-    "name": "Trevor van Riemsdyk",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 2900000,
-    "logged_at": "2026-03-26T10:40:41.860650+00:00"
   },
   {
     "player_id": 8477384,
@@ -126,27 +35,6 @@
     "logged_at": "2026-03-26T10:40:42.229448+00:00"
   },
   {
-    "player_id": 8482713,
-    "name": "Mackie Samoskevich",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 975000,
-    "logged_at": "2026-03-26T10:40:42.367060+00:00"
-  },
-  {
-    "player_id": 8479372,
-    "name": "Joshua Mahura",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 2900000,
-    "logged_at": "2026-03-26T10:40:42.424096+00:00"
-  },
-  {
-    "player_id": 8478916,
-    "name": "Joey Daccord",
-    "reason": "All scrape sources failed \u2014 estimated from estimated",
-    "estimated_cap_hit": 1150000,
-    "logged_at": "2026-03-26T10:40:42.442619+00:00"
-  },
-  {
     "player_id": 8484312,
     "name": "Georgi Romanov",
     "reason": "All scrape sources failed \u2014 estimated from estimated",
@@ -159,5 +47,271 @@
     "reason": "All scrape sources failed \u2014 estimated from estimated",
     "estimated_cap_hit": 2900000,
     "logged_at": "2026-03-26T10:40:42.785236+00:00"
+  },
+  {
+    "player_id": 8485512,
+    "name": "Tim Washe",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.332085+00:00"
+  },
+  {
+    "player_id": 8481219,
+    "name": "Jonathan Aspirot",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:45.351024+00:00"
+  },
+  {
+    "player_id": 8483500,
+    "name": "Noah Ostlund",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 975000,
+    "logged_at": "2026-03-28T01:43:45.370385+00:00"
+  },
+  {
+    "player_id": 8483548,
+    "name": "Brandon Bussi",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.388587+00:00"
+  },
+  {
+    "player_id": 8481716,
+    "name": "Dmitri Voronkov",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.399897+00:00"
+  },
+  {
+    "player_id": 8481178,
+    "name": "Egor Zamula",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:45.419294+00:00"
+  },
+  {
+    "player_id": 8482445,
+    "name": "Devin Cooley",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.460799+00:00"
+  },
+  {
+    "player_id": 8484149,
+    "name": "Gavin Brindley",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 975000,
+    "logged_at": "2026-03-28T01:43:45.490109+00:00"
+  },
+  {
+    "player_id": 8480448,
+    "name": "Parker Kelly",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.502087+00:00"
+  },
+  {
+    "player_id": 8484829,
+    "name": "Justin Hryckowian",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.516794+00:00"
+  },
+  {
+    "player_id": 8480326,
+    "name": "Sheldon Dries",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.538838+00:00"
+  },
+  {
+    "player_id": 8479942,
+    "name": "Dominik Shine",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.555249+00:00"
+  },
+  {
+    "player_id": 8474037,
+    "name": "James van Riemsdyk",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.566730+00:00"
+  },
+  {
+    "player_id": 8482713,
+    "name": "Mackie Samoskevich",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 975000,
+    "logged_at": "2026-03-28T01:43:45.593228+00:00"
+  },
+  {
+    "player_id": 8478493,
+    "name": "Joel Eriksson Ek",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 4362500,
+    "logged_at": "2026-03-28T01:43:45.617563+00:00"
+  },
+  {
+    "player_id": 8480813,
+    "name": "Joe Veleno",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.635772+00:00"
+  },
+  {
+    "player_id": 8478470,
+    "name": "Samuel Montembeault",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.648975+00:00"
+  },
+  {
+    "player_id": 8482768,
+    "name": "Fedor Svechkov",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 975000,
+    "logged_at": "2026-03-28T01:43:45.671774+00:00"
+  },
+  {
+    "player_id": 8480246,
+    "name": "Nick Perbix",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:45.684900+00:00"
+  },
+  {
+    "player_id": 8485702,
+    "name": "Max Shabanov",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.700913+00:00"
+  },
+  {
+    "player_id": 8482245,
+    "name": "Artem Zub",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:45.748076+00:00"
+  },
+  {
+    "player_id": 8483733,
+    "name": "Nikita Grebenkin",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 975000,
+    "logged_at": "2026-03-28T01:43:45.766363+00:00"
+  },
+  {
+    "player_id": 8482475,
+    "name": "Egor Chinakhov",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.782993+00:00"
+  },
+  {
+    "player_id": 8481030,
+    "name": "Jack St. Ivany",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:45.805660+00:00"
+  },
+  {
+    "player_id": 8483570,
+    "name": "Ben Meyers",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.829671+00:00"
+  },
+  {
+    "player_id": 8482751,
+    "name": "Ryan Winterton",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 975000,
+    "logged_at": "2026-03-28T01:43:45.839468+00:00"
+  },
+  {
+    "player_id": 8479372,
+    "name": "Joshua Mahura",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:45.850407+00:00"
+  },
+  {
+    "player_id": 8478916,
+    "name": "Joey Daccord",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:45.860619+00:00"
+  },
+  {
+    "player_id": 8482733,
+    "name": "Logan Mailloux",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 975000,
+    "logged_at": "2026-03-28T01:43:45.910786+00:00"
+  },
+  {
+    "player_id": 8481719,
+    "name": "Max Crozier",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:45.931634+00:00"
+  },
+  {
+    "player_id": 8480426,
+    "name": "Charle-Edouard D'Astous",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:45.942822+00:00"
+  },
+  {
+    "player_id": 8482929,
+    "name": "Emil Lilleberg",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:45.954426+00:00"
+  },
+  {
+    "player_id": 8482655,
+    "name": "J.J. Moser",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:45.965557+00:00"
+  },
+  {
+    "player_id": 8482175,
+    "name": "JJ Peterka",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 975000,
+    "logged_at": "2026-03-28T01:43:45.993437+00:00"
+  },
+  {
+    "player_id": 8481024,
+    "name": "Linus Karlsson",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:46.009741+00:00"
+  },
+  {
+    "player_id": 8484136,
+    "name": "Max Sasson",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 1750000,
+    "logged_at": "2026-03-28T01:43:46.023753+00:00"
+  },
+  {
+    "player_id": 8483768,
+    "name": "Victor Mancini",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 975000,
+    "logged_at": "2026-03-28T01:43:46.034895+00:00"
+  },
+  {
+    "player_id": 8477845,
+    "name": "Trevor van Riemsdyk",
+    "reason": "All scrape sources failed \u2014 estimated from estimated",
+    "estimated_cap_hit": 3658333,
+    "logged_at": "2026-03-28T01:43:46.079099+00:00"
   }
 ]

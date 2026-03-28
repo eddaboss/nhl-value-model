@@ -82,89 +82,123 @@ def _parse_contract(html: str, season_end_year: int) -> Optional[dict]:
     """
     Parse contract data from a PuckPedia player page.
 
+    Parses ALL contract entries on the page and selects only the one active
+    in the current season (start_year <= season_start_year AND
+    expiry_year >= season_end_year).  When multiple match, the most recently
+    started contract wins (handles pages where old contract text still appears).
+
     Two known page formats:
       (A) Prose: "is signed to N year ... contract [extension] with a cap hit
-          of $X per season"
-      (B) Tabular: year-range headers followed by "Cap Hit $X" rows
+          of $X per season ... expires at the end of YYYY-YY season"
+      (B) Tabular: year-range headers followed by "Cap Hit $X" rows (fallback)
 
-    Known pitfalls fixed here:
-      1. Future extensions appear before the current contract on some pages.
-         We strip the "next contract begins" block before searching.
-      2. Expiry status must be extracted from the expiry sentence specifically,
-         NOT from the full-page HTML (sidebar widgets contain class="pp-ufa"
-         for UFA eligibility year, which is unrelated to the current contract).
-
-    Returns a contract dict, or None if no active contract is found.
+    Pitfalls handled:
+      1. Future extensions: "His next contract begins for the YYYY-YY season"
+         is stripped before searching to avoid matching next-contract cap hits.
+      2. Expiry status is extracted from the expiry sentence only, NOT the
+         full page (sidebar widgets contain class="pp-ufa" for UFA eligibility
+         which is unrelated to the current contract status).
     """
-    # ── Strip future-extension block to avoid matching next-contract cap hits ──
-    # PuckPedia writes "His next contract begins for the YYYY-YY season..."
-    # for players who have already signed an extension.
-    html_cur = re.sub(
-        r'[Hh]is next contract begins[^.]*\.',
-        '', html, flags=re.DOTALL
-    )
+    season_start_year = season_end_year - 1   # e.g. 2025 for 2025-26
 
-    # ── Cap hit + contract length (prose format) ───────────────────────────────
-    m = re.search(
-        r'is signed to (?:a )?(\d+) year[^$]+'
-        r'\$[\d,]+ contract(?:\s+extension)?\s+with a cap hit of \$([\d,]+) per season',
-        html_cur, re.IGNORECASE
-    )
-    if m:
-        contract_years = int(m.group(1))
-        cap_hit        = int(m.group(2).replace(',', ''))
+    # ── Strip future-extension block ───────────────────────────────────────────
+    html_work = re.sub(r'[Hh]is next contract begins[^.]*\.', '', html, flags=re.DOTALL)
+
+    # ── Collect all prose-format contract candidates ───────────────────────────
+    # Anchor on each "expires at the end of YYYY-YY season" sentence, then look
+    # backwards (≤800 chars) for the cap hit + length prose block.
+    candidates = []
+
+    for exp_m in re.finditer(
+        r'expires at the end of the (\d{4})-\d{2} season',
+        html_work, re.IGNORECASE
+    ):
+        expiry_year = int(exp_m.group(1)) + 1   # "2025-26" → 2026
+
+        if expiry_year < season_end_year:
+            continue   # already expired, skip
+
+        window = html_work[max(0, exp_m.start() - 800):exp_m.end() + 200]
+
+        prose_m = re.search(
+            r'is signed to (?:a )?(\d+) year[^$]+'
+            r'\$[\d,]+ contract(?:\s+extension)?\s+with a cap hit of \$([\d,]+) per season',
+            window, re.IGNORECASE
+        )
+        if not prose_m:
+            continue
+
+        contract_years = int(prose_m.group(1))
+        cap_hit        = int(prose_m.group(2).replace(',', ''))
+
+        # First season this contract was active (as end-year, e.g. 2026 = "2025-26")
+        start_end_year = expiry_year - contract_years + 1
+        if start_end_year > season_end_year:
+            continue   # future contract not yet started
+
+        # Extract expiry status from the sentence immediately after expiry anchor
+        exp_context = html_work[exp_m.start(): min(len(html_work), exp_m.end() + 200)]
+        status_m = re.search(r'(Unrestricted|Restricted)\s+Free Agent', exp_context, re.IGNORECASE)
+        expiry_status = (
+            ('UFA' if status_m.group(1).lower() == 'unrestricted' else 'RFA')
+            if status_m else None
+        )
+
+        candidates.append({
+            'cap_hit':        cap_hit,
+            'contract_years': contract_years,
+            'expiry_year':    expiry_year,
+            'expiry_status':  expiry_status,
+            'start_end_year': start_end_year,
+        })
+
+    if candidates:
+        # Most recently started contract covering current season = active contract
+        candidates.sort(key=lambda c: c['start_end_year'], reverse=True)
+        best           = candidates[0]
+        cap_hit        = best['cap_hit']
+        contract_years = best['contract_years']
+        expiry_year    = best['expiry_year']
+        expiry_status  = best['expiry_status']
     else:
         # ── Fallback: tabular format ──────────────────────────────────────────
-        # PuckPedia shows year headers (e.g. "2024-25 2025-26") then
-        # "Cap Hit $X,XXX,XXX".  Find the block containing the current season.
-        cur_season_str = (
-            f"{season_end_year - 1}-{str(season_end_year)[-2:]}"  # "2025-26"
-        )
+        cur_season_str = f"{season_end_year - 1}-{str(season_end_year)[-2:]}"
         tab_m = re.search(
             rf'{re.escape(cur_season_str)}.{{0,600}}?Cap Hit \$([\d,]+)',
-            html_cur, re.IGNORECASE | re.DOTALL
+            html_work, re.IGNORECASE | re.DOTALL
         )
         if not tab_m:
             return None
         cap_hit        = int(tab_m.group(1).replace(',', ''))
-        contract_years = None   # cannot reliably extract from tabular format
+        contract_years = None
+        exp_m2 = re.search(
+            r'expires at the end of the (\d{4})-\d{2} season', html_work, re.IGNORECASE
+        )
+        expiry_year   = int(exp_m2.group(1)) + 1 if exp_m2 else season_end_year
+        expiry_status = None
 
-    # ── Expiry year ────────────────────────────────────────────────────────────
-    exp_m = re.search(
-        r'expires at the end of the (\d{4})-\d{2} season',
-        html_cur, re.IGNORECASE
-    )
-    if exp_m:
-        expiry_year = int(exp_m.group(1)) + 1   # "2025-26" → 2026
-    else:
-        expiry_year = season_end_year            # fallback: assume expiring this year
-
-    # ── Expiry status — from the expiry sentence ONLY ─────────────────────────
-    # Do NOT search the entire HTML: sidebar widgets contain class="pp-ufa"
-    # for UFA-eligibility-year info that is unrelated to the contract status.
-    status_m = re.search(
-        r'expires at the end of[^.]*?(Unrestricted|Restricted)\s+Free Agent',
-        html_cur, re.IGNORECASE
-    )
-    if status_m:
-        word = status_m.group(1).lower()
-        expiry_status = 'UFA' if word == 'unrestricted' else 'RFA'
-    elif re.search(r'making \w+ (?:a |an )?UDFA', html_cur, re.IGNORECASE):
-        expiry_status = 'UDFA'
-    else:
-        # Last-resort full-page search (order: RFA before UFA to be conservative)
-        if re.search(r'Restricted Free Agent', html_cur, re.IGNORECASE):
+    # ── Resolve expiry status if not yet determined ────────────────────────────
+    if expiry_status is None:
+        status_m = re.search(
+            r'expires at the end of[^.]*?(Unrestricted|Restricted)\s+Free Agent',
+            html_work, re.IGNORECASE
+        )
+        if status_m:
+            expiry_status = 'UFA' if status_m.group(1).lower() == 'unrestricted' else 'RFA'
+        elif re.search(r'Restricted Free Agent', html_work, re.IGNORECASE):
             expiry_status = 'RFA'
-        elif re.search(r'Unrestricted Free Agent', html_cur, re.IGNORECASE):
+        elif re.search(r'Unrestricted Free Agent', html_work, re.IGNORECASE):
             expiry_status = 'UFA'
         else:
             expiry_status = 'UFA'
 
-    # ── Derived contract fields ────────────────────────────────────────────────
+    # UDFA override (always wins)
+    if re.search(r'making \w+ (?:a |an )?UDFA', html_work, re.IGNORECASE):
+        expiry_status = 'UDFA'
+
+    # ── Derived fields ─────────────────────────────────────────────────────────
     years_left = max(0, expiry_year - season_end_year)
-    year_of_contract = (
-        max(1, contract_years - years_left) if contract_years else None
-    )
+    year_of_contract = max(1, contract_years - years_left) if contract_years else None
 
     return {
         'cap_hit':            cap_hit,

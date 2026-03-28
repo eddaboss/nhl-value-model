@@ -67,7 +67,7 @@ _NICKNAME_MAP = {
     'mitch': 'mitchell', 'matt': 'matthew', 'matty': 'matthew',
     'jake': 'jacob', 'mike': 'michael', 'nick': 'nicholas',
     'cam': 'cameron', 'zach': 'zachary', 'kris': 'kristopher',
-    'alex': 'alexander', 'tj': 'tyler', 'jj': 'jacob',
+    'alex': 'alexander', 'tj': 'tyler',
     'pat': 'patrick', 'nate': 'nathaniel', 'will': 'william',
     'andy': 'andrew', 'danny': 'daniel', 'tommy': 'thomas',
     'rick': 'richard', 'jeff': 'jeffrey', 'rob': 'robert',
@@ -201,36 +201,77 @@ _UFA_DICT = {
 def _parse_puckpedia(html: str, season_end_year: int) -> Optional[dict]:
     """
     Parse PuckPedia player page HTML.
+
+    Parses ALL contract entries on the page and selects the one active in the
+    current season (most recently started contract with expiry >= season_end_year).
     Returns contract dict, _UFA_DICT if player is unsigned/UFA, or None on failure.
     """
-    m = re.search(
-        r"is signed to (?:a )?(\d+) year[^$]+"
-        r"\$[\d,]+ contract(?:\s+extension)?\s+with a cap hit of \$([\d,]+) per season",
-        html, re.IGNORECASE,
-    )
-    if not m:
-        # Check if page explicitly says the player is unsigned / free agent
+    # Strip future-extension narrative before searching
+    html_work = re.sub(r"[Hh]is next contract begins[^.]*\.", "", html, flags=re.DOTALL)
+
+    # Check for unsigned / free agent page (no contract text at all)
+    if not re.search(r"is signed to", html_work, re.IGNORECASE):
         if re.search(
             r"is (?:an?\s+)?(?:Unrestricted|Restricted) Free Agent",
-            html, re.IGNORECASE
+            html_work, re.IGNORECASE,
         ):
             return _UFA_DICT
         return None
 
-    contract_years = int(m.group(1))
-    cap_hit        = int(m.group(2).replace(",", ""))
+    # Collect all prose-format contract candidates anchored on expiry sentences
+    candidates = []
+    for exp_m in re.finditer(
+        r"expires at the end of the (\d{4})-\d{2} season", html_work, re.IGNORECASE
+    ):
+        expiry_year = int(exp_m.group(1)) + 1   # "2025-26" → 2026
+        if expiry_year < season_end_year:
+            continue   # already expired
 
-    exp_m = re.search(
-        r"expires at the end of the (\d{4})-\d{2} season", html, re.IGNORECASE
+        window = html_work[max(0, exp_m.start() - 800): exp_m.end() + 200]
+        prose_m = re.search(
+            r"is signed to (?:a )?(\d+) year[^$]+"
+            r"\$[\d,]+ contract(?:\s+extension)?\s+with a cap hit of \$([\d,]+) per season",
+            window, re.IGNORECASE,
+        )
+        if not prose_m:
+            continue
+
+        contract_years = int(prose_m.group(1))
+        cap_hit        = int(prose_m.group(2).replace(",", ""))
+        start_end_year = expiry_year - contract_years + 1
+        if start_end_year > season_end_year:
+            continue   # future contract not yet started
+
+        candidates.append({
+            "cap_hit":        cap_hit,
+            "contract_years": contract_years,
+            "expiry_year":    expiry_year,
+            "start_end_year": start_end_year,
+        })
+
+    if not candidates:
+        return None
+
+    # Most recently started contract covering current season = active contract
+    candidates.sort(key=lambda c: c["start_end_year"], reverse=True)
+    best           = candidates[0]
+    cap_hit        = best["cap_hit"]
+    contract_years = best["contract_years"]
+    expiry_year    = best["expiry_year"]
+
+    # Expiry status — from expiry sentence only (avoid sidebar widget false matches)
+    exp_ctx_m = re.search(
+        r"expires at the end of[^.]*?(Unrestricted|Restricted)\s+Free Agent",
+        html_work, re.IGNORECASE,
     )
-    expiry_year = (int(exp_m.group(1)) + 1) if exp_m else season_end_year
-
-    if "Unrestricted Free Agent" in html or "pp-ufa" in html:
-        expiry_status = "UFA"
-    elif "Restricted Free Agent" in html or "pp-rfa" in html:
-        expiry_status = "RFA"
-    elif "pp-udfa" in html or "UDFA" in html:
+    if exp_ctx_m:
+        expiry_status = "UFA" if exp_ctx_m.group(1).lower() == "unrestricted" else "RFA"
+    elif re.search(r"pp-udfa|making \w+ (?:a |an )?UDFA", html_work, re.IGNORECASE):
         expiry_status = "UDFA"
+    elif re.search(r"Restricted Free Agent", html_work, re.IGNORECASE):
+        expiry_status = "RFA"
+    elif re.search(r"Unrestricted Free Agent", html_work, re.IGNORECASE):
+        expiry_status = "UFA"
     else:
         expiry_status = "UFA"
 

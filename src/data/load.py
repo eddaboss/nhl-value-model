@@ -326,6 +326,14 @@ def load_and_merge(
     # Remove goalies (position G)
     df = df[df["pos"] != "G"].copy()
 
+    # Disambiguate players who share a display_name (e.g. two "Elias Pettersson")
+    # Append " (POS)" suffix so the app can tell them apart
+    dup_mask = df.duplicated("name", keep=False)
+    if dup_mask.any():
+        df.loc[dup_mask, "name"] = (
+            df.loc[dup_mask, "name"] + " (" + df.loc[dup_mask, "pos"] + ")"
+        )
+
     # Age from birth_date (current age as of today — NHL API has no currentAge field)
     df["age"] = df["birth_date"].apply(_age_from_birth)
 

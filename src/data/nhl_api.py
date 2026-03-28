@@ -236,6 +236,13 @@ def build_roster_lookup(force_refresh: bool = False, season: str | None = None) 
                 last    = p["lastName"]["default"]
                 display = f"{first} {last}"
                 key     = normalize_name(display)
+                # Name collision: two active NHLers share the same normalized name
+                # (e.g. two "Elias Pettersson"). Preserve both by appending player_id.
+                if key in lookup and lookup[key].get("player_id") != p["id"]:
+                    existing_pid = lookup[key]["player_id"]
+                    # Rename the already-stored entry so both are kept
+                    lookup[f"{key}-{existing_pid}"] = lookup.pop(key)
+                    key = f"{key}-{p['id']}"
                 lookup[key] = {
                     "player_id":    p["id"],
                     "team":         team,

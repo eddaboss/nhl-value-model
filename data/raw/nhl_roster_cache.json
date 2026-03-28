@@ -1097,12 +1097,6 @@
     "position": "C",
     "display_name": "Zakhar Bardakov"
   },
-  "gavin brindley": {
-    "player_id": 8484149,
-    "team": "COL",
-    "position": "C",
-    "display_name": "Gavin Brindley"
-  },
   "ross colton": {
     "player_id": 8479525,
     "team": "COL",
@@ -1427,12 +1421,6 @@
     "position": "R",
     "display_name": "Alex DeBrincat"
   },
-  "sheldon dries": {
-    "player_id": 8480326,
-    "team": "DET",
-    "position": "C",
-    "display_name": "Sheldon Dries"
-  },
   "emmitt finnie": {
     "player_id": 8484471,
     "team": "DET",
@@ -1534,6 +1522,12 @@
     "team": "DET",
     "position": "G",
     "display_name": "John Gibson"
+  },
+  "michal postava": {
+    "player_id": 8485545,
+    "team": "DET",
+    "position": "G",
+    "display_name": "Michal Postava"
   },
   "cam talbot": {
     "player_id": 8475660,
@@ -2074,12 +2068,6 @@
     "team": "MIN",
     "position": "L",
     "display_name": "Nick Foligno"
-  },
-  "hunter haight": {
-    "player_id": 8483452,
-    "team": "MIN",
-    "position": "C",
-    "display_name": "Hunter Haight"
   },
   "ryan hartman": {
     "player_id": 8477451,
@@ -3299,6 +3287,12 @@
     "position": "C",
     "display_name": "Filip Hallander"
   },
+  "avery hayes": {
+    "player_id": 8482993,
+    "team": "PIT",
+    "position": "R",
+    "display_name": "Avery Hayes"
+  },
   "kevin hayes": {
     "player_id": 8475763,
     "team": "PIT",
@@ -3316,6 +3310,12 @@
     "team": "PIT",
     "position": "R",
     "display_name": "Ville Koivunen"
+  },
+  "joona koppanen": {
+    "player_id": 8479533,
+    "team": "PIT",
+    "position": "L",
+    "display_name": "Joona Koppanen"
   },
   "blake lizotte": {
     "player_id": 8481481,
@@ -3484,6 +3484,12 @@
     "team": "SEA",
     "position": "C",
     "display_name": "Ben Meyers"
+  },
+  "logan morrison": {
+    "player_id": 8483012,
+    "team": "SEA",
+    "position": "C",
+    "display_name": "Logan Morrison"
   },
   "jaden schwartz": {
     "player_id": 8475768,
@@ -3724,6 +3730,12 @@
     "team": "SJS",
     "position": "G",
     "display_name": "Yaroslav Askarov"
+  },
+  "laurent brossoit": {
+    "player_id": 8476316,
+    "team": "SJS",
+    "position": "G",
+    "display_name": "Laurent Brossoit"
   },
   "alex nedeljkovic": {
     "player_id": 8477968,
@@ -4391,12 +4403,6 @@
     "position": "L",
     "display_name": "Liam Ohgren"
   },
-  "elias pettersson": {
-    "player_id": 8483678,
-    "team": "VAN",
-    "position": "D",
-    "display_name": "Elias Pettersson"
-  },
   "aatu raty": {
     "player_id": 8482691,
     "team": "VAN",
@@ -4444,6 +4450,18 @@
     "team": "VAN",
     "position": "D",
     "display_name": "Victor Mancini"
+  },
+  "elias pettersson-8480012": {
+    "player_id": 8480012,
+    "team": "VAN",
+    "position": "C",
+    "display_name": "Elias Pettersson"
+  },
+  "elias pettersson-8483678": {
+    "player_id": 8483678,
+    "team": "VAN",
+    "position": "D",
+    "display_name": "Elias Pettersson"
   },
   "marcus pettersson": {
     "player_id": 8477969,
@@ -4540,12 +4558,6 @@
     "team": "VGK",
     "position": "R",
     "display_name": "Mitch Marner"
-  },
-  "jonas rondbjerg": {
-    "player_id": 8480007,
-    "team": "VGK",
-    "position": "R",
-    "display_name": "Jonas Rondbjerg"
   },
   "brandon saad": {
     "player_id": 8476438,
@@ -4649,6 +4661,12 @@
     "position": "L",
     "display_name": "Kyle Connor"
   },
+  "parker ford": {
+    "player_id": 8484135,
+    "team": "WPG",
+    "position": "C",
+    "display_name": "Parker Ford"
+  },
   "alex iafallo": {
     "player_id": 8480113,
     "team": "WPG",
@@ -4720,6 +4738,12 @@
     "team": "WPG",
     "position": "C",
     "display_name": "Gabriel Vilardi"
+  },
+  "danil zhilkin": {
+    "player_id": 8483526,
+    "team": "WPG",
+    "position": "C",
+    "display_name": "Danil Zhilkin"
   },
   "jacob bryson": {
     "player_id": 8480196,

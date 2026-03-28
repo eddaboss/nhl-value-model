@@ -105,6 +105,9 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# ── Cap ceiling (used to scale normalized SHAP values back to dollars) ─────────
+CAP_CEILING = 95_500_000  # 2025-26 NHL salary cap ceiling — must match load.py
+
 # ── Kings brand colors ─────────────────────────────────────────────────────────
 KINGS_BLACK  = "#010101"
 KINGS_GOLD   = "#B5975A"
@@ -1185,12 +1188,13 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     if (not shap_vals.empty and "name" in shap_vals.columns
             and name in shap_vals["name"].values):
         st.markdown("**What drives this player's predicted value?**")
-        row_shap = shap_vals[shap_vals["name"] == name].iloc[0].drop("name")
-        vals     = row_shap.astype(float)
-        top12    = vals.abs().nlargest(12)
-        base     = float(df["predicted_value"].mean())
-        features = [f.replace("_", " ").title() for f in top12.index]
-        shap_v   = top12.values.tolist()
+        row_shap  = shap_vals[shap_vals["name"] == name].iloc[0].drop("name")
+        vals      = row_shap.astype(float)
+        top12_idx = vals.abs().nlargest(12).index   # index of top features by |SHAP|
+        features  = [f.replace("_", " ").title() for f in top12_idx]
+        # SHAP values are in normalized cap-fraction units — scale back to dollars
+        shap_v    = (vals[top12_idx] * CAP_CEILING).tolist()  # signed, in dollars
+        base      = float(df["predicted_value"].mean())
         measure  = ["absolute"] + ["relative"] * len(shap_v) + ["total"]
         x_labels = ["Base Value"] + features + ["Predicted Value"]
         y_vals   = [base] + shap_v + [(pv or base)]
