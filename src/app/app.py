@@ -340,7 +340,7 @@ def _driver_tooltip(feat: str, player: pd.Series, name: str, positive: bool) -> 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="NHL Value Model",
-    page_icon="🏒",
+    page_icon=":material/sports_hockey:",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -512,6 +512,20 @@ _FONT_LINK = """
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 """
 
+# ── Inline SVG icons (currentColor — use in st.markdown with unsafe_allow_html) ─
+_ICONS = {
+    "globe":     "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='display:inline;vertical-align:middle;margin-right:6px;'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>",
+    "bar_chart": "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='display:inline;vertical-align:middle;margin-right:6px;'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>",
+    "shield":    "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='display:inline;vertical-align:middle;margin-right:6px;'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>",
+    "search":    "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='display:inline;vertical-align:middle;margin-right:6px;'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>",
+    "scatter":   "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='display:inline;vertical-align:middle;margin-right:6px;'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>",
+    "moon":      "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='display:inline;vertical-align:middle;margin-right:6px;'><path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>",
+    "sun":       "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='display:inline;vertical-align:middle;margin-right:6px;'><circle cx='12' cy='12' r='5'/><line x1='12' y1='1' x2='12' y2='3'/><line x1='12' y1='21' x2='12' y2='23'/><line x1='4.22' y1='4.22' x2='5.64' y2='5.64'/><line x1='18.36' y1='18.36' x2='19.78' y2='19.78'/><line x1='1' y1='12' x2='3' y2='12'/><line x1='21' y1='12' x2='23' y2='12'/><line x1='4.22' y1='19.78' x2='5.64' y2='18.36'/><line x1='18.36' y1='5.64' x2='19.78' y2='4.22'/></svg>",
+    "calendar":  "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='display:inline;vertical-align:middle;margin-right:6px;'><rect x='3' y='4' width='18' height='18'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/></svg>",
+    "diamond":   "<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='display:inline;vertical-align:middle;margin-right:4px;'><polygon points='12 2 22 12 12 22 2 12'/></svg>",
+    "refresh":   "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' style='display:inline;vertical-align:middle;margin-right:6px;'><polyline points='23 4 23 10 17 10'/><polyline points='1 20 1 14 7 14'/><path d='M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'/></svg>",
+}
+
 _DARK_CSS  = """<style>
   :root { --font: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; }
   footer { visibility: hidden; }
@@ -653,6 +667,21 @@ _DARK_CSS  = """<style>
 
   /* ── Tooltip card (value driver) ── */
   .vd-tip { font-family: 'DM Sans', sans-serif !important; }
+
+  /* ── Tab icons (inactive gray / active light) ── */
+  [data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); }
+
+  /* ── Theme toggle button: moon icon (dark mode active) ── */
+  [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
 </style>"""
 _LIGHT_CSS = """<style>
   :root { --font: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; }
@@ -790,6 +819,21 @@ _LIGHT_CSS = """<style>
 
   /* ── Tooltip card (value driver) ── */
   .vd-tip { font-family: 'DM Sans', sans-serif !important; }
+
+  /* ── Tab icons (inactive gray / active navy) ── */
+  [data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); }
+
+  /* ── Theme toggle button: sun icon (light mode active) ── */
+  [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='5'/><line x1='12' y1='1' x2='12' y2='3'/><line x1='12' y1='21' x2='12' y2='23'/><line x1='4.22' y1='4.22' x2='5.64' y2='5.64'/><line x1='18.36' y1='18.36' x2='19.78' y2='19.78'/><line x1='1' y1='12' x2='3' y2='12'/><line x1='21' y1='12' x2='23' y2='12'/><line x1='4.22' y1='19.78' x2='5.64' y2='18.36'/><line x1='18.36' y1='5.64' x2='19.78' y2='4.22'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
 </style>"""
 
 
@@ -1017,8 +1061,7 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
     with st.sidebar:
         # ── Dark/Light mode toggle ──────────────────────────────────────
         _dark = st.session_state.get("dark_mode", True)
-        _icon = "🌙" if _dark else "☀️"
-        _label = f"{_icon}  Dark Mode" if _dark else f"{_icon}  Light Mode"
+        _label = "Dark Mode" if _dark else "Light Mode"
         if st.button(_label, key="_theme_btn", use_container_width=True):
             st.session_state["dark_mode"] = not _dark
             st.rerun()
@@ -1205,15 +1248,22 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                             on_select="rerun", key="overview_scatter")
 
     # ── UFA toggle + color key sit immediately below the chart, always together ─
-    _ufa_label = "🔶  Hide UFA / Unsigned" if show_ufa else "🔶  Show UFA / Unsigned"
+    _ufa_label = "Hide UFA / Unsigned" if show_ufa else "Show UFA / Unsigned"
     if st.button(_ufa_label, key="overview_ufa_toggle"):
         st.session_state["overview_show_ufa"] = not show_ufa
         st.rerun()
-    st.caption(
-        "🟢 Below the dashed line = underpaid &nbsp;·&nbsp; "
-        "🔴 Above = overpaid &nbsp;·&nbsp; "
-        "🔶 Diamonds on x-axis = UFA / no current contract &nbsp;·&nbsp; "
-        "Click any marker for a quick summary."
+    _leg_sub = _T["card_subtext"]; _leg_pos = _T["positive"]; _leg_neg = _T["negative"]
+    st.markdown(
+        f"<div style='font-family:\"DM Mono\",monospace;font-size:0.78rem;color:{_leg_sub};line-height:2;'>"
+        f"<span style='display:inline-block;width:9px;height:9px;background:{_leg_pos};border-radius:50%;vertical-align:middle;margin-right:5px;'></span>Below the dashed line = underpaid"
+        f"&nbsp;&nbsp;·&nbsp;&nbsp;"
+        f"<span style='display:inline-block;width:9px;height:9px;background:{_leg_neg};border-radius:50%;vertical-align:middle;margin-right:5px;'></span>Above = overpaid"
+        f"&nbsp;&nbsp;·&nbsp;&nbsp;"
+        f"<svg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 24 24' fill='none' stroke='{_leg_sub}' stroke-width='2.5' style='display:inline;vertical-align:middle;margin-right:5px;'><polygon points='12 2 22 12 12 22 2 12'/></svg>"
+        f"Diamonds = UFA / no contract"
+        f"&nbsp;&nbsp;·&nbsp;&nbsp;"
+        f"Click any marker for details.</div>",
+        unsafe_allow_html=True,
     )
 
     # ── Show clicked player details below the key area ────────────────────────
@@ -1310,12 +1360,12 @@ def tab_leaderboards(df: pd.DataFrame):
 
     with col1:
         gems = df_c.nlargest(n, sort_col)
-        st.plotly_chart(bar_chart(gems, "🟢 Hidden Gems — Most Underpaid", "Greens", False),
+        st.plotly_chart(bar_chart(gems, "Hidden Gems — Most Underpaid", "Greens", False),
                         use_container_width=True)
 
     with col2:
         over = df_c.nsmallest(n, sort_col)
-        st.plotly_chart(bar_chart(over, "🔴 Most Overpaid", "Reds_r", True),
+        st.plotly_chart(bar_chart(over, "Most Overpaid", "Reds_r", True),
                         use_container_width=True)
 
     st.markdown("---")
@@ -1604,7 +1654,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
     st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
 
     # ── Cap Outlook expander ──────────────────────────────────────────────────
-    with st.expander("📅 Cap Outlook — Next Season", expanded=False):
+    with st.expander("Cap Outlook — Next Season", expanded=False):
         next_yr_players = team[team["years_left"].fillna(0) >= 2].copy()
         expiring        = team[team["years_left"].fillna(0) <= 1].copy()
         ufa_team        = team_all[team_all["cap_hit"].isna()].copy()
@@ -1889,7 +1939,7 @@ def tab_kings(df: pd.DataFrame):
     )
 
     # ── Cap Outlook: next season ─────────────────────────────────────────────
-    with st.expander("📅 Cap Outlook — Next Season", expanded=False):
+    with st.expander("Cap Outlook — Next Season", expanded=False):
         next_yr_players = kings[kings["years_left"].fillna(0) >= 2].copy()
         expiring        = kings[kings["years_left"].fillna(0) <= 1].copy()
         ufa_kings       = kings_all[kings_all["cap_hit"].isna()].copy()
@@ -2742,21 +2792,21 @@ def main():
     if _refresh_status["running"]:
         st.info(
             "Fetching latest NHL stats — data will refresh automatically when ready.",
-            icon="🔄",
+            icon=":material/refresh:",
         )
     elif _refresh_status["error"] and _timed_out:
-        st.warning("Data fetch timed out. Showing last cached data.", icon="⚠️")
+        st.warning("Data fetch timed out. Showing last cached data.", icon=":material/warning:")
 
     df        = load_predictions()
     shap_vals = load_shap_values()
     filtered  = sidebar_filters(df)
 
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "🌐 League Overview",
-        "📊 Leaderboards",
-        "🏒 Teams",
-        "🔍 Player Search",
-        "🧠 Model Insights",
+        "League Overview",
+        "Leaderboards",
+        "Teams",
+        "Player Search",
+        "Model Insights",
     ])
 
     # Persist active tab across reruns (theme toggle, UFA toggle, etc.) via
