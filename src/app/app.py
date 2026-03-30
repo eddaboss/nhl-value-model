@@ -1171,10 +1171,11 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
     if not df_c.empty:
         lo = min(df_c["predicted_value"].min(), df_c["cap_hit"].min()) * 0.95
         hi = max(df_c["predicted_value"].max(), df_c["cap_hit"].max()) * 1.02
+        _fvline_color = "#FFFFFF" if st.session_state.get("dark_mode", True) else "#111111"
         fig.add_shape(type="line", x0=lo, y0=lo, x1=hi, y1=hi,
-                      line=dict(dash="dash", color=_T["grid"], width=1))
-        fig.add_annotation(x=hi * 0.72, y=hi * 0.78, text="Fair value line",
-                           showarrow=False, font=dict(color=_T["plot_font"], size=12,
+                      line=dict(dash="dot", color=_fvline_color, width=2))
+        fig.add_annotation(x=hi * 0.72, y=hi * 0.78, text="Fair value",
+                           showarrow=False, font=dict(color=_fvline_color, size=12,
                                                       family="'DM Sans', sans-serif"))
 
     fig.update_layout(
