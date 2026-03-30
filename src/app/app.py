@@ -374,37 +374,43 @@ def _set_theme(dark: bool) -> None:
     global _T
     if dark:
         _T.update({
-            "page_text":     "#E8E4DC",
-            "plot_paper":    "#040404",
-            "plot_bg":       "#0d0d1a",
-            "plot_font":     "#A0A0A0",
-            "grid":          "#1e1e35",
-            "grid_alt":      "#1e1e35",
-            "zero":          "#2a2a4a",
-            "legend_bg":     "#1a1a2e",
-            "card_bg":       "#1a1a2e",
-            "card_border":   "#252545",
-            "card_text":     "#E8E4DC",
-            "card_subtext":  "#A0A0A0",
-            "card_header":   "#141428",
-            "row_divider":   "#1e1e35",
+            "page_text":     "#F5F5F2",
+            "plot_paper":    "#111111",
+            "plot_bg":       "#111111",
+            "plot_font":     "#888888",
+            "grid":          "#252525",
+            "grid_alt":      "#252525",
+            "zero":          "#252525",
+            "legend_bg":     "#1C1C1C",
+            "card_bg":       "#1C1C1C",
+            "card_border":   "#2A2A2A",
+            "card_text":     "#F5F5F2",
+            "card_subtext":  "#888888",
+            "card_header":   "#161616",
+            "row_divider":   "#2A2A2A",
+            "accent":        "#F5F5F2",
+            "positive":      "#2ECC71",
+            "negative":      "#E74C3C",
         })
     else:
         _T.update({
-            "page_text":     "#1C1C1C",
+            "page_text":     "#111111",
             "plot_paper":    "rgba(0,0,0,0)",
-            "plot_bg":       "#EDE9E0",
-            "plot_font":     "#333333",
-            "grid":          "#D8D3C8",
-            "grid_alt":      "#D8D3C8",
+            "plot_bg":       "#FAFAF8",
+            "plot_font":     "#777777",
+            "grid":          "#EBEBEB",
+            "grid_alt":      "#EBEBEB",
             "zero":          "#AAAAAA",
-            "legend_bg":     "#1a1a2e",
-            "card_bg":       "#EDE9DF",
-            "card_border":   "#C8C3B8",
-            "card_text":     "#1a1a1a",
-            "card_subtext":  "#666666",
-            "card_header":   "#E0DBD0",
-            "row_divider":   "#D8D3C8",
+            "legend_bg":     "#FFFFFF",
+            "card_bg":       "#FFFFFF",
+            "card_border":   "#E8E8E4",
+            "card_text":     "#111111",
+            "card_subtext":  "#777777",
+            "card_header":   "#FAFAF8",
+            "row_divider":   "#E8E8E4",
+            "accent":        "#1A1A2E",
+            "positive":      "#2A7A4B",
+            "negative":      "#C0392B",
         })
 
 # ── Resign signal palettes ─────────────────────────────────────────────────────
@@ -503,286 +509,287 @@ CAP_CEILING = 95_500_000
 _FONT_LINK = """
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 """
 
 _DARK_CSS  = """<style>
-  .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+  :root { --font: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; }
+  footer { visibility: hidden; }
+  .block-container { padding-top: 2.5rem !important; padding-bottom: 2rem !important; }
+
+  /* ── Page surfaces ── */
+  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #111111 !important; }
+
+  /* ── Base typography ── */
+  html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
+  p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'DM Sans', sans-serif !important; }
+  h1, h2, h3,
+  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
+      font-family: 'Instrument Serif', serif !important; font-weight: 400 !important;
+      line-height: 1.1 !important; letter-spacing: 0 !important; color: #F5F5F2 !important;
+  }
+
+  /* ── Metric tiles ── */
   [data-testid="stMetric"] {
       background: transparent !important; border: none !important;
-      border-radius: 0 !important; padding: 14px 2px 10px !important; box-shadow: none !important;
+      border-radius: 0 !important; padding: 16px 2px 12px !important; box-shadow: none !important;
   }
   [data-testid="stMetricLabel"] {
-      font-family: 'IBM Plex Mono', monospace !important;
-      font-size: 0.88rem !important; letter-spacing: 0.28em !important; text-transform: uppercase !important;
+      font-family: 'DM Sans', sans-serif !important; font-size: 0.65rem !important;
+      letter-spacing: 0.15em !important; text-transform: uppercase !important; color: #888888 !important;
   }
   [data-testid="stMetricValue"] {
-      font-family: 'Bebas Neue', cursive !important;
-      font-size: 2.6rem !important; line-height: 1.0 !important; letter-spacing: 0.04em !important; font-weight: 400 !important;
+      font-family: 'Instrument Serif', serif !important; font-size: 2.5rem !important;
+      line-height: 1.0 !important; letter-spacing: 0 !important; font-weight: 400 !important; color: #F5F5F2 !important;
   }
-  [data-testid="stMetricDelta"] {
-      font-family: 'IBM Plex Mono', monospace !important; font-size: 0.78rem !important; letter-spacing: 0.08em !important;
-  }
-  [data-baseweb="tab-list"] { gap: 0 !important; background: transparent !important; padding-bottom: 0 !important; margin-bottom: 20px !important; }
-  [data-baseweb="tab"] {
-      font-family: 'IBM Plex Mono', monospace !important; font-size: 0.78rem !important;
-      letter-spacing: 0.22em !important; text-transform: uppercase !important;
-      padding: 12px 24px !important; border-radius: 0 !important;
-      background: transparent !important; border-bottom: 2px solid transparent !important; margin-bottom: -1px !important;
-  }
-  .player-card { border-radius: 0; padding: 20px 24px; border-left-width: 3px; margin-bottom: 14px; }
-  .kings-card  { border-radius: 0; padding: 18px 22px; border-left-width: 3px; margin-bottom: 6px; transition: background 0.1s; }
-  .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.2em; }
-  .stat-value { font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; font-weight: 500; }
-  .delta-pos  { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 500; }
-  .delta-neg  { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 500; }
-  .pct-pos    { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
-  .pct-neg    { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
-  .section-header { font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: 0.04em; margin-bottom: 8px; font-weight: 400; line-height: 1; }
-  .group-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; margin: 20px 0 10px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; }
-  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
-  h1, h2, h3, [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
-      font-family: 'Bebas Neue', cursive !important; letter-spacing: 0.04em !important; font-weight: 400 !important; line-height: 1.05 !important;
-  }
-  [data-testid="stExpander"] { border-radius: 0 !important; }
-  details summary p { font-family: 'IBM Plex Mono', monospace !important; font-size: 0.85rem !important; letter-spacing: 0.1em !important; }
-  [data-testid="stCaptionContainer"] p { font-family: 'IBM Plex Mono', monospace !important; font-size: 0.84rem !important; letter-spacing: 0.08em !important; }
-  input, [data-baseweb="input"] input { border-radius: 0 !important; font-family: 'Manrope', sans-serif !important; }
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-thumb { border-radius: 0; }
-  hr { margin: 16px 0 !important; }
-  html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
-  p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'Manrope', sans-serif !important; }
-  footer { visibility: hidden; }
+  [data-testid="stMetricDelta"] { font-family: 'DM Mono', monospace !important; font-size: 0.78rem !important; }
 
-  :root { --font: 'Manrope', sans-serif; --font-mono: 'IBM Plex Mono', monospace; }
-  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #040404 !important; }
-  [data-testid="stMetric"] { border-top: 1px solid #C8A84B !important; }
-  [data-testid="stMetricLabel"] { color: #A0A0A0 !important; }
-  [data-testid="stMetricValue"] { color: #E8E4DC !important; }
-  [data-testid="stMetricDelta"] { color: #888 !important; }
-  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #0d0d1a !important; border-right: 1px solid #1e1e35 !important; }
+  /* ── Tabs ── */
+  [data-baseweb="tab-list"] {
+      gap: 0 !important; background: transparent !important; padding-bottom: 0 !important;
+      margin-bottom: 24px !important; border-bottom: 1px solid #2A2A2A !important;
+  }
+  [data-baseweb="tab"] {
+      font-family: 'DM Sans', sans-serif !important; font-size: 0.8rem !important;
+      letter-spacing: 0.1em !important; text-transform: uppercase !important;
+      padding: 12px 24px !important; border-radius: 0 !important;
+      background: transparent !important; border-bottom: 2px solid transparent !important;
+      margin-bottom: -1px !important; color: #888888 !important;
+  }
+  [aria-selected="true"][data-baseweb="tab"] {
+      color: #F5F5F2 !important; border-bottom: 2px solid #F5F5F2 !important;
+      font-style: italic !important; font-family: 'Instrument Serif', serif !important;
+  }
+
+  /* ── Cards ── */
+  .player-card { border-radius: 0; padding: 20px 24px; margin-bottom: 14px; background: #1C1C1C; border: 1px solid #2A2A2A; }
+  .kings-card  { border-radius: 0; padding: 18px 22px; margin-bottom: 6px; background: #1C1C1C; border: 1px solid #2A2A2A; transition: background 0.1s; }
+  .kings-card:hover { background: #222222; }
+
+  /* ── Typography classes ── */
+  .stat-label { font-family: 'DM Sans', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: #888888; }
+  .stat-value { font-family: 'DM Mono', monospace; font-size: 0.9rem; color: #F5F5F2; }
+  .delta-pos  { font-family: 'DM Mono', monospace; font-size: 1.3rem; color: #2ECC71; }
+  .delta-neg  { font-family: 'DM Mono', monospace; font-size: 1.3rem; color: #E74C3C; }
+  .pct-pos    { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #2ECC71; }
+  .pct-neg    { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #E74C3C; }
+  .section-header { font-family: 'Instrument Serif', serif; font-size: 1.8rem; font-weight: 400; line-height: 1.1; margin-bottom: 8px; color: #F5F5F2; }
+  .group-label { font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin: 24px 0 12px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; color: #888888; }
+  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 0; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #fff !important; }
+  .kings-gold { color: #F5F5F2; font-weight: 600; }
+
+  /* ── Sidebar ── */
+  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #111111 !important; border-right: 1px solid #2A2A2A !important; }
   [data-testid="stSidebar"] label, [data-testid="stSidebar"] p,
   [data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
-  [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #A0A0A0 !important; }
-  [data-baseweb="tab-list"] { border-bottom: 1px solid #1e1e35 !important; }
-  [data-baseweb="tab"] { color: #A0A0A0 !important; border-right: 1px solid #1e1e35 !important; }
-  [aria-selected="true"][data-baseweb="tab"] { color: #C8A84B !important; border-bottom: 2px solid #C8A84B !important; }
-  .player-card { background: #1a1a2e; border: 1px solid #252545; border-left-color: #C8A84B; }
-  .kings-card  { background: #1a1a2e; border: 1px solid #252545; border-left-color: #C8A84B; }
-  .kings-card:hover { background: #1e2235; }
-  .stat-label { color: #A0A0A0; }
-  .stat-value { color: #E8E4DC; }
-  .delta-pos  { color: #1FBFA0; }
-  .delta-neg  { color: #E84040; }
-  .pct-pos    { color: #3ED4B6; }
-  .pct-neg    { color: #EF7070; }
-  .kings-gold { color: #C8A84B; font-weight: 700; }
-  .section-header { color: #E8E4DC; }
-  .group-label { color: #A0A0A0; border-left-color: #C8A84B; }
-  .signal-badge { color: #fff !important; }
+  [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #F5F5F2 !important; }
+  [data-testid="stSidebar"] .stCaptionContainer p { color: #888888 !important; }
+
+  /* ── Expanders ── */
   [data-testid="stExpander"],
   [data-testid="stExpander"] > *,
   [data-testid="stExpander"] details,
   [data-testid="stExpander"] details > div { border: none !important; outline: none !important; box-shadow: none !important; }
-  [data-testid="stExpander"] { background-color: #1a1a2e !important; }
-  [data-testid="stExpander"] details { background-color: #1a1a2e !important; }
-  [data-testid="stExpander"] details summary { background-color: #141428 !important; color: #E8E4DC !important; border: none !important; }
-  [data-testid="stExpander"] details > div { background-color: #1a1a2e !important; }
-  [data-testid="stCaptionContainer"] p { color: #A0A0A0 !important; }
-  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #E8E4DC !important; }
-  input, [data-baseweb="input"] input { background: #0C0C0C !important; border-color: #1C1C1C !important; color: #E8E4DC !important; }
-  ::-webkit-scrollbar-track { background: #040404; }
-  ::-webkit-scrollbar-thumb { background: #1C1C1C; }
-  hr { border-color: #1e1e35 !important; }
-  /* ── Widget overrides (config.toml base=light → must flip all to dark) ── */
-  /* Buttons */
+  [data-testid="stExpander"] { background-color: #1C1C1C !important; }
+  [data-testid="stExpander"] details { background-color: #1C1C1C !important; }
+  [data-testid="stExpander"] details summary { background-color: #161616 !important; color: #F5F5F2 !important; border: none !important; }
+  [data-testid="stExpander"] details > div { background-color: #1C1C1C !important; }
+  details summary p { font-family: 'DM Sans', sans-serif !important; font-size: 0.85rem !important; letter-spacing: 0.05em !important; }
+
+  /* ── Captions & text ── */
+  [data-testid="stCaptionContainer"] p { font-family: 'DM Mono', monospace !important; font-size: 0.82rem !important; color: #888888 !important; }
+  [data-testid="stMarkdownContainer"] p { color: #F5F5F2 !important; }
+  [data-testid="stMainBlockContainer"] p, [data-testid="stMainBlockContainer"] li { color: #F5F5F2 !important; }
+  .stCaptionContainer p { color: #888888 !important; }
+  [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #888888 !important; }
+
+  /* ── Inputs ── */
+  input, [data-baseweb="input"] input {
+      border-radius: 0 !important; font-family: 'DM Sans', sans-serif !important;
+      background: #1C1C1C !important; border-color: #2A2A2A !important; color: #F5F5F2 !important;
+  }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: #111111; }
+  ::-webkit-scrollbar-thumb { border-radius: 0; background: #2A2A2A; }
+  hr { margin: 24px 0 !important; border-color: #2A2A2A !important; }
+
+  /* ── Buttons ── */
   [data-testid="stButton"] button {
-      background: #141414 !important; color: #E8E4DC !important;
-      border: 1px solid #2C2C2C !important; border-radius: 0 !important;
-      font-family: 'Manrope', sans-serif !important;
+      background: #1C1C1C !important; color: #F5F5F2 !important;
+      border: 1px solid #2A2A2A !important; border-radius: 0 !important;
+      font-family: 'DM Sans', sans-serif !important;
   }
-  [data-testid="stButton"] button:hover { background: #1E1E1E !important; border-color: #C8A84B !important; }
-  /* Selectbox */
-  [data-baseweb="select"] > div { background: #0C0C0C !important; border-color: #2C2C2C !important; }
-  [data-baseweb="select"] span, [data-baseweb="select"] div { color: #E8E4DC !important; }
-  [data-baseweb="select"] svg { fill: #A0A0A0 !important; }
-  [data-baseweb="popover"] { background: #0C0C0C !important; }
-  [data-baseweb="menu"] { background: #0C0C0C !important; border: 1px solid #2C2C2C !important; }
-  [data-baseweb="menu-item"], [role="option"] { color: #E8E4DC !important; background: #0C0C0C !important; }
-  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #141414 !important; }
-  /* Slider track */
-  [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #2C2C2C !important; }
-  /* Tick bar labels */
+  [data-testid="stButton"] button:hover { background: #222222 !important; border-color: #F5F5F2 !important; }
+
+  /* ── Selectbox ── */
+  [data-baseweb="select"] > div { background: #1C1C1C !important; border-color: #2A2A2A !important; }
+  [data-baseweb="select"] span, [data-baseweb="select"] div { color: #F5F5F2 !important; }
+  [data-baseweb="select"] svg { fill: #888888 !important; }
+  [data-baseweb="popover"] { background: #1C1C1C !important; }
+  [data-baseweb="menu"] { background: #1C1C1C !important; border: 1px solid #2A2A2A !important; }
+  [data-baseweb="menu-item"], [role="option"] { color: #F5F5F2 !important; background: #1C1C1C !important; }
+  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #222222 !important; }
+
+  /* ── Slider ── */
+  [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #2A2A2A !important; }
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
-  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #A0A0A0 !important; }
-  /* Number input */
+  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #888888 !important; }
+
+  /* ── Number input ── */
   [data-testid="stNumberInput"] input {
-      background: #0C0C0C !important; color: #E8E4DC !important;
-      border-color: #2C2C2C !important; border-radius: 0 !important;
-      font-family: 'IBM Plex Mono', monospace !important;
+      background: #1C1C1C !important; color: #F5F5F2 !important;
+      border-color: #2A2A2A !important; border-radius: 0 !important;
+      font-family: 'DM Mono', monospace !important;
   }
-  [data-testid="stNumberInput"] input:focus { border-color: #C8A84B !important; box-shadow: none !important; }
-  [data-testid="stNumberInput"] button {
-      background: #141414 !important; border-color: #2C2C2C !important; color: #A0A0A0 !important;
-  }
-  [data-testid="stNumberInput"] button svg { fill: #A0A0A0 !important; }
-  [data-testid="stNumberInput"] button:hover { border-color: #C8A84B !important; color: #E8E4DC !important; }
-  [data-testid="stNumberInput"] button:hover svg { fill: #E8E4DC !important; }
-  /* Dataframe — invert to match dark theme */
-  [data-testid="stDataFrameContainer"],
-  [data-testid="stDataFrame"],
-  .stDataFrame { filter: invert(0.88) hue-rotate(180deg) !important; background: #e8e4dc !important; }
-  /* Markdown container general text */
-  [data-testid="stMainBlockContainer"] p,
-  [data-testid="stMainBlockContainer"] li { color: #E8E4DC !important; }
-  /* Caption */
-  .stCaptionContainer p { color: #A0A0A0 !important; }
-  /* Widget labels */
-  [data-testid="stWidgetLabel"] p,
-  [data-testid="stWidgetLabel"] label { color: #A0A0A0 !important; }
+  [data-testid="stNumberInput"] input:focus { border-color: #F5F5F2 !important; box-shadow: none !important; }
+  [data-testid="stNumberInput"] button { background: #1C1C1C !important; border-color: #2A2A2A !important; color: #888888 !important; }
+  [data-testid="stNumberInput"] button svg { fill: #888888 !important; }
+  [data-testid="stNumberInput"] button:hover { border-color: #F5F5F2 !important; color: #F5F5F2 !important; }
+  [data-testid="stNumberInput"] button:hover svg { fill: #F5F5F2 !important; }
+
+  /* ── Dataframe ── */
+  [data-testid="stDataFrameContainer"], [data-testid="stDataFrame"],
+  .stDataFrame { filter: invert(0.88) hue-rotate(180deg) !important; background: #f5f5f2 !important; }
+
+  /* ── Tooltip card (value driver) ── */
+  .vd-tip { font-family: 'DM Sans', sans-serif !important; }
 </style>"""
 _LIGHT_CSS = """<style>
-  .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+  :root { --font: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; }
+  footer { visibility: hidden; }
+  .block-container { padding-top: 2.5rem !important; padding-bottom: 2rem !important; }
+
+  /* ── Page surfaces ── */
+  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #FAFAF8 !important; }
+
+  /* ── Base typography ── */
+  html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
+  p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'DM Sans', sans-serif !important; }
+  h1, h2, h3,
+  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
+      font-family: 'Instrument Serif', serif !important; font-weight: 400 !important;
+      line-height: 1.1 !important; letter-spacing: 0 !important; color: #111111 !important;
+  }
+
+  /* ── Metric tiles ── */
   [data-testid="stMetric"] {
       background: transparent !important; border: none !important;
-      border-radius: 0 !important; padding: 14px 2px 10px !important; box-shadow: none !important;
+      border-radius: 0 !important; padding: 16px 2px 12px !important; box-shadow: none !important;
   }
   [data-testid="stMetricLabel"] {
-      font-family: 'IBM Plex Mono', monospace !important;
-      font-size: 0.88rem !important; letter-spacing: 0.28em !important; text-transform: uppercase !important;
+      font-family: 'DM Sans', sans-serif !important; font-size: 0.65rem !important;
+      letter-spacing: 0.15em !important; text-transform: uppercase !important; color: #777777 !important;
   }
   [data-testid="stMetricValue"] {
-      font-family: 'Bebas Neue', cursive !important;
-      font-size: 2.6rem !important; line-height: 1.0 !important; letter-spacing: 0.04em !important; font-weight: 400 !important;
+      font-family: 'Instrument Serif', serif !important; font-size: 2.5rem !important;
+      line-height: 1.0 !important; letter-spacing: 0 !important; font-weight: 400 !important; color: #111111 !important;
   }
-  [data-testid="stMetricDelta"] {
-      font-family: 'IBM Plex Mono', monospace !important; font-size: 0.78rem !important; letter-spacing: 0.08em !important;
+  [data-testid="stMetricDelta"] { font-family: 'DM Mono', monospace !important; font-size: 0.78rem !important; }
+
+  /* ── Tabs ── */
+  [data-baseweb="tab-list"] {
+      gap: 0 !important; background: transparent !important; padding-bottom: 0 !important;
+      margin-bottom: 24px !important; border-bottom: 1px solid #E8E8E4 !important;
   }
-  [data-baseweb="tab-list"] { gap: 0 !important; background: transparent !important; padding-bottom: 0 !important; margin-bottom: 20px !important; }
   [data-baseweb="tab"] {
-      font-family: 'IBM Plex Mono', monospace !important; font-size: 0.78rem !important;
-      letter-spacing: 0.22em !important; text-transform: uppercase !important;
+      font-family: 'DM Sans', sans-serif !important; font-size: 0.8rem !important;
+      letter-spacing: 0.1em !important; text-transform: uppercase !important;
       padding: 12px 24px !important; border-radius: 0 !important;
-      background: transparent !important; border-bottom: 2px solid transparent !important; margin-bottom: -1px !important;
+      background: transparent !important; border-bottom: 2px solid transparent !important;
+      margin-bottom: -1px !important; color: #777777 !important;
   }
-  .player-card { border-radius: 0; padding: 20px 24px; border-left-width: 3px; margin-bottom: 14px; }
-  .kings-card  { border-radius: 0; padding: 18px 22px; border-left-width: 3px; margin-bottom: 6px; transition: background 0.1s; }
-  .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.2em; }
-  .stat-value { font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; font-weight: 500; }
-  .delta-pos  { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 500; }
-  .delta-neg  { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 500; }
-  .pct-pos    { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
-  .pct-neg    { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
-  .section-header { font-family: 'Bebas Neue', cursive; font-size: 1.8rem; letter-spacing: 0.04em; margin-bottom: 8px; font-weight: 400; line-height: 1; }
-  .group-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; margin: 20px 0 10px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; }
-  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
-  h1, h2, h3, [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
-      font-family: 'Bebas Neue', cursive !important; letter-spacing: 0.04em !important; font-weight: 400 !important; line-height: 1.05 !important;
+  [aria-selected="true"][data-baseweb="tab"] {
+      color: #1A1A2E !important; border-bottom: 2px solid #1A1A2E !important;
+      font-style: italic !important; font-family: 'Instrument Serif', serif !important;
   }
-  [data-testid="stExpander"] { border-radius: 0 !important; }
-  details summary p { font-family: 'IBM Plex Mono', monospace !important; font-size: 0.85rem !important; letter-spacing: 0.1em !important; }
-  [data-testid="stCaptionContainer"] p { font-family: 'IBM Plex Mono', monospace !important; font-size: 0.84rem !important; letter-spacing: 0.08em !important; }
-  input, [data-baseweb="input"] input { border-radius: 0 !important; font-family: 'Manrope', sans-serif !important; }
+
+  /* ── Cards ── */
+  .player-card { border-radius: 0; padding: 20px 24px; margin-bottom: 14px; background: #FFFFFF; border: 1px solid #E8E8E4; }
+  .kings-card  { border-radius: 0; padding: 18px 22px; margin-bottom: 6px; background: #FFFFFF; border: 1px solid #E8E8E4; transition: background 0.1s; }
+  .kings-card:hover { background: #F5F5F2; }
+
+  /* ── Typography classes ── */
+  .stat-label { font-family: 'DM Sans', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: #777777; }
+  .stat-value { font-family: 'DM Mono', monospace; font-size: 0.9rem; color: #111111; }
+  .delta-pos  { font-family: 'DM Mono', monospace; font-size: 1.3rem; color: #2A7A4B; }
+  .delta-neg  { font-family: 'DM Mono', monospace; font-size: 1.3rem; color: #C0392B; }
+  .pct-pos    { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #2A7A4B; }
+  .pct-neg    { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #C0392B; }
+  .section-header { font-family: 'Instrument Serif', serif; font-size: 1.8rem; font-weight: 400; line-height: 1.1; margin-bottom: 8px; color: #111111; }
+  .group-label { font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin: 24px 0 12px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; color: #777777; }
+  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 0; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #fff !important; }
+  .kings-gold { color: #1A1A2E; font-weight: 600; }
+
+  /* ── Sidebar ── */
+  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #FAFAF8 !important; border-right: 1px solid #E8E8E4 !important; }
+  [data-testid="stSidebar"] * { color: #111111 !important; }
+  [data-testid="stSidebar"] .stCaptionContainer p { color: #777777 !important; }
+
+  /* ── Expanders ── */
+  [data-testid="stExpander"] { border-radius: 0 !important; border: 1px solid #E8E8E4 !important; background-color: #FFFFFF !important; }
+  [data-testid="stExpander"] details { background-color: #FFFFFF !important; }
+  [data-testid="stExpander"] details summary { background-color: #FAFAF8 !important; color: #111111 !important; border: none !important; }
+  details summary p { font-family: 'DM Sans', sans-serif !important; font-size: 0.85rem !important; letter-spacing: 0.05em !important; color: #111111 !important; }
+
+  /* ── Flip inline dark backgrounds to light ── */
+  [style*="background:#1C1C1C"] { background: #FFFFFF !important; }
+  [style*="background: #1C1C1C"] { background: #FFFFFF !important; }
+  [style*="background:#111111"] { background: #FAFAF8 !important; }
+  [style*="border:1px solid #2A2A2A"] { border-color: #E8E8E4 !important; }
+  [style*="border: 1px solid #2A2A2A"] { border-color: #E8E8E4 !important; }
+
+  /* ── Captions & text ── */
+  [data-testid="stCaptionContainer"] p { font-family: 'DM Mono', monospace !important; font-size: 0.82rem !important; color: #777777 !important; }
+  [data-testid="stMarkdownContainer"] p { color: #111111 !important; }
+  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #111111 !important; }
+  [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #777777 !important; }
+  .stCaptionContainer p { color: #777777 !important; }
+
+  /* ── Inputs ── */
+  input, [data-baseweb="input"] input {
+      border-radius: 0 !important; font-family: 'DM Sans', sans-serif !important;
+      background: #FAFAF8 !important; border-color: #E8E8E4 !important; color: #111111 !important;
+  }
   ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-thumb { border-radius: 0; }
-  hr { margin: 16px 0 !important; }
-  html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
-  p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'Manrope', sans-serif !important; }
-  footer { visibility: hidden; }
+  ::-webkit-scrollbar-track { background: #FAFAF8; }
+  ::-webkit-scrollbar-thumb { border-radius: 0; background: #E8E8E4; }
+  hr { margin: 24px 0 !important; border-color: #E8E8E4 !important; }
 
-  /* ════ LIGHT MODE PALETTE ════ */
-  :root { --font: 'Manrope', sans-serif; --font-mono: 'IBM Plex Mono', monospace; }
-
-  /* Page surfaces — cream */
-  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #F4F1EC !important; }
-
-  /* Metrics */
-  [data-testid="stMetric"] { border-top: 1px solid #A8861A !important; }
-  [data-testid="stMetricLabel"] { color: #555 !important; }
-  [data-testid="stMetricValue"] { color: #1a1a1a !important; }
-  [data-testid="stMetricDelta"] { color: #555 !important; }
-
-  /* Sidebar — cream bg, DARK readable text */
-  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #EDE9DF !important; border-right: 1px solid #D8D3C8 !important; }
-  [data-testid="stSidebar"] * { color: #1a1a1a !important; }
-  [data-testid="stSidebar"] .stCaptionContainer p { color: #555 !important; }
-
-  /* Tabs */
-  [data-baseweb="tab-list"] { border-bottom: 1px solid #D8D3C8 !important; }
-  [data-baseweb="tab"] { color: #666 !important; border-right: 1px solid #D8D3C8 !important; }
-  [aria-selected="true"][data-baseweb="tab"] { color: #A8861A !important; border-bottom: 2px solid #A8861A !important; }
-
-  /* ── CARDS: cream on cream — same surface, subtle border ── */
-  .player-card { background: #EDE9DF; border: 1px solid #C8C3B8; border-left-color: #A8861A; }
-  .kings-card  { background: #EDE9DF; border: 1px solid #C8C3B8; border-left-color: #A8861A; }
-  .kings-card:hover { background: #E4DFD3; }
-
-  /* Text ON light cards */
-  .stat-label { color: #666; }
-  .stat-value { color: #1a1a1a; }
-  .delta-pos  { color: #0E8A5F; }
-  .delta-neg  { color: #C62828; }
-  .pct-pos    { color: #0E8A5F; }
-  .pct-neg    { color: #C62828; }
-  .kings-gold { color: #8B6914; font-weight: 700; }
-
-  /* Section headers */
-  .section-header { color: #1a1a1a; }
-  .group-label { color: #666; border-left-color: #A8861A; }
-  .signal-badge { color: #fff !important; }
-
-  /* ── Flip remaining hardcoded dark inline backgrounds to cream ── */
-  [style*="background:#1a1a2e"] { background: #EDE9DF !important; }
-  [style*="background: #1a1a2e"] { background: #EDE9DF !important; }
-  /* Text inside those containers */
-  [style*="background:#1a1a2e"] [style*="color:#E8E4DC"],
-  [style*="background:#1a1a2e"] [style*="color: #E8E4DC"] { color: #1a1a1a !important; }
-  [style*="background:#1a1a2e"] [style*="color:#A0A0A0"] { color: #666 !important; }
-  /* Borders on inline dark cards */
-  [style*="border:1px solid #252545"] { border-color: #C8C3B8 !important; }
-  [style*="border: 1px solid #252545"] { border-color: #C8C3B8 !important; }
-
-  /* Expanders — light */
-  [data-testid="stExpander"] { border: 1px solid #D8D3C8 !important; background-color: #F8F5EE !important; }
-  details summary p { color: #1a1a1a !important; }
-
-  /* Captions and general page text */
-  [data-testid="stCaptionContainer"] p { color: #666 !important; }
-  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #1a1a1a !important; }
-  [data-testid="stMarkdownContainer"] p { color: #1a1a1a !important; }
-  [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #333 !important; }
-
-  /* Inputs */
-  input, [data-baseweb="input"] input { background: #F4F1EC !important; border-color: #C8C3B8 !important; color: #1a1a1a !important; }
-  ::-webkit-scrollbar-track { background: #F4F1EC; }
-  ::-webkit-scrollbar-thumb { background: #D8D3C8; }
-  hr { border-color: #E0DBD0 !important; }
-
-  /* ── WIDGET OVERRIDES ── */
+  /* ── Buttons ── */
   [data-testid="stButton"] button {
-      background: #EDE9DF !important; color: #1a1a1a !important;
-      border: 1px solid #C8C3B8 !important; border-radius: 0 !important;
-      font-family: 'Manrope', sans-serif !important;
+      background: #FFFFFF !important; color: #111111 !important;
+      border: 1px solid #E8E8E4 !important; border-radius: 0 !important;
+      font-family: 'DM Sans', sans-serif !important;
   }
-  [data-testid="stButton"] button:hover { background: #E0DBD0 !important; border-color: #A8861A !important; }
-  /* Selectbox */
-  [data-baseweb="select"] > div { background: #F4F1EC !important; border-color: #C8C3B8 !important; }
-  [data-baseweb="select"] span { color: #1a1a1a !important; }
-  [data-baseweb="popover"] { background: #F4F1EC !important; }
-  [data-baseweb="menu"] { background: #F4F1EC !important; border: 1px solid #D8D3C8 !important; }
-  [data-baseweb="menu-item"], [role="option"] { color: #1a1a1a !important; background: #F4F1EC !important; }
-  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #EDE9DF !important; }
-  /* Text inputs and number inputs */
-  input, [data-baseweb="input"] input { background: #F4F1EC !important; border-color: #C8C3B8 !important; color: #1a1a1a !important; }
+  [data-testid="stButton"] button:hover { background: #F5F5F2 !important; border-color: #1A1A2E !important; }
+
+  /* ── Selectbox ── */
+  [data-baseweb="select"] > div { background: #FAFAF8 !important; border-color: #E8E8E4 !important; }
+  [data-baseweb="select"] span { color: #111111 !important; }
+  [data-baseweb="popover"] { background: #FAFAF8 !important; }
+  [data-baseweb="menu"] { background: #FAFAF8 !important; border: 1px solid #E8E8E4 !important; }
+  [data-baseweb="menu-item"], [role="option"] { color: #111111 !important; background: #FAFAF8 !important; }
+  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #F0EFE9 !important; }
+
+  /* ── Slider ── */
+  [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #E8E8E4 !important; }
+  [data-testid="stSlider"] [data-testid="stTickBarMin"],
+  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #777777 !important; }
+
+  /* ── Number input ── */
   [data-testid="stNumberInput"] input {
-      background: #F4F1EC !important; color: #1a1a1a !important;
-      border-color: #C8C3B8 !important; border-radius: 0 !important;
-      font-family: 'IBM Plex Mono', monospace !important;
+      background: #FAFAF8 !important; color: #111111 !important;
+      border-color: #E8E8E4 !important; border-radius: 0 !important;
+      font-family: 'DM Mono', monospace !important;
   }
-  [data-testid="stNumberInput"] input:focus { border-color: #A8861A !important; box-shadow: none !important; }
-  [data-testid="stNumberInput"] button { background: #EDE9DF !important; border-color: #C8C3B8 !important; }
-  .stCaptionContainer p { color: #666 !important; }
+  [data-testid="stNumberInput"] input:focus { border-color: #1A1A2E !important; box-shadow: none !important; }
+  [data-testid="stNumberInput"] button { background: #FFFFFF !important; border-color: #E8E8E4 !important; }
+  [data-testid="stNumberInput"] button svg { fill: #777777 !important; }
+  [data-testid="stNumberInput"] button:hover { border-color: #1A1A2E !important; }
+  [data-testid="stNumberInput"] button:hover svg { fill: #111111 !important; }
+
+  /* ── Tooltip card (value driver) ── */
+  .vd-tip { font-family: 'DM Sans', sans-serif !important; }
 </style>"""
 
 
@@ -908,7 +915,7 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
         delta = row.get(delta_col)
         pv    = row.get("predicted_value")
 
-        clr     = "#1FBFA0" if (delta or 0) >= 0 else "#E84040"
+        clr     = _T.get("positive", "#2A7A4B") if (delta or 0) >= 0 else _T.get("negative", "#C0392B")
         val_str = fmt_delta(delta) if not show_pred else fmt_m(pv)
         age_str = f"Age {age:.0f}" if pd.notna(age) else ""
 
@@ -916,34 +923,27 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
         if pid and pd.notna(pid):
             hs_url  = headshot_url(pid, team)
             hs_html = (
-                f"<img src='{hs_url}' width='60' height='60' "
-                f"style='border-radius:50%;object-fit:cover;"
-                f"border:2px solid {clr};display:block;margin:0 auto 6px;' "
+                f"<img src='{hs_url}' width='56' height='56' "
+                f"style='object-fit:cover;display:block;margin:0 auto 8px;' "
                 f"onerror=\"this.style.display='none'\">"
             )
-
-        logo_html = (
-            f"<img src='{team_logo_url(team)}' width='18' height='18' "
-            f"style='vertical-align:middle;margin-right:3px;' "
-            f"onerror=\"this.style.display='none'\">"
-        )
 
         _card_bg  = _T["card_bg"]
         _card_bd  = _T["card_border"]
         _card_txt = _T["card_text"]
         _card_sub = _T["card_subtext"]
         cols[i].markdown(
-            f"<div style='background:{_card_bg};border-radius:2px;padding:12px 8px;"
-            f"text-align:center;border:1px solid {_card_bd};border-bottom:2px solid {clr};'>"
+            f"<div style='background:{_card_bg};padding:14px 8px;"
+            f"text-align:center;border:1px solid {_card_bd};border-top:3px solid {clr};'>"
             f"  {hs_html}"
-            f"  <div style='font-weight:700;color:{_card_txt};font-size:.8rem;"
+            f"  <div style='font-family:\"Instrument Serif\",serif;font-weight:400;color:{_card_txt};font-size:.95rem;"
             f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
-            f"    max-width:100%;font-family:\"Manrope\",sans-serif;'>{name}</div>"
-            f"  <div style='color:{_card_sub};font-size:.85rem;margin:3px 0;"
-            f"    font-family:\"IBM Plex Mono\",monospace;letter-spacing:.04em;'>"
+            f"    max-width:100%;'>{name}</div>"
+            f"  <div style='color:{_card_sub};font-size:.72rem;margin:3px 0;"
+            f"    font-family:\"DM Sans\",sans-serif;letter-spacing:.06em;text-transform:uppercase;'>"
             f"    {team} · {pos}</div>"
-            f"  <div style='color:{clr};font-size:.82rem;font-weight:700;"
-            f"    margin-top:4px;font-family:\"IBM Plex Mono\",monospace;'>{val_str}</div>"
+            f"  <div style='color:{clr};font-size:.85rem;font-weight:400;"
+            f"    margin-top:6px;font-family:\"DM Mono\",monospace;'>{val_str}</div>"
             f"</div>",
             unsafe_allow_html=True,
         )
@@ -1025,8 +1025,9 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
         st.markdown(
-            f"<div style='color:{KINGS_GOLD};font-size:1.0rem;font-weight:700;"
-            "margin-bottom:4px;font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;'>"
+            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;"
+            f"letter-spacing:.15em;text-transform:uppercase;color:{_T['card_subtext']};"
+            "margin-bottom:4px;border-top:1px solid currentColor;padding-top:8px;'>"
             "NHL Value Model</div>",
             unsafe_allow_html=True,
         )
@@ -1040,7 +1041,7 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         import math
         age_min = math.floor(df["age"].dropna().min())
         age_max = math.ceil(df["age"].dropna().max())
-        st.markdown("<div style='font-size:.8rem;color:#888;margin-bottom:2px;font-family:\"IBM Plex Mono\",monospace;letter-spacing:.06em;text-transform:uppercase;'>Age range</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size:.65rem;color:#888888;margin-bottom:4px;font-family:\"DM Sans\",sans-serif;letter-spacing:.12em;text-transform:uppercase;'>Age range</div>", unsafe_allow_html=True)
         _ac1, _ac2 = st.columns(2)
         age_lo = _ac1.number_input("Min age", min_value=age_min, max_value=age_max, value=age_min, step=1, label_visibility="collapsed", key="age_lo")
         age_hi = _ac2.number_input("Max age", min_value=age_min, max_value=age_max, value=age_max, step=1, label_visibility="collapsed", key="age_hi")
@@ -1094,7 +1095,7 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
 
 # ── Tab 1: League Overview ─────────────────────────────────────────────────────
 def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
-    st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>League-Wide Value vs. Cap Hit</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>League-Wide Value vs. Cap Hit</div>", unsafe_allow_html=True)
 
     df_all = df[df["predicted_value"].notna()].copy()
     df_all = add_delta_pct(df_all)
@@ -1125,13 +1126,14 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
             mode="markers",
             name="Contracted",
             marker=dict(
-                size=7, opacity=0.82,
+                size=6, opacity=0.75,
                 color=df_c["value_delta"],
-                colorscale="RdYlGn",
+                colorscale=[[0, "#C0392B"], [0.5, "#777777"], [1, "#2A7A4B"]],
                 cmid=0,
-                line=dict(width=0.4, color="#000"),
-                colorbar=dict(title="Delta ($)", tickformat="$,.0f",
-                              len=0.65, thickness=12),
+                line=dict(width=0),
+                colorbar=dict(title="Δ ($)", tickformat="$,.0f",
+                              len=0.55, thickness=10,
+                              tickfont=dict(family="'DM Mono', monospace", size=10)),
             ),
             customdata=df_c[["name", "team", "pos", "cap_hit",
                               "predicted_value", "value_delta", "value_delta_pct"]].values,
@@ -1153,8 +1155,8 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
             name="UFA / Unsigned",
             marker=dict(
                 symbol="diamond", size=11, opacity=0.85,
-                color="#C8A84B",
-                line=dict(width=1, color="#fff"),
+                color=_T.get("accent", "#1A1A2E"),
+                line=dict(width=0),
             ),
             customdata=df_ufa[["name", "team", "pos",
                                 "predicted_value"]].values,
@@ -1171,13 +1173,14 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
         lo = min(df_c["predicted_value"].min(), df_c["cap_hit"].min()) * 0.95
         hi = max(df_c["predicted_value"].max(), df_c["cap_hit"].max()) * 1.02
         fig.add_shape(type="line", x0=lo, y0=lo, x1=hi, y1=hi,
-                      line=dict(dash="dash", color="#444", width=1.5))
+                      line=dict(dash="dash", color=_T["grid"], width=1))
         fig.add_annotation(x=hi * 0.72, y=hi * 0.78, text="Fair value line",
-                           showarrow=False, font=dict(color="#444", size=14))
+                           showarrow=False, font=dict(color=_T["plot_font"], size=12,
+                                                      family="'DM Sans', sans-serif"))
 
     fig.update_layout(
         paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-        font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]),
+        font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
         xaxis=dict(tickformat="$,.0f", title="Predicted Market Value",
                    gridcolor=_T["grid"], zeroline=False),
         yaxis=dict(tickformat="$,.0f", title="Actual Cap Hit (0 = UFA/Unsigned)",
@@ -1225,19 +1228,17 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
         mi1, mi2 = st.columns(2)
         with mi1:
             st.markdown(
-                "<div style='color:#1FBFA0;font-size:.85rem;font-weight:700;"
-                "letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;"
-                "font-family:\"IBM Plex Mono\",monospace;border-left:2px solid #1FBFA0;"
-                "padding-left:8px;'>Top 5 Underpaid</div>",
+                f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+                f"letter-spacing:.12em;text-transform:uppercase;color:{_T['positive']};margin-bottom:12px;"
+                f"border-left:2px solid {_T['positive']};padding-left:8px;'>Top 5 Underpaid</div>",
                 unsafe_allow_html=True,
             )
             _mini_player_cards(df_c.nlargest(5, "value_delta"))
         with mi2:
             st.markdown(
-                "<div style='color:#E84040;font-size:.85rem;font-weight:700;"
-                "letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;"
-                "font-family:\"IBM Plex Mono\",monospace;border-left:2px solid #E84040;"
-                "padding-left:8px;'>Top 5 Overpaid</div>",
+                f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+                f"letter-spacing:.12em;text-transform:uppercase;color:{_T['negative']};margin-bottom:12px;"
+                f"border-left:2px solid {_T['negative']};padding-left:8px;'>Top 5 Overpaid</div>",
                 unsafe_allow_html=True,
             )
             _mini_player_cards(df_c.nsmallest(5, "value_delta"))
@@ -1245,7 +1246,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
 # ── Tab 2: Leaderboards ────────────────────────────────────────────────────────
 def tab_leaderboards(df: pd.DataFrame):
-    st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Value Leaderboards</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Value Leaderboards</div>", unsafe_allow_html=True)
 
     df_c   = df[df["cap_hit"].notna() & df["value_delta"].notna()].copy()
     df_c   = add_delta_pct(df_c)
@@ -1283,7 +1284,7 @@ def tab_leaderboards(df: pd.DataFrame):
         )
         fig.update_layout(
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-            font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]), showlegend=False,
+            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]), showlegend=False,
             coloraxis_showscale=False,
             yaxis=dict(autorange="reversed"),
             xaxis=dict(
@@ -1291,7 +1292,7 @@ def tab_leaderboards(df: pd.DataFrame):
                 title=x_lbl, gridcolor=_T["grid"],
             ),
             margin=dict(l=0, r=10, t=30, b=10),
-            title=dict(text=title, font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"])),
+            title=dict(text=title, font=dict(family="'DM Sans', sans-serif", size=14, color=_T["plot_font"])),
         )
         return fig
 
@@ -1311,19 +1312,17 @@ def tab_leaderboards(df: pd.DataFrame):
     hs1, hs2 = st.columns(2)
     with hs1:
         st.markdown(
-            "<div style='color:#1FBFA0;font-size:.85rem;font-weight:700;"
-            "letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;"
-            "font-family:\"IBM Plex Mono\",monospace;border-left:2px solid #1FBFA0;"
-            "padding-left:8px;'>Top 5 Underpaid</div>",
+            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+            f"letter-spacing:.12em;text-transform:uppercase;color:{_T['positive']};margin-bottom:10px;"
+            f"border-left:2px solid {_T['positive']};padding-left:8px;'>Top 5 Underpaid</div>",
             unsafe_allow_html=True,
         )
         _mini_player_cards(df_c.nlargest(5, sort_col))
     with hs2:
         st.markdown(
-            "<div style='color:#E84040;font-size:.85rem;font-weight:700;"
-            "letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;"
-            "font-family:\"IBM Plex Mono\",monospace;border-left:2px solid #E84040;"
-            "padding-left:8px;'>Top 5 Overpaid</div>",
+            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+            f"letter-spacing:.12em;text-transform:uppercase;color:{_T['negative']};margin-bottom:10px;"
+            f"border-left:2px solid {_T['negative']};padding-left:8px;'>Top 5 Overpaid</div>",
             unsafe_allow_html=True,
         )
         _mini_player_cards(df_c.nsmallest(5, sort_col))
@@ -1331,15 +1330,19 @@ def tab_leaderboards(df: pd.DataFrame):
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
     _TABLE_CSS = (
-        f"width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;"
-        f"font-size:.78rem;background:{_T['card_bg']};"
+        f"width:100%;border-collapse:collapse;font-family:'DM Sans',sans-serif;"
+        f"font-size:.8rem;background:{_T['card_bg']};"
     )
     _TH_CSS = (
-        f"padding:7px 10px;text-align:left;color:{_T['card_subtext']};font-weight:600;"
-        f"letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid {_T['card_border']};"
+        f"padding:8px 12px;text-align:left;color:{_T['card_subtext']};font-weight:500;"
+        f"font-family:'DM Sans',sans-serif;font-size:.7rem;letter-spacing:.12em;"
+        f"text-transform:uppercase;border-bottom:1px solid {_T['card_border']};"
         f"background:{_T['card_header']};"
     )
-    _TD_CSS = f"padding:6px 10px;color:{_T['card_text']};border-bottom:1px solid {_T['row_divider']};"
+    _TD_CSS = (
+        f"padding:8px 12px;color:{_T['card_text']};border-bottom:1px solid {_T['row_divider']};"
+        f"font-family:'DM Sans',sans-serif;"
+    )
 
     def _html_table(data, delta_col="value_delta"):
         cols_order = ["name", "team", "pos", "age", "cap_hit",
@@ -1366,15 +1369,16 @@ def tab_leaderboards(df: pd.DataFrame):
                 elif c == "predicted_value":
                     txt = fmt_m(v)
                 elif c == "value_delta":
-                    color = "#1FBFA0" if (v or 0) >= 0 else "#E84040"
-                    txt = f"<span style='color:{color};font-weight:700;'>{fmt_delta(v)}</span>"
+                    color = _T.get("positive", "#2A7A4B") if (v or 0) >= 0 else _T.get("negative", "#C0392B")
+                    txt = f"<span style='color:{color};font-weight:600;font-family:\"DM Mono\",monospace;'>{fmt_delta(v)}</span>"
                 elif c == "value_delta_pct":
-                    color = "#1FBFA0" if (v or 0) >= 0 else "#E84040"
-                    txt = f"<span style='color:{color};'>{fmt_pct(v)}</span>"
+                    color = _T.get("positive", "#2A7A4B") if (v or 0) >= 0 else _T.get("negative", "#C0392B")
+                    txt = f"<span style='color:{color};font-family:\"DM Mono\",monospace;'>{fmt_pct(v)}</span>"
                 elif c == "name":
-                    txt = f"<span style='color:{_ctxt};font-weight:700;'>{v}</span>"
+                    txt = f"<span style='color:{_ctxt};font-weight:500;font-family:\"DM Sans\",sans-serif;'>{v}</span>"
                 elif c == "team":
-                    txt = f"<span style='color:#C8A84B;'>{v}</span>"
+                    _team_accent = _T.get("accent", "#1A1A2E")
+                    txt = f"<span style='color:{_team_accent};font-family:\"DM Mono\",monospace;'>{v}</span>"
                 else:
                     txt = str(v) if pd.notna(v) else "?"
                 cells += f"<td style='{_TD_CSS}'>{txt}</td>"
@@ -1382,7 +1386,7 @@ def tab_leaderboards(df: pd.DataFrame):
         header = "".join(f"<th style='{_TH_CSS}'>{col_labels.get(c, c)}</th>" for c in cols)
         _cbg = _T["card_bg"]; _cbd = _T["card_border"]
         return (
-            f"<div style='background:{_cbg};border:1px solid {_cbd};border-radius:2px;"
+            f"<div style='background:{_cbg};border:1px solid {_cbd};border-radius:0;"
             f"overflow:hidden;margin-bottom:4px;'>"
             f"<table style='{_TABLE_CSS}'>"
             f"<thead><tr>{header}</tr></thead>"
@@ -1393,16 +1397,18 @@ def tab_leaderboards(df: pd.DataFrame):
     t1, t2 = st.columns(2)
     with t1:
         st.markdown(
-            "<div style='color:#1FBFA0;font-size:.78rem;font-weight:700;letter-spacing:.1em;"
-            "text-transform:uppercase;font-family:\"IBM Plex Mono\",monospace;margin-bottom:6px;'>"
+            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+            f"letter-spacing:.12em;text-transform:uppercase;color:{_T['positive']};margin-bottom:8px;"
+            f"border-left:2px solid {_T['positive']};padding-left:8px;'>"
             "Hidden Gems</div>",
             unsafe_allow_html=True,
         )
         st.markdown(_html_table(df_c.nlargest(n, sort_col)), unsafe_allow_html=True)
     with t2:
         st.markdown(
-            "<div style='color:#E84040;font-size:.78rem;font-weight:700;letter-spacing:.1em;"
-            "text-transform:uppercase;font-family:\"IBM Plex Mono\",monospace;margin-bottom:6px;'>"
+            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+            f"letter-spacing:.12em;text-transform:uppercase;color:{_T['negative']};margin-bottom:8px;"
+            f"border-left:2px solid {_T['negative']};padding-left:8px;'>"
             "Overpaid</div>",
             unsafe_allow_html=True,
         )
@@ -1418,13 +1424,15 @@ def tab_leaderboards(df: pd.DataFrame):
 
         if not ufa_filtered.empty:
             st.markdown("---")
+            _ufa_txt = _T["page_text"]; _ufa_sub = _T["card_subtext"]
             st.markdown(
-                "<div style='display:flex;align-items:center;gap:10px;'>"
-                "<span style='font-size:1.1rem;font-weight:700;color:#C8A84B;'>"
-                "🔶 UFA / Unsigned Players</span>"
-                "<span style='background:#8B6914;color:#FFF8E0;padding:2px 8px;"
-                "border-radius:2px;font-size:.88rem;'>No current contract — predicted value only</span>"
-                "</div>",
+                f"<div style='margin-bottom:12px;'>"
+                f"<span style='font-family:\"Instrument Serif\",serif;font-size:1.5rem;"
+                f"font-weight:400;color:{_ufa_txt};'>UFA / Unsigned Players</span>"
+                f"<span style='font-family:\"DM Mono\",monospace;font-size:.72rem;"
+                f"color:{_ufa_sub};margin-left:12px;letter-spacing:.06em;'>"
+                f"No current contract — predicted value only</span>"
+                f"</div>",
                 unsafe_allow_html=True,
             )
             top_ufa = ufa_filtered.nlargest(min(n, len(ufa_filtered)), "predicted_value")
@@ -1442,12 +1450,14 @@ def tab_leaderboards(df: pd.DataFrame):
                         if c == "age":
                             txt = f"{v:.0f}" if pd.notna(v) else "?"
                         elif c == "predicted_value":
-                            txt = f"<span style='color:#C8A84B;font-weight:700;'>{fmt_m(v)}</span>"
+                            _pv_txt = _T["card_text"]
+                            txt = f"<span style='color:{_pv_txt};font-family:\"DM Mono\",monospace;font-weight:500;'>{fmt_m(v)}</span>"
                         elif c == "name":
                             _ct = _T["card_text"]
-                            txt = f"<span style='color:{_ct};font-weight:700;'>{v}</span>"
+                            txt = f"<span style='color:{_ct};font-weight:500;font-family:\"DM Sans\",sans-serif;'>{v}</span>"
                         elif c == "team":
-                            txt = f"<span style='color:#C8A84B;'>{v}</span>"
+                            _ta = _T.get("accent", "#1A1A2E")
+                            txt = f"<span style='color:{_ta};font-family:\"DM Mono\",monospace;'>{v}</span>"
                         else:
                             txt = str(v) if pd.notna(v) else "?"
                         cells += f"<td style='{_TD_CSS}'>{txt}</td>"
@@ -1455,7 +1465,7 @@ def tab_leaderboards(df: pd.DataFrame):
                 header = "".join(f"<th style='{_TH_CSS}'>{col_labels.get(c, c)}</th>" for c in cols)
                 _cbg2 = _T["card_bg"]; _cbd2 = _T["card_border"]
                 return (
-                    f"<div style='background:{_cbg2};border:1px solid {_cbd2};border-radius:2px;"
+                    f"<div style='background:{_cbg2};border:1px solid {_cbd2};border-radius:0;"
                     f"overflow:hidden;margin-bottom:4px;'>"
                     f"<table style='{_TABLE_CSS}'>"
                     f"<thead><tr>{header}</tr></thead>"
@@ -1478,20 +1488,17 @@ def tab_team(df: pd.DataFrame, team_code: str):
     team_name = TEAM_NAMES.get(team_code, team_code)
     team_logo = team_logo_url(team_code)
 
-    _kbg = _T["card_bg"]; _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
+    _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
     st.markdown(
-        f"<div style='display:flex;align-items:center;gap:18px;margin-bottom:12px;"
-        f"padding:18px 22px;background:{_kbg};border-left:4px solid {T_PRIMARY};border:1px solid {_T['card_border']};'>"
-        f"<img src='{team_logo}' width='64' height='64' "
-        f"style='flex-shrink:0;opacity:.95;' onerror=\"this.style.display='none'\">"
-        f"<div>"
-        f"<div style='font-size:1.5rem;font-weight:700;color:{_ktxt};"
-        f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
+        f"<div style='padding:0 0 16px 0;'>"
+        f"<div style='font-family:\"Instrument Serif\",serif;font-size:3.5rem;"
+        f"font-weight:400;color:{_ktxt};line-height:1;margin-bottom:8px;'>"
         f"{team_name}</div>"
-        f"<div style='color:{_ksub};font-size:.78rem;margin-top:5px;"
-        f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.14em;text-transform:uppercase;'>"
-        f"{_season_str(load_season_context())} Roster Analysis &nbsp;·&nbsp; XGBoost Model</div>"
-        f"</div></div>",
+        f"<div style='color:{_ksub};font-size:.72rem;"
+        f"font-family:\"DM Mono\",monospace;letter-spacing:.1em;text-transform:uppercase;'>"
+        f"{_season_str(load_season_context())} &nbsp;·&nbsp; Roster Analysis &nbsp;·&nbsp; XGBoost</div>"
+        f"<div style='height:1px;background:{_T['card_border']};margin-top:16px;'></div>"
+        f"</div>",
         unsafe_allow_html=True,
     )
 
@@ -1512,8 +1519,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
     n_expiring        = int((team["years_left"].fillna(0) <= 1).sum())
 
     st.markdown(
-        f"<div style='border-top:3px solid {T_PRIMARY};border-bottom:1px solid {_T['card_border']};"
-        f"margin-bottom:16px;'></div>",
+        f"<div style='height:1px;background:{_T['card_border']};margin-bottom:20px;'></div>",
         unsafe_allow_html=True,
     )
     cap_cols = st.columns(5)
@@ -1555,7 +1561,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
     fig.update_layout(
         barmode="group",
         paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-        font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]),
+        font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
         xaxis=dict(tickangle=-40, gridcolor=_T["grid_alt"]),
         yaxis=dict(tickformat="$,.0f", title="", gridcolor=_T["grid_alt"], zeroline=False),
         title=dict(text="Cap Hit vs. Predicted Market Value",
@@ -1573,13 +1579,13 @@ def tab_team(df: pd.DataFrame, team_code: str):
             st.session_state[ufa_key] = not st.session_state[ufa_key]
             st.rerun()
     st.markdown(
-        f"<div style='font-size:.75rem;color:{_T['card_subtext']};font-family:\"IBM Plex Mono\",monospace;"
-        f"letter-spacing:.06em;margin-top:2px;'>"
-        f"<span style='display:inline-block;width:12px;height:12px;background:{T_SECOND};"
-        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Cap Hit"
+        f"<div style='font-size:.7rem;color:{_T['card_subtext']};font-family:\"DM Sans\",sans-serif;"
+        f"letter-spacing:.06em;margin-top:4px;'>"
+        f"<span style='display:inline-block;width:10px;height:10px;background:{T_SECOND};"
+        f"margin-right:5px;vertical-align:middle;'></span>Cap Hit"
         f"&nbsp;&nbsp;"
-        f"<span style='display:inline-block;width:12px;height:12px;background:{T_PRIMARY};"
-        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Predicted Value"
+        f"<span style='display:inline-block;width:10px;height:10px;background:{T_PRIMARY};"
+        f"margin-right:5px;vertical-align:middle;'></span>Predicted Value"
         f"</div>",
         unsafe_allow_html=True,
     )
@@ -1602,9 +1608,11 @@ def tab_team(df: pd.DataFrame, team_code: str):
         oc4.metric("Deals Needed",          n_need_deals)
 
         if not expiring.empty:
+            _exp_sub = _T["card_subtext"]
             st.markdown(
-                f"<div style='color:{T_PRIMARY};font-weight:600;font-size:.85rem;"
-                "margin:10px 0 6px;'>Expiring Contracts</div>",
+                f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;"
+                f"font-weight:500;letter-spacing:.15em;text-transform:uppercase;"
+                f"color:{_exp_sub};margin:12px 0 6px;'>Expiring Contracts</div>",
                 unsafe_allow_html=True,
             )
             exp_disp = expiring[["name", "pos", "age", "cap_hit",
@@ -1621,9 +1629,8 @@ def tab_team(df: pd.DataFrame, team_code: str):
 
     # ── Roster breakdown ──────────────────────────────────────────────────────
     st.markdown(
-        f"<div style='color:{T_PRIMARY};font-size:1.0rem;font-weight:700;"
-        "margin:14px 0 10px;font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;'>"
-        "Player Breakdown</div>",
+        f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.8rem;"
+        f"font-weight:400;color:{_T['page_text']};margin:24px 0 16px;'>Player Breakdown</div>",
         unsafe_allow_html=True,
     )
 
@@ -1661,7 +1668,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
         pct_str   = ""
         if pd.notna(delta):
             sign = "+" if delta >= 0 else ""
-            clr  = "#1FBFA0" if delta >= 0 else "#E84040"
+            clr  = _T.get("positive", "#2A7A4B") if delta >= 0 else _T.get("negative", "#C0392B")
             delta_str = f"<span style='color:{clr};font-weight:700;'>{sign}{fmt_m(delta)}</span>"
             if pd.notna(delta_pct):
                 pct_str = f"<span style='color:{clr};font-size:.8rem;'>({sign}{delta_pct:.1f}%)</span>"
@@ -1674,14 +1681,16 @@ def tab_team(df: pd.DataFrame, team_code: str):
             hs_url = headshot_url(pid, team_code)
             hs_html = (
                 f"<img src='{hs_url}' width='48' height='48' "
-                f"style='border-radius:50%;object-fit:cover;"
-                f"border:2px solid {T_PRIMARY};flex-shrink:0;' "
+                f"style='object-fit:cover;flex-shrink:0;' "
                 f"onerror=\"this.style.display='none'\">"
             )
 
+        _bdg_bg  = _T["card_border"]
+        _bdg_txt = _T["card_subtext"]
         est_badge = (
-            f"<span style='background:#2C3A40;color:#B8C4C8;padding:1px 5px;"
-            f"border-radius:2px;font-size:.82rem;margin-left:4px;' "
+            f"<span style='background:{_bdg_bg};color:{_bdg_txt};padding:1px 5px;"
+            f"font-family:\"DM Sans\",sans-serif;font-size:.65rem;letter-spacing:.06em;"
+            f"text-transform:uppercase;margin-left:4px;' "
             f"title='Salary estimated'>est*</span>"
         ) if is_est else ""
 
@@ -1694,22 +1703,25 @@ def tab_team(df: pd.DataFrame, team_code: str):
             ext_ch_s    = f"${ext_ch_val/1e6:.2f}M" if ext_ch_val else "?"
             ext_yr_s    = f"{int(ext_start_v)-1}-{str(int(ext_start_v))[-2:]}" if ext_start_v else "?"
             ext_len_s   = f"{int(ext_len_v)}-yr" if ext_len_v else ""
+            _ext_sub = _T["card_subtext"]
             ext_note    = (
-                f"<div style='margin-top:5px;font-size:11px;color:#6BBAD4;'>"
-                f"✅ Extension signed — {ext_len_s} {ext_ch_s}/yr starting {ext_yr_s}</div>"
+                f"<div style='margin-top:5px;font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+                f"letter-spacing:.06em;color:{_ext_sub};text-transform:uppercase;'>"
+                f"Extension Signed — {ext_len_s} {ext_ch_s}/yr starting {ext_yr_s}</div>"
             )
 
         _rtxt = _T["card_text"]; _rsub = _T["card_subtext"]
         st.markdown(
-            f"<div class='kings-card' style='display:flex;align-items:center;gap:16px;border-left-color:{T_PRIMARY};'>"
+            f"<div class='kings-card' style='display:flex;align-items:center;gap:16px;"
+            f"border-top:3px solid {T_PRIMARY};'>"
             f"  {hs_html}"
             f"  <div style='flex:1;min-width:0;'>"
             f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
-            f"      <span style='font-size:1.0rem;font-weight:700;color:{_rtxt};"
-            f"font-family:\"Manrope\",sans-serif;'>{name}</span>"
+            f"      <span style='font-size:1.05rem;font-weight:400;color:{_rtxt};"
+            f"font-family:\"Instrument Serif\",serif;'>{name}</span>"
             f"      {est_badge}"
-            f"      <span style='color:{_rsub};font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
-            f"letter-spacing:.04em;'>{pos} · {age_str}</span>"
+            f"      <span style='color:{_rsub};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+            f"letter-spacing:.06em;text-transform:uppercase;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
             f"      <div><div class='stat-label'>Cap Hit</div>"
@@ -1717,7 +1729,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
             f"      <div><div class='stat-label'>Pred. Value</div>"
             f"           <div class='stat-value'>{pv_str}</div></div>"
             f"      <div><div class='stat-label'>Value Delta</div>"
-            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"IBM Plex Mono\",monospace;'>"
+            f"           <div style='font-size:.88rem;font-family:\"DM Mono\",monospace;'>"
             f"             {delta_str} {pct_str}</div></div>"
             f"      <div><div class='stat-label'>Expiry</div>"
             f"           <div class='stat-value'>{exp_str} ({exp_st})</div></div>"
@@ -1762,20 +1774,17 @@ def tab_team(df: pd.DataFrame, team_code: str):
 def tab_kings(df: pd.DataFrame):
     # Kings-specific header with logo
     kings_logo = team_logo_url("LAK")
-    _kbg = _T["card_bg"]; _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
+    _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
     st.markdown(
-        f"<div style='display:flex;align-items:center;gap:18px;margin-bottom:12px;"
-        f"padding:18px 22px;background:{_kbg};border-left:4px solid {KINGS_GOLD};border:1px solid {_T['card_border']};'>"
-        f"<img src='{kings_logo}' width='64' height='64' "
-        f"style='flex-shrink:0;opacity:.95;' onerror=\"this.style.display='none'\">"
-        f"<div>"
-        f"<div style='font-size:1.5rem;font-weight:700;color:{_ktxt};"
-        f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
+        f"<div style='padding:0 0 16px 0;'>"
+        f"<div style='font-family:\"Instrument Serif\",serif;font-size:3.5rem;"
+        f"font-weight:400;color:{_ktxt};line-height:1;margin-bottom:8px;'>"
         f"Los Angeles Kings</div>"
-        f"<div style='color:{_ksub};font-size:.78rem;margin-top:5px;"
-        f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.14em;text-transform:uppercase;'>"
-        f"{_season_str(load_season_context())} Roster Analysis &nbsp;·&nbsp; XGBoost Model</div>"
-        f"</div></div>",
+        f"<div style='color:{_ksub};font-size:.72rem;"
+        f"font-family:\"DM Mono\",monospace;letter-spacing:.1em;text-transform:uppercase;'>"
+        f"{_season_str(load_season_context())} &nbsp;·&nbsp; Roster Analysis &nbsp;·&nbsp; XGBoost</div>"
+        f"<div style='height:1px;background:{_T['card_border']};margin-top:16px;'></div>"
+        f"</div>",
         unsafe_allow_html=True,
     )
 
@@ -1797,8 +1806,7 @@ def tab_kings(df: pd.DataFrame):
     n_expiring        = int((kings["years_left"].fillna(0) <= 1).sum())
 
     st.markdown(
-        f"<div style='border-top:3px solid {KINGS_GOLD};border-bottom:1px solid {_T['card_border']};"
-        f"margin-bottom:16px;'></div>",
+        f"<div style='height:1px;background:{_T['card_border']};margin-bottom:20px;'></div>",
         unsafe_allow_html=True,
     )
     cap_cols = st.columns(5)
@@ -1838,12 +1846,12 @@ def tab_kings(df: pd.DataFrame):
     fig.update_layout(
         barmode="group",
         paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-        font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]),
+        font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
         xaxis=dict(tickangle=-40, gridcolor=_T["grid_alt"]),
         yaxis=dict(tickformat="$,.0f", title="",
                    gridcolor=_T["grid_alt"], zeroline=False),
         title=dict(text="Cap Hit vs. Predicted Market Value",
-                   font=dict(color=KINGS_GOLD, size=16)),
+                   font=dict(color=_T["plot_font"], size=14)),
         showlegend=False,
         height=420,
         margin=dict(l=10, r=10, t=50, b=10),
@@ -1857,13 +1865,13 @@ def tab_kings(df: pd.DataFrame):
             st.session_state["kings_show_ufa"] = not st.session_state["kings_show_ufa"]
             st.rerun()
     st.markdown(
-        f"<div style='font-size:.75rem;color:{_T['card_subtext']};font-family:\"IBM Plex Mono\",monospace;"
+        f"<div style='font-size:.75rem;color:{_T['card_subtext']};font-family:\"DM Mono\",monospace;"
         f"letter-spacing:.06em;margin-top:2px;'>"
         f"<span style='display:inline-block;width:12px;height:12px;background:{KINGS_SILVER};"
-        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Cap Hit"
+        f"margin-right:5px;vertical-align:middle;'></span>Cap Hit"
         f"&nbsp;&nbsp;"
         f"<span style='display:inline-block;width:12px;height:12px;background:{KINGS_GOLD};"
-        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Predicted Value"
+        f"margin-right:5px;vertical-align:middle;'></span>Predicted Value"
         f"</div>",
         unsafe_allow_html=True,
     )
@@ -1885,9 +1893,11 @@ def tab_kings(df: pd.DataFrame):
         oc4.metric("Deals Needed",          n_need_deals)
 
         if not expiring.empty:
+            _kexp_sub = _T["card_subtext"]
             st.markdown(
-                f"<div style='color:{KINGS_GOLD};font-weight:600;font-size:.85rem;"
-                "margin:10px 0 6px;'>Expiring Contracts</div>",
+                f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;"
+                f"font-weight:500;letter-spacing:.15em;text-transform:uppercase;"
+                f"color:{_kexp_sub};margin:12px 0 6px;'>Expiring Contracts</div>",
                 unsafe_allow_html=True,
             )
             exp_disp = expiring[["name", "pos", "age", "cap_hit",
@@ -1904,9 +1914,8 @@ def tab_kings(df: pd.DataFrame):
 
     # ── Roster grouped by F / D ──────────────────────────────────────────────
     st.markdown(
-        f"<div style='color:{KINGS_GOLD};font-size:1.0rem;font-weight:700;"
-        "margin:14px 0 10px;font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;'>"
-        "Player Breakdown</div>",
+        f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.8rem;"
+        f"font-weight:400;color:{_T['page_text']};margin:24px 0 16px;'>Player Breakdown</div>",
         unsafe_allow_html=True,
     )
 
@@ -1949,7 +1958,7 @@ def tab_kings(df: pd.DataFrame):
         pct_str   = ""
         if pd.notna(delta):
             sign = "+" if delta >= 0 else ""
-            clr  = "#1FBFA0" if delta >= 0 else "#E84040"
+            clr  = _T.get("positive", "#2A7A4B") if delta >= 0 else _T.get("negative", "#C0392B")
             delta_str = f"<span style='color:{clr};font-weight:700;'>{sign}{fmt_m(delta)}</span>"
             if pd.notna(delta_pct):
                 pct_str = f"<span style='color:{clr};font-size:.8rem;'>({sign}{delta_pct:.1f}%)</span>"
@@ -1962,14 +1971,16 @@ def tab_kings(df: pd.DataFrame):
             hs_url = headshot_url(pid, "LAK")
             hs_html = (
                 f"<img src='{hs_url}' width='48' height='48' "
-                f"style='border-radius:50%;object-fit:cover;"
-                f"border:2px solid {KINGS_GOLD};flex-shrink:0;' "
+                f"style='object-fit:cover;flex-shrink:0;' "
                 f"onerror=\"this.style.display='none'\">"
             )
 
+        _kbdg_bg  = _T["card_border"]
+        _kbdg_txt = _T["card_subtext"]
         est_badge = (
-            f"<span style='background:#2C3A40;color:#B8C4C8;padding:1px 5px;"
-            f"border-radius:2px;font-size:.82rem;margin-left:4px;' "
+            f"<span style='background:{_kbdg_bg};color:{_kbdg_txt};padding:1px 5px;"
+            f"font-family:\"DM Sans\",sans-serif;font-size:.65rem;letter-spacing:.06em;"
+            f"text-transform:uppercase;margin-left:4px;' "
             f"title='Salary estimated — contract data pending verification'>est*</span>"
         ) if is_est else ""
 
@@ -1983,21 +1994,25 @@ def tab_kings(df: pd.DataFrame):
             ext_ch_s    = f"${ext_ch_val/1e6:.2f}M" if ext_ch_val else "?"
             ext_yr_s    = f"{int(ext_start_v)-1}-{str(int(ext_start_v))[-2:]}" if ext_start_v else "?"
             ext_len_s   = f"{int(ext_len_v)}-yr" if ext_len_v else ""
+            _kext_sub = _T["card_subtext"]
             ext_note    = (
-                f"<div style='margin-top:5px;font-size:11px;color:#6BBAD4;'>"
-                f"✅ Extension signed — {ext_len_s} {ext_ch_s}/yr starting {ext_yr_s}</div>"
+                f"<div style='margin-top:5px;font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+                f"letter-spacing:.06em;text-transform:uppercase;color:{_kext_sub};'>"
+                f"Extension Signed — {ext_len_s} {ext_ch_s}/yr starting {ext_yr_s}</div>"
             )
 
+        _kcard_top = _T.get("positive", "#2A7A4B") if pd.notna(delta) and delta >= 0 else _T.get("negative", "#C0392B") if pd.notna(delta) else _T["card_border"]
         st.markdown(
-            f"<div class='kings-card' style='display:flex;align-items:center;gap:16px;'>"
+            f"<div class='kings-card' style='display:flex;align-items:center;gap:16px;"
+            f"border-top:3px solid {KINGS_GOLD};'>"
             f"  {hs_html}"
             f"  <div style='flex:1;min-width:0;'>"
             f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
-            f"      <span style='font-size:1.0rem;font-weight:700;color:{_T['card_text']};"
-            f"font-family:\"Manrope\",sans-serif;'>{name}</span>"
+            f"      <span style='font-size:1.05rem;font-weight:400;color:{_T['card_text']};"
+            f"font-family:\"Instrument Serif\",serif;'>{name}</span>"
             f"      {est_badge}"
-            f"      <span style='color:{_T['card_subtext']};font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
-            f"letter-spacing:.04em;'>{pos} · {age_str}</span>"
+            f"      <span style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+            f"letter-spacing:.06em;text-transform:uppercase;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
             f"      <div><div class='stat-label'>Cap Hit</div>"
@@ -2005,7 +2020,7 @@ def tab_kings(df: pd.DataFrame):
             f"      <div><div class='stat-label'>Pred. Value</div>"
             f"           <div class='stat-value'>{pv_str}</div></div>"
             f"      <div><div class='stat-label'>Value Delta</div>"
-            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"IBM Plex Mono\",monospace;'>"
+            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"DM Mono\",monospace;'>"
             f"             {delta_str} {pct_str}</div></div>"
             f"      <div><div class='stat-label'>Expiry</div>"
             f"           <div class='stat-value'>{exp_str} ({exp_st})</div></div>"
@@ -2091,47 +2106,56 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     has_prior = bool(player.get("has_prior_market_data", True))
     exp_status = str(player.get("expiry_status") or "")
 
+    _bdg_bg  = _T["card_border"]
+    _bdg_txt = _T["card_subtext"]
     prior_badge = (
         "" if has_prior else
-        "<span style='background:#8B1C1C;color:#fff;padding:2px 7px;"
-        "border-radius:2px;font-size:.85rem;margin-left:6px;'>NO PRIOR STATS</span>"
+        f"<span style='background:{_bdg_bg};color:{_bdg_txt};padding:1px 6px;"
+        f"font-family:\"DM Sans\",sans-serif;font-size:.68rem;letter-spacing:.08em;"
+        f"margin-left:8px;text-transform:uppercase;'>No Prior Stats</span>"
     )
     if not has_contract and exp_status.upper() == "UFA":
         contract_badge = (
-            "<span style='background:#3A2018;color:#fff;padding:2px 7px;"
-            "border-radius:2px;font-size:.85rem;margin-left:6px;'>UFA / UNSIGNED</span>"
+            f"<span style='background:{_bdg_bg};color:{_bdg_txt};padding:1px 6px;"
+            f"font-family:\"DM Sans\",sans-serif;font-size:.68rem;letter-spacing:.08em;"
+            f"margin-left:8px;text-transform:uppercase;'>UFA / Unsigned</span>"
         )
     elif is_estimated:
         contract_badge = (
-            "<span style='background:#2C3A40;color:#B8C4C8;padding:2px 7px;"
-            "border-radius:2px;font-size:.85rem;margin-left:6px;' "
-            "title='Salary estimated — contract data pending verification'>SALARY EST.*</span>"
+            f"<span style='background:{_bdg_bg};color:{_bdg_txt};padding:1px 6px;"
+            f"font-family:\"DM Sans\",sans-serif;font-size:.68rem;letter-spacing:.08em;"
+            f"margin-left:8px;text-transform:uppercase;' "
+            f"title='Salary estimated — contract data pending verification'>Salary Est.*</span>"
         )
     else:
         contract_badge = ""
+
+    _delta_val = delta or 0
+    _top_strip = _T.get("positive", "#2A7A4B") if _delta_val >= 0 else _T.get("negative", "#C0392B")
+    if not has_contract:
+        _top_strip = _T["card_border"]
 
     hs_html = ""
     if pid and pd.notna(pid):
         hs_url = headshot_url(pid, team)
         hs_html = (
             f"<img src='{hs_url}' width='80' height='80' "
-            f"style='border-radius:50%;object-fit:cover;"
-            f"border:2px solid #C8A84B;flex-shrink:0;' "
+            f"style='object-fit:cover;flex-shrink:0;' "
             f"onerror=\"this.style.display='none'\">"
         )
 
     _pctxt = _T["card_text"]; _pcsub = _T["card_subtext"]
     st.markdown(
-        f"<div class='player-card'>"
+        f"<div class='player-card' style='border-top:3px solid {_top_strip};'>"
         f"  <div style='display:flex;gap:18px;align-items:center;'>"
         f"    {hs_html}"
         f"    <div>"
-        f"      <div style='font-size:1.5rem;font-weight:700;color:{_pctxt};"
-        f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
+        f"      <div style='font-size:1.4rem;font-weight:400;color:{_pctxt};"
+        f"font-family:\"Instrument Serif\",serif;line-height:1.1;'>"
         f"        {name}{prior_badge}{contract_badge}"
         f"      </div>"
-        f"      <div style='color:{_pcsub};margin-top:5px;font-size:.87rem;"
-        f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
+        f"      <div style='color:{_pcsub};margin-top:5px;font-size:.75rem;"
+        f"font-family:\"DM Sans\",sans-serif;letter-spacing:.08em;text-transform:uppercase;'>"
         f"        {team} &nbsp;·&nbsp; {pos} &nbsp;·&nbsp; Age {age}"
         f"      </div>"
         f"    </div>"
@@ -2191,12 +2215,14 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         ext_yrs_str  = f"{int(ext_len)}-yr" if ext_len else ""
         ext_start_str = f"{int(ext_start)-1}-{str(int(ext_start))[-2:]}" if ext_start else "?"
         ext_exp_str  = f"{int(ext_exp)-1}-{str(int(ext_exp))[-2:]}" if ext_exp else "?"
-        _extbg = _T["card_bg"]; _extbd = _T["card_border"]; _extsub = _T["card_subtext"]
+        _extbg = _T["card_bg"]; _extbd = _T["card_border"]; _extsub = _T["card_subtext"]; _exttxt = _T["card_text"]
         st.markdown(
-            f"<div style='background:{_extbg};border:1px solid {_extbd};border-radius:3px;"
-            f"padding:10px 14px;margin:8px 0;font-size:13px;'>"
-            f"<span style='color:#6BBAD4;font-weight:700;'>✅ Extension Signed</span>"
-            f"<span style='color:{_extsub};margin-left:10px;'>"
+            f"<div style='background:{_extbg};border:1px solid {_extbd};"
+            f"padding:10px 14px;margin:8px 0;'>"
+            f"<span style='color:{_exttxt};font-family:\"DM Sans\",sans-serif;"
+            f"font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;'>Extension Signed</span>"
+            f"<span style='color:{_extsub};font-family:\"DM Mono\",monospace;"
+            f"font-size:.82rem;margin-left:10px;'>"
             f"{ext_yrs_str} · {ext_ch_str}/yr · {ext_start_str} → {ext_exp_str}"
             f"{' · ' + ext_stat if ext_stat else ''}"
             f"</span></div>",
@@ -2207,9 +2233,9 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     signal    = player.get("resign_signal", "—")
     sig_color = RESIGN_PALETTE.get(signal, "#555")
     st.markdown(
-        f"<div style='margin:10px 0;display:flex;align-items:center;gap:10px;'>"
-        f"<span style='color:#A0A0A0;font-size:.78rem;letter-spacing:.14em;"
-        f"font-family:\"IBM Plex Mono\",monospace;text-transform:uppercase;'>Re-sign Signal</span>"
+        f"<div style='margin:12px 0;display:flex;align-items:center;gap:12px;'>"
+        f"<span style='color:{_T['card_subtext']};font-size:.65rem;letter-spacing:.15em;"
+        f"font-family:\"DM Sans\",sans-serif;text-transform:uppercase;'>Re-sign Signal</span>"
         f"<span class='signal-badge' style='background:{sig_color};color:#fff;'>{signal}</span>"
         f"</div>",
         unsafe_allow_html=True,
@@ -2220,11 +2246,13 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     rank     = int((df["predicted_value"] >= (pv or 0)).sum())
     total    = len(df)
     rank_pct = pct_rank(df["predicted_value"], pv or 0)
+    _rk_sub = _T["card_subtext"]; _rk_txt = _T["page_text"]
     st.markdown(
-        f"<div style='color:{_T['card_subtext']};font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
-        f"letter-spacing:.04em;'>LEAGUE RANK BY PREDICTED VALUE: "
-        f"<span style='color:#C8A84B;font-weight:700;'>#{rank} of {total}</span> "
-        f"&nbsp;·&nbsp; TOP <span style='color:#C8A84B;font-weight:700;'>{100-rank_pct}%</span></div>",
+        f"<div style='color:{_rk_sub};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"letter-spacing:.1em;text-transform:uppercase;'>League Rank by Predicted Value: "
+        f"<span style='color:{_rk_txt};font-family:\"DM Mono\",monospace;'>#{rank} of {total}</span>"
+        f"&nbsp;·&nbsp; Top "
+        f"<span style='color:{_rk_txt};font-family:\"DM Mono\",monospace;'>{100-rank_pct}%</span></div>",
         unsafe_allow_html=True,
     )
     st.markdown("")
@@ -2276,24 +2304,24 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
 
         st.markdown(
-            f"<div style='margin:18px 0 4px 0;font-family:\"Bebas Neue\",cursive;"
-            f"font-size:1.1rem;font-weight:700;color:{_T['page_text']};letter-spacing:0.04em;'>"
+            f"<div style='margin:32px 0 4px 0;font-family:\"Instrument Serif\",serif;"
+            f"font-size:2rem;font-weight:400;color:{_T['page_text']};'>"
             f"What drives {name}'s value?</div>"
-            f"<div style='color:#A0A0A0;font-size:.87rem;margin-bottom:14px;"
-            f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.04em;'>"
-            f"STARTING FROM LEAGUE AVERAGE — FACTORS PUSHING VALUE UP OR DOWN</div>",
+            f"<div style='color:{_T['card_subtext']};font-size:.72rem;margin-bottom:20px;"
+            f"font-family:\"DM Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
+            f"Starting from league average — factors pushing value up or down</div>",
             unsafe_allow_html=True,
         )
 
         # Section 1 — league average
         _vdbg = _T["card_bg"]; _vdbd = _T["card_border"]; _vdsub = _T["card_subtext"]; _vdtxt = _T["card_text"]
         st.markdown(
-            f"<div style='background:{_vdbg};border-radius:2px;border:1px solid {_vdbd};"
-            f"padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;"
+            f"<div style='background:{_vdbg};border:1px solid {_vdbd};"
+            f"padding:10px 16px;margin-bottom:18px;display:flex;align-items:center;"
             f"justify-content:space-between;'>"
-            f"<span style='font-size:.82rem;color:{_vdsub};font-family:\"IBM Plex Mono\",monospace;"
+            f"<span style='font-size:.7rem;color:{_vdsub};font-family:\"DM Sans\",sans-serif;"
             f"letter-spacing:.12em;text-transform:uppercase;'>League Average</span>"
-            f"<strong style='color:#C8A84B;font-family:\"IBM Plex Mono\",monospace;"
+            f"<strong style='color:{_vdtxt};font-family:\"DM Mono\",monospace;"
             f"font-size:.95rem;'>${base/1e6:.2f}M</strong></div>",
             unsafe_allow_html=True,
         )
@@ -2305,14 +2333,14 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 .vd-tip{{
   visibility:hidden;opacity:0;
   background:{_vdbg};color:{_vdtxt};
-  border:1px solid {_vdbd};border-radius:2px;
+  border:1px solid {_vdbd};border-radius:0;
   padding:8px 12px;font-size:11px;line-height:1.6;
   position:absolute;z-index:9999;
   bottom:115%;left:0;
   min-width:240px;max-width:340px;
   white-space:normal;pointer-events:none;
   transition:opacity .12s ease;
-  font-family:'Manrope',sans-serif;
+  font-family:'DM Sans',sans-serif;
 }}
 .vd-row:hover .vd-tip{{visibility:visible;opacity:1;}}
 </style>
@@ -2321,7 +2349,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         def _factor_row(lbl: str, val: float, max_v: float, positive: bool, tip: str) -> str:
             bar_pct  = int(abs(val) / max_v * 100) if max_v > 0 else 0
             bar_pct  = max(bar_pct, 3)
-            color    = "#1FBFA0" if positive else "#E84040"
+            color    = _T.get("positive", "#2A7A4B") if positive else _T.get("negative", "#C0392B")
             sign_str = f"+${val/1e6:.2f}M" if positive else f"-${abs(val)/1e6:.2f}M"
             safe_tip = tip.replace('"', "&quot;").replace("<br>", " ")
             return (
@@ -2333,7 +2361,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 f"<span style='font-size:12px;color:{color};font-weight:600;'>{sign_str}</span>"
                 f"</div>"
                 f"<div style='height:12px;width:{bar_pct}%;background:{color};"
-                f"border-radius:2px;opacity:0.85;'></div>"
+                f"border-radius:0;opacity:0.85;'></div>"
                 f"</div>"
             )
 
@@ -2341,15 +2369,14 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
         with col_up:
             st.markdown(
-                "<div style='color:#1FBFA0;font-weight:700;font-size:.85rem;"
-                "letter-spacing:.12em;text-transform:uppercase;"
-                "font-family:\"IBM Plex Mono\",monospace;margin-bottom:8px;"
-                "border-left:2px solid #1FBFA0;padding-left:8px;'>"
-                "Pushing value UP</div>",
+                f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
+                f"color:{_T['positive']};margin-bottom:10px;"
+                f"border-left:3px solid {_T['positive']};padding-left:10px;'>"
+                "Pushing Value Up</div>",
                 unsafe_allow_html=True,
             )
             if pos_factors.empty:
-                st.markdown("<span style='color:#A0A0A0;font-size:12px;'>None</span>",
+                st.markdown("<span style='color:#888888;font-size:12px;font-family:\"DM Sans\",sans-serif;'>None</span>",
                             unsafe_allow_html=True)
             else:
                 rows = "".join(
@@ -2358,22 +2385,21 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                     for f, v in pos_factors.items()
                 )
                 st.markdown(
-                    f"<div style='background:{_vdbg};border-radius:2px;border:1px solid {_vdbd};"
+                    f"<div style='background:{_vdbg};border-radius:0;border:1px solid {_vdbd};"
                     f"padding:10px 12px;'>{rows}</div>",
                     unsafe_allow_html=True,
                 )
 
         with col_dn:
             st.markdown(
-                "<div style='color:#E84040;font-weight:700;font-size:.85rem;"
-                "letter-spacing:.12em;text-transform:uppercase;"
-                "font-family:\"IBM Plex Mono\",monospace;margin-bottom:8px;"
-                "border-left:2px solid #E84040;padding-left:8px;'>"
-                "Pushing value DOWN</div>",
+                f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
+                f"color:{_T['negative']};margin-bottom:10px;"
+                f"border-left:3px solid {_T['negative']};padding-left:10px;'>"
+                "Pushing Value Down</div>",
                 unsafe_allow_html=True,
             )
             if neg_factors.empty:
-                st.markdown("<span style='color:#A0A0A0;font-size:12px;'>None</span>",
+                st.markdown("<span style='color:#888888;font-size:12px;font-family:\"DM Sans\",sans-serif;'>None</span>",
                             unsafe_allow_html=True)
             else:
                 rows = "".join(
@@ -2382,33 +2408,31 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                     for f, v in neg_factors.items()
                 )
                 st.markdown(
-                    f"<div style='background:{_vdbg};border-radius:2px;border:1px solid {_vdbd};"
+                    f"<div style='background:{_vdbg};border-radius:0;border:1px solid {_vdbd};"
                     f"padding:10px 12px;'>{rows}</div>",
                     unsafe_allow_html=True,
                 )
 
         # Section 3 — result
         pv_val   = pv or base
-        pv_color = "#1FBFA0" if (delta or 0) >= 0 else "#E84040"
+        pv_color = _T.get("positive", "#2A7A4B") if (delta or 0) >= 0 else _T.get("negative", "#C0392B")
         cap_str  = f"${ch/1e6:.2f}M" if ch else "—"
         if delta is not None:
             delta_str = f"+${delta/1e6:.2f}M" if delta >= 0 else f"-${abs(delta)/1e6:.2f}M"
         else:
             delta_str = "—"
-        _emvbg = _T["card_bg"]; _emvbd = _T["card_border"]; _emvsub = _T["card_subtext"]
         st.markdown(
-            f"<div style='background:{_emvbg};border:1px solid {_emvbd};border-radius:2px;"
-            f"border-left:3px solid {pv_color};padding:16px 20px;margin-top:16px;'>"
-            f"<div style='font-size:.78rem;color:{_emvsub};font-family:\"IBM Plex Mono\",monospace;"
-            f"letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;'>"
+            f"<div style='background:#1A1A2E;padding:20px 24px;margin-top:20px;width:100%;'>"
+            f"<div style='font-size:.65rem;color:#888888;font-family:\"DM Sans\",sans-serif;"
+            f"letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px;'>"
             f"Estimated Market Value</div>"
-            f"<div style='font-size:1.5rem;font-weight:700;color:{pv_color};"
-            f"font-family:\"IBM Plex Mono\",monospace;margin-bottom:8px;'>"
+            f"<div style='font-size:2.2rem;font-weight:400;color:#FFFFFF;"
+            f"font-family:\"Instrument Serif\",serif;margin-bottom:10px;'>"
             f"${pv_val/1e6:.2f}M</div>"
-            f"<div style='font-size:.87rem;color:{_emvsub};font-family:\"IBM Plex Mono\",monospace;'>"
-            f"Current Cap Hit: <span style='color:{_T['card_text']};'>{cap_str}</span>"
+            f"<div style='font-size:.8rem;color:#888888;font-family:\"DM Mono\",monospace;'>"
+            f"Cap Hit: <span style='color:#F5F5F2;'>{cap_str}</span>"
             f"&nbsp;&nbsp;·&nbsp;&nbsp;"
-            f"Difference: <span style='color:{pv_color};font-weight:700;'>{delta_str}</span>"
+            f"Delta: <span style='color:{pv_color};font-weight:600;'>{delta_str}</span>"
             f"</div></div>",
             unsafe_allow_html=True,
         )
@@ -2434,31 +2458,29 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 sp_hs_url = headshot_url(sp_pid, sp_team)
                 sp_hs = (
                     f"<img src='{sp_hs_url}' width='56' height='56' "
-                    f"style='border-radius:50%;object-fit:cover;"
-                    f"border:1px solid {_T['card_border']};' "
+                    f"style='object-fit:cover;display:block;margin:0 auto;' "
                     f"onerror=\"this.style.display='none'\">"
                 )
-            clr = "#1FBFA0" if (sp_dlt or 0) >= 0 else "#E84040"
+            clr = _T.get("positive", "#2A7A4B") if (sp_dlt or 0) >= 0 else _T.get("negative", "#C0392B")
             _scbg = _T["card_bg"]; _scbd = _T["card_border"]
             _sctxt = _T["card_text"]; _scsub = _T["card_subtext"]
             sim_cols[col_i].markdown(
-                f"<div style='background:{_scbg};border-radius:2px;padding:14px 10px;"
-                f"border:1px solid {_scbd};border-bottom:2px solid {clr};text-align:center;'>"
+                f"<div style='background:{_scbg};padding:14px 10px;"
+                f"border:1px solid {_scbd};border-top:3px solid {clr};text-align:center;'>"
                 f"  {sp_hs}"
-                f"  <div style='font-weight:700;color:{_sctxt};margin-top:7px;"
-                f"font-size:.85rem;font-family:\"Manrope\",sans-serif;'>{sp_name}</div>"
-                f"  <div style='color:{_scsub};font-size:.78rem;margin:3px 0;"
-                f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.06em;'>"
+                f"  <div style='font-weight:400;color:{_sctxt};margin-top:8px;"
+                f"font-size:.95rem;font-family:\"Instrument Serif\",serif;'>{sp_name}</div>"
+                f"  <div style='color:{_scsub};font-size:.7rem;margin:3px 0;"
+                f"font-family:\"DM Sans\",sans-serif;letter-spacing:.06em;text-transform:uppercase;'>"
                 f"    {sp_team} · {sp_pos}"
                 f"    {f'· {sp_age:.0f}' if pd.notna(sp_age) else ''}"
                 f"  </div>"
-                f"  <div style='margin-top:7px;font-size:.78rem;"
-                f"font-family:\"IBM Plex Mono\",monospace;'>"
-                f"    <span style='color:{_scsub};'>PRED </span>"
-                f"    <span style='color:{_sctxt};'>{fmt_m(sp_pv)}</span>"
+                f"  <div style='margin-top:8px;font-size:.8rem;"
+                f"font-family:\"DM Mono\",monospace;color:{_scsub};'>"
+                f"    Pred: <span style='color:{_sctxt};'>{fmt_m(sp_pv)}</span>"
                 f"  </div>"
-                f"  <div style='color:{clr};font-size:.88rem;font-weight:700;"
-                f"font-family:\"IBM Plex Mono\",monospace;margin-top:2px;'>"
+                f"  <div style='color:{clr};font-size:.85rem;"
+                f"font-family:\"DM Mono\",monospace;margin-top:3px;'>"
                 f"    {fmt_delta(sp_dlt)}"
                 f"  </div>"
                 f"</div>",
@@ -2503,7 +2525,7 @@ The model is retrained nightly from live NHL API stats.
 
 
 def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame):
-    st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Player Search</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Player Search</div>", unsafe_allow_html=True)
 
     all_names = sorted(df["name"].dropna().tolist())
     search1 = st.text_input(
@@ -2538,7 +2560,7 @@ def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame):
 
 # ── Tab 5: Model Insights ──────────────────────────────────────────────────────
 def tab_insights(df: pd.DataFrame):
-    st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:2rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 16px;font-weight:400;'>Model Insights — SHAP Feature Importance</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Model Insights — SHAP Feature Importance</div>", unsafe_allow_html=True)
     shap_summary = load_shap_summary()
     shap_vals    = load_shap_values()
 
@@ -2546,7 +2568,7 @@ def tab_insights(df: pd.DataFrame):
         st.info("Run `py -3 pipeline.py` to generate SHAP values.")
         return
 
-    st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:1.5rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 12px;font-weight:400;'>What drives predicted player value?</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>What drives predicted player value?</div>", unsafe_allow_html=True)
     top_n = int(st.number_input("Features to show", min_value=5, max_value=min(30, len(shap_summary)), value=15, step=1))
     top   = shap_summary.head(top_n).copy()
     top["feature"] = top["feature"].apply(_label)
@@ -2564,7 +2586,7 @@ def tab_insights(df: pd.DataFrame):
     )
     fig.update_layout(
         paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-        font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]), showlegend=False, coloraxis_showscale=False,
+        font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]), showlegend=False, coloraxis_showscale=False,
         xaxis=dict(
             tickvals=tick_vals, ticktext=tick_text,
             title="Avg. Dollar Impact on Prediction", gridcolor=_T["grid"],
@@ -2576,7 +2598,7 @@ def tab_insights(df: pd.DataFrame):
 
     if not shap_vals.empty and "name" in shap_vals.columns:
         st.markdown("---")
-        st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:1.5rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 12px;font-weight:400;'>Player-Level Explanation</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Player-Level Explanation</div>", unsafe_allow_html=True)
         chosen = st.selectbox("Select a player",
                                sorted(df["name"].dropna().tolist()),
                                key="insights_player")
@@ -2617,14 +2639,14 @@ def tab_insights(df: pd.DataFrame):
             )
             fig2.update_layout(
                 paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-                font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]), showlegend=False, coloraxis_showscale=False,
+                font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]), showlegend=False, coloraxis_showscale=False,
                 xaxis=dict(
                     tickvals=tick_vals2, ticktext=tick_text2,
                     title="Dollar Impact on Prediction", gridcolor=_T["grid"],
                     zeroline=True, zerolinecolor=_T["zero"], zerolinewidth=2,
                 ),
                 title=dict(text=f"SHAP Breakdown — {chosen}",
-                           font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"])),
+                           font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"])),
                 margin=dict(l=10, r=20, t=40, b=10),
             )
             st.plotly_chart(fig2, use_container_width=True)
@@ -2649,17 +2671,16 @@ def render_footer(df: pd.DataFrame):
     n_est  = int(df["is_estimated"].sum()) if "is_estimated" in df.columns else 0
 
     st.markdown(
-        "<div style='height:1px;background:linear-gradient(90deg,#C8A84B 0%,#C8A84B 25%,"
-        "#707070 60%,#141414 100%);margin:20px 0 12px;'></div>",
+        f"<div style='height:1px;background:{_T['card_border']};margin:32px 0 12px;'></div>",
         unsafe_allow_html=True,
     )
     _last_updated = (f" &nbsp;·&nbsp; {last_ts}" if last_ts else "")
     _season_info = f" &nbsp;·&nbsp; {_season_str(load_season_context())} &nbsp;·&nbsp; Cap: ${CAP_CEILING/1e6:.0f}M"
     st.markdown(
-        f"<div style='color:#707070;font-size:.78rem;text-align:center;padding:4px 0 8px;"
-        f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;padding:4px 0 8px;"
+        f"font-family:\"DM Mono\",monospace;letter-spacing:.06em;'>"
         f"NHL API &nbsp;·&nbsp; PuckPedia &nbsp;·&nbsp; "
-        f"{n_real} contracts · {n_est} est"
+        f"{n_real} contracts &nbsp;·&nbsp; {n_est} estimated"
         f"{_last_updated}{_season_info}"
         f"</div>",
         unsafe_allow_html=True,
@@ -2683,22 +2704,19 @@ def main():
         _refresh_status["done"] = False
         st.rerun()
 
+    _divider_color = _T["card_border"]
     st.markdown(
-        f"<div style='padding:20px 0 0;'>"
-        f"<div style='font-family:\"IBM Plex Mono\",monospace;font-size:0.5rem;"
-        f"color:#707070;letter-spacing:0.35em;text-transform:uppercase;margin-bottom:14px;'>"
-        f"{_season_str(load_season_context())} &nbsp;·&nbsp; XGBOOST + SHAP &nbsp;·&nbsp; LIVE DATA"
+        f"<div style='padding:16px 0 0;'>"
+        f"<div style='font-family:\"Instrument Serif\",serif;font-size:3.2rem;"
+        f"font-weight:400;color:{_T['page_text']};line-height:1.05;letter-spacing:0;'>"
+        f"NHL Player Value Model"
         f"</div>"
-        f"<div style='font-family:\"Bebas Neue\",cursive;font-size:3.8rem;color:{_T['page_text']};"
-        f"line-height:0.88;letter-spacing:0.04em;'>"
-        f"NHL Player Value<br>"
-        f"<span style='color:#C8A84B;'>Model</span>"
+        f"<div style='font-family:\"DM Mono\",monospace;font-size:0.72rem;"
+        f"color:{_T['card_subtext']};letter-spacing:0.08em;margin-top:8px;'>"
+        f"{_season_str(load_season_context())} &nbsp;·&nbsp; XGBoost + SHAP &nbsp;·&nbsp; Live Data"
         f"</div>"
+        f"<div style='height:1px;background:{_divider_color};margin:18px 0 8px;'></div>"
         f"</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<div style='height:1px;background:#1C1C1C;margin:18px 0 24px;'></div>",
         unsafe_allow_html=True,
     )
 
