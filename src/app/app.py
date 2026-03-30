@@ -1024,16 +1024,28 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
             st.rerun()
         st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
-        st.markdown(
-            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;"
-            f"letter-spacing:.15em;text-transform:uppercase;color:{_T['card_subtext']};"
-            "margin-bottom:4px;border-top:1px solid currentColor;padding-top:8px;'>"
-            "NHL Value Model</div>",
-            unsafe_allow_html=True,
-        )
-        st.markdown("---")
+        _sb_sub = _T["card_subtext"]; _sb_txt = _T["page_text"]
 
-        st.markdown("**Filters**")
+        def _sb_section(label):
+            _cb = _T["card_border"]
+            st.markdown(
+                f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;"
+                f"font-weight:500;letter-spacing:.15em;text-transform:uppercase;"
+                f"color:{_sb_sub};border-top:1px solid {_cb};"
+                f"padding-top:10px;margin-top:4px;margin-bottom:6px;'>{label}</div>",
+                unsafe_allow_html=True,
+            )
+
+        def _sb_mono(text):
+            st.markdown(
+                f"<div style='font-family:\"DM Mono\",monospace;font-size:.78rem;"
+                f"color:{_sb_txt};line-height:1.7;'>{text}</div>",
+                unsafe_allow_html=True,
+            )
+
+        _sb_section("NHL Value Model")
+
+        _sb_section("Filters")
         positions = ["All", "C", "L", "R", "D", "F (all)"]
         pos_sel  = st.selectbox("Position", positions, key="sb_pos")
         teams_list = ["All"] + sorted(df["team"].dropna().unique().tolist())
@@ -1041,7 +1053,12 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         import math
         age_min = math.floor(df["age"].dropna().min())
         age_max = math.ceil(df["age"].dropna().max())
-        st.markdown("<div style='font-size:.65rem;color:#888888;margin-bottom:4px;font-family:\"DM Sans\",sans-serif;letter-spacing:.12em;text-transform:uppercase;'>Age range</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div style='font-size:.65rem;color:{_sb_sub};margin-bottom:4px;"
+            f"font-family:\"DM Sans\",sans-serif;letter-spacing:.12em;text-transform:uppercase;'>"
+            f"Age range</div>",
+            unsafe_allow_html=True,
+        )
         _ac1, _ac2 = st.columns(2)
         age_lo = _ac1.number_input("Min age", min_value=age_min, max_value=age_max, value=age_min, step=1, label_visibility="collapsed", key="age_lo")
         age_hi = _ac2.number_input("Max age", min_value=age_min, max_value=age_max, value=age_max, step=1, label_visibility="collapsed", key="age_hi")
@@ -1058,37 +1075,32 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         age_mask = filt["age"].isna() | ((filt["age"] >= age_r[0]) & (filt["age"] <= age_r[1]))
         filt = filt[age_mask]
 
-        st.markdown("---")
-
         # Season context
         ctx = load_season_context()
         if ctx:
-            mode_icon = "🔀" if ctx.get("use_blend") else "📅"
-            st.markdown(f"**{mode_icon} Season**")
-            st.caption(ctx.get("description", ""))
-            st.markdown("---")
+            _sb_section("Season")
+            _sb_mono(ctx.get("description", ""))
 
-        # Model stats (update dynamically once we have results)
+        # Model stats
         n_players = df["has_contract_data"].fillna(False).sum()
-        st.markdown("**Model**")
-        st.caption(
-            f"Algorithm: XGBoost  \n"
-            f"CV R²: 0.829  \n"
-            f"CV RMSE: $1.21M  \n"
-            f"Training set: {n_players} players"
+        _sb_section("Model")
+        _sb_mono(
+            f"XGBoost &nbsp;·&nbsp; CV R² 0.829<br>"
+            f"RMSE $1.21M &nbsp;·&nbsp; {n_players} players"
         )
-        st.markdown("---")
 
-        # Data freshness indicator
+        # Data freshness
         if _refresh_status["error"]:
-            st.caption(f"Update error: {_refresh_status['error'][:60]}")
+            _sb_section("Data")
+            _sb_mono(f"Error: {_refresh_status['error'][:50]}")
         else:
             pred_path = PROCESSED_DIR / "predictions.csv"
             if pred_path.exists():
                 from datetime import datetime
                 mtime = datetime.fromtimestamp(pred_path.stat().st_mtime)
-                label = "Updating..." if _refresh_status["running"] else mtime.strftime('%b %d %Y %I:%M %p')
-                st.caption(f"Data: {label}")
+                label = "Updating..." if _refresh_status["running"] else mtime.strftime('%b %d %Y, %I:%M %p')
+                _sb_section("Data")
+                _sb_mono(label)
 
     return filt
 
