@@ -1119,17 +1119,20 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
     fig = go.Figure()
 
-    # Trace 1 — contracted players, single accent color
-    _dot_color = "#1A1A2E" if not st.session_state.get("dark_mode", True) else "#D0CFC8"
+    # Trace 1 — contracted players (colored by delta)
     if not df_c.empty:
         fig.add_trace(go.Scatter(
             x=df_c["predicted_value"], y=df_c["cap_hit"],
             mode="markers",
             name="Contracted",
             marker=dict(
-                size=6, opacity=0.55,
-                color=_dot_color,
-                line=dict(width=0),
+                size=7, opacity=0.82,
+                color=df_c["value_delta"],
+                colorscale="RdYlGn",
+                cmid=0,
+                line=dict(width=0.4, color="#000"),
+                colorbar=dict(title="Delta ($)", tickformat="$,.0f",
+                              len=0.65, thickness=12),
             ),
             customdata=df_c[["name", "team", "pos", "cap_hit",
                               "predicted_value", "value_delta", "value_delta_pct"]].values,
