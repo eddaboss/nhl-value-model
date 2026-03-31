@@ -25,6 +25,8 @@ python-dotenv>=1.0.0
 # Scraping (PuckPedia — Cloudflare bypass)
 cloudscraper>=1.2.71
 requests>=2.31.0
+aiohttp>=3.9.0
+beautifulsoup4>=4.12.0
 
 # Scheduler
 apscheduler>=3.10.0

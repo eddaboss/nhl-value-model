@@ -52,7 +52,8 @@ _HEADERS = {"User-Agent": "nhl-value-model/2.0"}
 # Count stats: raw season totals → project to full-season pace
 _COUNT_COLS = ["a1", "a2", "ixg", "hdxg"]
 # Rate stats: already per-unit, blend directly without pace projection
-_RATE_COLS  = ["xgf60", "xgf_oi60", "xga60", "ff_pct", "cf_pct", "oz_pct"]
+# fenwick_rel = on-ice Fenwick% minus off-ice Fenwick% (relative impact, team-adjusted)
+_RATE_COLS  = ["xgf60", "xgf_oi60", "xga60", "ff_pct", "cf_pct", "oz_pct", "fenwick_rel"]
 
 
 # ── Download helpers ───────────────────────────────────────────────────────────
@@ -122,12 +123,26 @@ def _extract_from_raw(raw: pd.DataFrame) -> pd.DataFrame:
     all_sit["oz_pct"] = (oz_starts / total_shifts).round(4)
     all_sit.loc[all_sit["I_F_shifts"].fillna(0) == 0, "oz_pct"] = np.nan
 
+    # ── Fenwick% relative: on-ice minus off-ice (isolates individual impact) ───
+    all_sit["fenwick_rel"] = (
+        all_sit["onIce_fenwickPercentage"] - all_sit["offIce_fenwickPercentage"]
+    ).round(4)
+
+    # ── xGoals% relative: on-ice minus off-ice xGoals% ────────────────────────
+    # Proxy for scoring_chance_against_rel (scf_pct not available in MoneyPuck).
+    # Higher = team's xGoals ratio improves when player is on ice vs. off ice.
+    # Partially team-quality adjusted via the off-ice subtraction.
+    all_sit["sca_rel"] = (
+        all_sit["onIce_xGoalsPercentage"] - all_sit["offIce_xGoalsPercentage"]
+    ).round(4)
+
     base = all_sit[[
         "player_id", "games_played",
         "I_F_primaryAssists", "I_F_secondaryAssists",
         "I_F_xGoals", "I_F_highDangerxGoals",
         "xgf60", "xgf_oi60", "xga60",
         "onIce_fenwickPercentage", "onIce_corsiPercentage", "oz_pct",
+        "fenwick_rel", "sca_rel",
     ]].rename(columns={
         "games_played":            "gp_mp",
         "I_F_primaryAssists":      "a1",
