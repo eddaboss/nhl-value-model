@@ -518,17 +518,6 @@ CLUSTER_ORDER = [
     "Top-Pair D", "Bottom-Pair D", "3rd-Pair D",
 ]
 
-CLUSTER_COLORS = {
-    "Elite F":       "#8B6914",   # deep antique gold
-    "Top-Line C/F":  "#A0522D",   # burnt sienna
-    "Top-Six F":     "#2E6B62",   # deep teal
-    "PP Specialist": "#7A3B5E",   # muted plum
-    "Checking C":    "#4A5E80",   # slate blue
-    "Bottom-Six F":  "#4A6B52",   # forest green
-    "Top-Pair D":    "#1254A0",   # deep navy
-    "Bottom-Pair D": "#5C4A6B",   # dusty mauve
-    "3rd-Pair D":    "#6B5240",   # dark walnut
-}
 
 PERCENTILE_STATS = [
     ("ppg",       "Points/Game"),
@@ -1455,7 +1444,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                 cl_sub = df_c[df_c["cluster_label"] == cl]
                 if cl_sub.empty:
                     continue
-                cl_clr = CLUSTER_COLORS.get(cl, "#888")
+                cl_clr = "#888"
                 avg_d = cl_sub["value_delta"].mean()
                 _d_clr = _pos if avg_d >= 0 else _neg
                 avg_ps = cl_sub["performance_score"].dropna().mean()
@@ -1653,7 +1642,7 @@ def tab_leaderboards(df: pd.DataFrame):
                     _team_accent = _T.get("accent", "#1A1A2E")
                     txt = f"<span style='color:{_team_accent};font-family:\"DM Mono\",monospace;'>{v}</span>"
                 elif c == "cluster_label":
-                    _cl_c = CLUSTER_COLORS.get(str(v), "#888")
+                    _cl_c = "#888"
                     txt = f"<span style='color:{_cl_c};font-family:\"DM Sans\",sans-serif;font-size:.72rem;font-weight:600;'>{v}</span>"
                 else:
                     txt = str(v) if pd.notna(v) else "?"
@@ -1771,7 +1760,7 @@ def tab_leaderboards(df: pd.DataFrame):
             cl_sub = _vlr_df[_vlr_df["cluster_label"] == cl_name]
             if len(cl_sub) < 2:
                 continue
-            cl_clr = CLUSTER_COLORS.get(cl_name, "#888")
+            cl_clr = "#888"
             best = cl_sub.nlargest(1, "value_delta").iloc[0]
             worst = cl_sub.nsmallest(1, "value_delta").iloc[0]
             _v1, _v2, _v3 = st.columns([1.5, 2, 2])
@@ -1880,7 +1869,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
             cnt = cluster_counts[clabel]
             fig_comp.add_bar(
                 name=clabel, y=["Roster"], x=[cnt], orientation="h",
-                marker_color=CLUSTER_COLORS.get(clabel, "#888"),
+                marker_color="#888",
                 text=[f"{clabel} ({cnt})"], textposition="inside",
                 textfont=dict(size=11, color="#fff", family="'DM Sans', sans-serif"),
                 hovertemplate=f"{clabel}: {cnt} players<extra></extra>",
@@ -2745,7 +2734,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     )
 
     _cbg = _T["card_bg"]; _cbd = _T["card_border"]; _csub2 = _T["card_subtext"]; _ctxt2 = _T["card_text"]
-    _cl_color = CLUSTER_COLORS.get(cluster, "#888")
+    _cl_color = "#888"
 
     st.markdown(
         f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
@@ -2889,7 +2878,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
             comp_cols[ci].markdown(
                 f"<div style='background:{_cbg};padding:12px 8px;"
                 f"border:1px solid {_cbd};text-align:center;"
-                f"border-left:3px solid {CLUSTER_COLORS.get(c_cl, _cbd)};'>"
+                f"border-left:3px solid {_cbd};'>"
                 f"  {c_hs}"
                 f"  <div style='font-weight:400;color:{_ctxt2};margin-top:6px;"
                 f"font-size:.85rem;font-family:\"Instrument Serif\",serif;"
@@ -2915,8 +2904,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
         fig_comps = px.bar(
             comp_chart, x="cap_hit_m", y="label", orientation="h",
-            color="cluster_label", color_discrete_map=CLUSTER_COLORS,
-            labels={"cap_hit_m": "Cap Hit ($M)", "label": ""},
+            color="cluster_label",             labels={"cap_hit_m": "Cap Hit ($M)", "label": ""},
             height=max(180, n_comps * 38),
         )
         fig_comps.add_vline(
@@ -3066,8 +3054,7 @@ def tab_insights(df: pd.DataFrame):
 
         fig_cl = px.bar(
             cluster_counts, x="Players", y="Cluster", orientation="h",
-            color="Cluster", color_discrete_map=CLUSTER_COLORS,
-            height=max(300, len(cluster_counts) * 48),
+            color="Cluster",             height=max(300, len(cluster_counts) * 48),
         )
         fig_cl.update_layout(
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
@@ -3169,8 +3156,7 @@ def tab_insights(df: pd.DataFrame):
     if not _map_df.empty:
         fig_map = px.scatter(
             _map_df, x="performance_score", y="cap_hit",
-            color="cluster_label", color_discrete_map=CLUSTER_COLORS,
-            hover_data=["name", "team", "pos", "age"],
+            color="cluster_label",             hover_data=["name", "team", "pos", "age"],
             labels={"performance_score": "Performance Score", "cap_hit": "Cap Hit ($)",
                     "cluster_label": "Cluster"},
             height=500,
@@ -3219,7 +3205,7 @@ def tab_insights(df: pd.DataFrame):
 
             _rows_html = ""
             for _, r in _cl_table.iterrows():
-                _cl_c = CLUSTER_COLORS.get(r["Cluster"], "#888")
+                _cl_c = "#888"
                 _d_c = _T.get("positive") if r["Avg Delta"] >= 0 else _T.get("negative")
                 _rows_html += (
                     f"<tr>"
@@ -3257,7 +3243,7 @@ def tab_insights(df: pd.DataFrame):
     if _dive_opts:
         _dive_sel = st.selectbox("Select a cluster to explore", _dive_opts, key="insights_cluster_dive")
         _dive_df = df[df["cluster_label"] == _dive_sel].copy()
-        _dive_clr = CLUSTER_COLORS.get(_dive_sel, "#888")
+        _dive_clr = "#888"
 
         # Summary metrics
         dc1, dc2, dc3, dc4, dc5 = st.columns(5)
