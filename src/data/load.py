@@ -110,6 +110,10 @@ def _build_stats_df(
         cur   = player_raw.get(cur_sid)  or player_raw.get(str(cur_sid))  or {}
         prior = player_raw.get(prev_sid) or player_raw.get(str(prev_sid)) or {}
 
+        # Capture actual games played BEFORE projection so we can filter
+        # injury-shortened contract seasons from the comp pool later.
+        gp_actual = int(cur.get("gp") or 0) if cur else 0
+
         if use_blend and cur and prior:
             blend_w   = avg_gp / season_length
             stats_cur = _blend(cur, prior, blend_w, season_length)
@@ -129,6 +133,7 @@ def _build_stats_df(
 
         rows.append({
             "player_id":      pid,
+            "gp_actual":      gp_actual,   # real games played (pre-projection)
             **stats_cur,
             **stats_24,
             "draft_year":     draft.get("draft_year"),

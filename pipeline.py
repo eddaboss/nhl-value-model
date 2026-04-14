@@ -205,9 +205,20 @@ def main(tune: bool = False, refresh: bool = False, refresh_all: bool = False):
     # ── 5. PRIMARY: comps model predictions ───────────────────────────────────
     print("\nRunning comps model (primary predictions)...")
     df, comp_pool = run_comps_model(df)
+
+    # Null out predictions for players with too few actual games — their
+    # projected rate stats are meaningless (e.g. 1 GP → 6.16 p60).
+    _MIN_GP_FOR_PREDICTION = 20
+    gp_actual = pd.to_numeric(df.get("gp_actual", pd.Series(82, index=df.index)),
+                               errors="coerce").fillna(0)
+    low_gp_mask = gp_actual < _MIN_GP_FOR_PREDICTION
+    df.loc[low_gp_mask, "predicted_value"] = None
+    df.loc[low_gp_mask, "value_delta"] = None
+
     print(f"  UFA comp pool: {len(comp_pool)} players")
     scored = df["predicted_value"].notna().sum()
-    print(f"  Players with predictions: {scored}/{len(df)}")
+    n_suppressed = low_gp_mask.sum()
+    print(f"  Players with predictions: {scored}/{len(df)} ({n_suppressed} suppressed for <{_MIN_GP_FOR_PREDICTION} GP)")
 
     # ── 6. Resign signals ──────────────────────────────────────────────────────
     df["resign_signal"] = df.apply(resign_label, axis=1)
@@ -221,7 +232,7 @@ def main(tune: bool = False, refresh: bool = False, refresh_all: bool = False):
         "toi_per_g", "plus_minus", "pim",
         "g60", "p60", "pp_pts", "shots", "shooting_pct",
         "cluster_id", "cluster_label", "performance_score",
-        "faceoff_pct",
+        "faceoff_pct", "gp_actual",
         "resign_signal", "player_id",
         "has_contract_data", "has_prior_market_data", "is_estimated",
     ]

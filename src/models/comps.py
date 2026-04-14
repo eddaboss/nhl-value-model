@@ -31,20 +31,25 @@ def build_ufa_comp_pool(df: pd.DataFrame) -> pd.DataFrame:
     """
     # Exclude contracts that don't reflect free-market value:
     #   • Entry-level contracts (ELCs): capped at ~$925k, signed at age 18–21.
-    #     These reflect team control, not market price — a 19-year-old star on
-    #     $975k is NOT a valid comp for a 30-year-old elite player.
-    #     Filter: age ≥ 22 AND cap_hit ≥ $1,100,000.
-    #   • Buyout contracts: a bought-out player may show ~$1M even though
-    #     their real deal was $8–10M. The $1.1M floor catches most buyouts too.
-    MIN_AAV  = 1_100_000
-    MIN_AGE  = 22.0
+    #   • Buyout contracts: ~$1M even though the real deal was $8–10M.
+    #   • Injury-discounted contracts: a player who only appeared in 30 games
+    #     earns less because of availability risk, not production. Their rate
+    #     stats (p60) look similar to healthy stars but the AAV is suppressed.
+    #     Requiring gp_actual ≥ 55 (≈67% of season) removes these outliers.
+    MIN_AAV    = 1_100_000
+    MIN_AGE    = 22.0
+    MIN_GP     = 55          # actual games played — not the 82-game projection
+
+    gp_col = pd.to_numeric(df.get("gp_actual", pd.Series(82, index=df.index)),
+                           errors="coerce").fillna(82)
 
     mask = (
         (df["has_contract_data"].fillna(False).astype(bool)) &
         (df["cap_hit"].notna()) &
         (df["cap_hit"] >= MIN_AAV) &
         (pd.to_numeric(df["age"], errors="coerce").fillna(0) >= MIN_AGE) &
-        (df["performance_score"].notna())
+        (df["performance_score"].notna()) &
+        (gp_col >= MIN_GP)
     )
     return df[mask].copy()
 
@@ -52,16 +57,19 @@ def build_ufa_comp_pool(df: pd.DataFrame) -> pd.DataFrame:
 # ── Comp finding ───────────────────────────────────────────────────────────────
 
 # Distance weights (all inputs normalized to ~0–1 before weighting)
-_W_SCORE = 0.30   # performance score similarity
-_W_AGE   = 0.25   # age proximity
-_W_P60   = 0.45   # points-per-60 proximity (dominant signal — match similar producers)
+# Must sum to 1.0.
+_W_SCORE = 0.30   # performance score similarity (within-cluster rank)
+_W_AGE   = 0.10   # age proximity — kept low so 34-year-old stars still comp
+                   # against 28-year-old stars, not 34-year-old depth players
+_W_P60   = 0.35   # points-per-60 proximity
+_W_PP    = 0.25   # powerplay-point proximity — critical for separating PP drivers
+                   # from role players with similar gross p60
 
-# Normalisation denominators
+# Normalisation denominators  (diff / range → [0,1] before weighting)
 _SCORE_RANGE = 200.0   # perf score spans -100 → +100
-_AGE_RANGE   = 12.0    # cap age diff at 12 years before clipping to 1
-_P60_RANGE   = 1.0     # tight p60 window: 0.5 diff → 50% of max penalty; 1.0+ → clipped
-                       # This ensures elite producers (4+ p60) only match other elite
-                       # producers, not mid-tier players 0.8+ p60 below them.
+_AGE_RANGE   = 15.0    # wider age range — don't over-penalise age gaps
+_P60_RANGE   = 0.8     # tighter — a 0.3 p60 diff is very significant ($2-3M AAV)
+_PP_RANGE    = 20.0    # tighter — pp production matters for separating tiers
 
 # UFA contracts get a weight multiplier (freely negotiated, no RFA leverage)
 _UFA_WEIGHT_MULT = 1.5
@@ -122,22 +130,37 @@ def find_comps(
 
     p_score = float(player.get("performance_score") or 0)
     p_age   = float(player.get("age") or 27)
-    p_p60   = float(player.get("p60") or 0)
+    p_pp    = float(player.get("pp_pts") or 0)
+
+    # Use 2-year blended p60 for matching: smooths injury / down-year noise.
+    # If prior-season p60 is available, average current + prior; otherwise current only.
+    p_p60_cur  = float(player.get("p60") or 0)
+    p_p60_prev = player.get("p60_24")
+    p_p60 = (p_p60_cur + float(p_p60_prev)) / 2.0 if pd.notna(p_p60_prev) else p_p60_cur
 
     pool_score = pd.to_numeric(pool["performance_score"], errors="coerce").fillna(p_score)
     pool_age   = pd.to_numeric(pool["age"],               errors="coerce").fillna(p_age)
-    pool_p60   = pd.to_numeric(pool["p60"],               errors="coerce").fillna(p_p60)
+    pool_pp    = pd.to_numeric(pool["pp_pts"],            errors="coerce").fillna(p_pp)
+
+    # Blended p60 for pool players too
+    pool_p60_cur  = pd.to_numeric(pool["p60"], errors="coerce").fillna(0)
+    pool_p60_prev = pd.to_numeric(pool.get("p60_24", pd.Series(dtype=float)), errors="coerce")
+    pool_p60 = pool_p60_cur.copy()
+    has_prev = pool_p60_prev.notna()
+    pool_p60[has_prev] = (pool_p60_cur[has_prev] + pool_p60_prev[has_prev]) / 2.0
 
     pool["_score_diff"] = (pool_score - p_score).abs()
 
     score_norm = pool["_score_diff"] / _SCORE_RANGE
-    age_norm   = ((pool_age - p_age).abs() / _AGE_RANGE).clip(upper=1.0)
-    p60_norm   = ((pool_p60 - p_p60).abs() / _P60_RANGE).clip(upper=1.0)
+    age_norm   = ((pool_age   - p_age  ).abs() / _AGE_RANGE).clip(upper=1.0)
+    p60_norm   = ((pool_p60   - p_p60  ).abs() / _P60_RANGE).clip(upper=1.0)
+    pp_norm    = ((pool_pp    - p_pp   ).abs() / _PP_RANGE  ).clip(upper=1.0)
 
     pool["_dist"] = (
         _W_SCORE * score_norm
-        + _W_AGE   * age_norm
-        + _W_P60   * p60_norm
+        + _W_AGE * age_norm
+        + _W_P60 * p60_norm
+        + _W_PP  * pp_norm
     )
 
     # UFA contracts are freely negotiated — boost their weight

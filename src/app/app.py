@@ -47,7 +47,7 @@ def _run_pipeline_background(processed_dir: Path) -> None:
             "name", "team", "pos", "age",
             "cap_hit", "predicted_value", "value_delta",
             "expiry_status", "expiry_year", "years_left", "length_of_contract",
-            "gp", "g", "a", "p", "ppg",
+            "gp", "gp_actual", "g", "a", "p", "ppg",
             "toi_per_g", "plus_minus", "pim",
             "g60", "p60", "pp_pts", "shots", "shooting_pct",
             "cluster_id", "cluster_label", "performance_score",
