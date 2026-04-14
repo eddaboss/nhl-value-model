@@ -59,10 +59,23 @@ _W_P60   = 0.45   # points-per-60 proximity (dominant signal — match similar p
 # Normalisation denominators
 _SCORE_RANGE = 200.0   # perf score spans -100 → +100
 _AGE_RANGE   = 12.0    # cap age diff at 12 years before clipping to 1
-_P60_RANGE   = 2.0     # cap p60 diff at 2.0 (tighter — even 0.5 p60 gap is meaningful)
+_P60_RANGE   = 1.0     # tight p60 window: 0.5 diff → 50% of max penalty; 1.0+ → clipped
+                       # This ensures elite producers (4+ p60) only match other elite
+                       # producers, not mid-tier players 0.8+ p60 below them.
 
 # UFA contracts get a weight multiplier (freely negotiated, no RFA leverage)
 _UFA_WEIGHT_MULT = 1.5
+
+
+# Performance score gates: tried in order until enough comps are found.
+# A player at score=100 (McDavid) should ONLY comp against other 80+ players,
+# not against score=30 players just because they share a cluster label.
+# If the pool is thin at the top, we'd rather use 2 true comps than 5 diluted ones.
+_SCORE_GATES = [30, 60, 100, 200]
+
+# Once we have this many comps we stop expanding the score gate.
+# Quality beats quantity: 2 true peers → more accurate than 5 diluted comps.
+_MIN_COMPS_TO_STOP = 2
 
 
 def find_comps(
@@ -71,14 +84,19 @@ def find_comps(
     n: int = 5,
 ) -> pd.DataFrame:
     """
-    Find n closest comps for a player using a three-dimensional distance:
+    Find up to n closest comps using a three-dimensional distance:
 
         dist = W_SCORE * |Δperf_score| / 200
              + W_AGE   * clip(|Δage|  / 12, 0, 1)
-             + W_P60   * clip(|Δp60|  / 2.5, 0, 1)
+             + W_P60   * clip(|Δp60|  / 1.0, 0, 1)
 
-    Same-cluster comps are preferred; if fewer than n exist, cross-cluster
-    comps fill in ordered by dist.
+    Score gating: same-cluster comps are selected from progressively wider
+    score bands (±30, ±60, ±100, ±200). This prevents a score-100 player
+    from being dragged down by score-30 comps in the same cluster.
+    Cross-cluster comps fill any remaining slots, also score-gated.
+
+    We return fewer than n comps if no more exist within the widest gate —
+    a tight accurate estimate beats a diluted inaccurate one.
 
     Weight = UFA_mult / (1 + dist)  — closer + UFA → higher weight.
     """
@@ -103,9 +121,11 @@ def find_comps(
     pool_age   = pd.to_numeric(pool["age"],               errors="coerce").fillna(p_age)
     pool_p60   = pd.to_numeric(pool["p60"],               errors="coerce").fillna(p_p60)
 
-    score_norm = (pool_score - p_score).abs() / _SCORE_RANGE
-    age_norm   = ((pool_age   - p_age  ).abs() / _AGE_RANGE ).clip(upper=1.0)
-    p60_norm   = ((pool_p60   - p_p60  ).abs() / _P60_RANGE ).clip(upper=1.0)
+    pool["_score_diff"] = (pool_score - p_score).abs()
+
+    score_norm = pool["_score_diff"] / _SCORE_RANGE
+    age_norm   = ((pool_age - p_age).abs() / _AGE_RANGE).clip(upper=1.0)
+    p60_norm   = ((pool_p60 - p_p60).abs() / _P60_RANGE).clip(upper=1.0)
 
     pool["_dist"] = (
         _W_SCORE * score_norm
@@ -120,12 +140,42 @@ def find_comps(
 
     pool["_same"] = (pool["cluster_id"] == p_cid).astype(int)
 
-    same  = pool[pool["_same"] == 1].nsmallest(n, "_dist")
-    other = pool[pool["_same"] == 0].nsmallest(n, "_dist")
+    same  = pool[pool["_same"] == 1]
+    other = pool[pool["_same"] == 0]
 
-    if len(same) >= n:
-        return same.head(n)
-    return pd.concat([same, other.head(n - len(same))])
+    # Score-gated same-cluster comps
+    # Stop expanding once we hit _MIN_COMPS_TO_STOP — quality beats quantity.
+    result_same = pd.DataFrame()
+    for gate in _SCORE_GATES:
+        candidates = same[same["_score_diff"] <= gate].nsmallest(n, "_dist")
+        if len(candidates) >= n:
+            return candidates.head(n)            # full set of same-cluster comps → done
+        if len(candidates) > len(result_same):
+            result_same = candidates
+        if len(result_same) >= _MIN_COMPS_TO_STOP:
+            break                                # enough quality comps — stop expanding
+
+    # If we found same-cluster comps (even fewer than n), return them directly.
+    # DO NOT dilute with cross-cluster players — different cluster = different role.
+    # A tight set of true peers beats a padded-out set of dissimilar players.
+    if len(result_same) >= _MIN_COMPS_TO_STOP:
+        return result_same
+
+    # Only reach here if same-cluster comps are truly scarce (0-1 found).
+    # Fall back to cross-cluster, score-gated.
+    need = n - len(result_same)
+    result_other = pd.DataFrame()
+    for gate in _SCORE_GATES:
+        candidates = other[other["_score_diff"] <= gate].nsmallest(need, "_dist")
+        if len(candidates) >= need:
+            result_other = candidates
+            break
+        if len(candidates) > len(result_other):
+            result_other = candidates
+        if len(result_other) >= _MIN_COMPS_TO_STOP:
+            break
+
+    return pd.concat([result_same, result_other]).head(n)
 
 
 def predict_value(player: pd.Series, comp_pool: pd.DataFrame) -> float | None:
