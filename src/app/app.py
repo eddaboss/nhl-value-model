@@ -1328,58 +1328,32 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
         unsafe_allow_html=True,
     )
     show_ufa = st.session_state.get("overview_show_ufa", False)
-    _sc_mode = st.radio("Color by", ["Role Cluster", "Value Delta"], horizontal=True,
-                        key="overview_color_mode")
 
     fig = go.Figure()
 
+    # Contracted players colored by delta on RdYlGn scale
     if not df_c.empty:
-        if _sc_mode == "Role Cluster":
-            for cl in CLUSTER_ORDER:
-                cl_data = df_c[df_c["cluster_label"] == cl]
-                if cl_data.empty:
-                    continue
-                cl_color = CLUSTER_COLORS.get(cl, "#888")
-                _custom = cl_data[["name", "team", "pos", "cap_hit",
-                                   "predicted_value", "value_delta", "value_delta_pct"]].values
-                fig.add_trace(go.Scatter(
-                    x=cl_data["predicted_value"], y=cl_data["cap_hit"],
-                    mode="markers", name=cl,
-                    marker=dict(size=6, opacity=0.75, color=cl_color,
-                                line=dict(width=0)),
-                    customdata=_custom,
-                    hovertemplate=(
-                        "<b>%{customdata[0]}</b><br>"
-                        "%{customdata[1]} · %{customdata[2]}<br>"
-                        f"Role: {cl}<br>"
-                        "Cap Hit: $%{customdata[3]:,.0f}<br>"
-                        "Predicted: $%{customdata[4]:,.0f}<br>"
-                        "Delta: $%{customdata[5]:,.0f} (%{customdata[6]:.1f}%)"
-                        "<extra></extra>"
-                    ),
-                ))
-        else:
-            fig.add_trace(go.Scatter(
-                x=df_c["predicted_value"], y=df_c["cap_hit"],
-                mode="markers", name="Contracted",
-                marker=dict(
-                    size=6, opacity=0.75,
-                    color=df_c["value_delta"], colorscale="RdYlGn", cmid=0,
-                    line=dict(width=0),
-                    colorbar=dict(title="Delta ($)", tickformat="$,.0f",
-                                  len=0.65, thickness=12),
-                ),
-                customdata=df_c[["name", "team", "pos", "cap_hit",
-                                  "predicted_value", "value_delta", "value_delta_pct"]].values,
-                hovertemplate=(
-                    "<b>%{customdata[0]}</b><br>"
-                    "%{customdata[1]} · %{customdata[2]}<br>"
-                    "Cap Hit: $%{customdata[3]:,.0f}<br>"
-                    "Predicted: $%{customdata[4]:,.0f}<br>"
-                    "Delta: $%{customdata[5]:,.0f} (%{customdata[6]:.1f}%)"
-                    "<extra></extra>"
-                ),
-            ))
+        fig.add_trace(go.Scatter(
+            x=df_c["predicted_value"], y=df_c["cap_hit"],
+            mode="markers", name="Contracted",
+            marker=dict(
+                size=7, opacity=0.82,
+                color=df_c["value_delta"], colorscale="RdYlGn", cmid=0,
+                line=dict(width=0.4, color="#000"),
+                colorbar=dict(title="Delta ($)", tickformat="$,.0f",
+                              len=0.65, thickness=12),
+            ),
+            customdata=df_c[["name", "team", "pos", "cap_hit",
+                              "predicted_value", "value_delta", "value_delta_pct"]].values,
+            hovertemplate=(
+                "<b>%{customdata[0]}</b><br>"
+                "%{customdata[1]} · %{customdata[2]}<br>"
+                "Cap Hit: $%{customdata[3]:,.0f}<br>"
+                "Predicted: $%{customdata[4]:,.0f}<br>"
+                "Delta: $%{customdata[5]:,.0f} (%{customdata[6]:.1f}%)<br>"
+                "<extra></extra>"
+            ),
+        ))
 
     if show_ufa and not df_ufa.empty:
         fig.add_trace(go.Scatter(
@@ -1406,7 +1380,6 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                            showarrow=False, font=dict(color=_fvline_color, size=12,
                                                       family="'DM Sans', sans-serif"))
 
-    _show_legend = (_sc_mode == "Role Cluster")
     fig.update_layout(
         paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
         font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
@@ -1414,9 +1387,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                    gridcolor=_T["grid"], zeroline=False),
         yaxis=dict(tickformat="$,.0f", title="Actual Cap Hit (0 = UFA/Unsigned)",
                    gridcolor=_T["grid"]),
-        showlegend=_show_legend,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
-                    font=dict(size=11)),
+        showlegend=False,
         height=560,
         margin=dict(l=10, r=10, t=30, b=10),
     )
@@ -1568,48 +1539,43 @@ def tab_leaderboards(df: pd.DataFrame):
 
     col1, col2 = st.columns(2)
 
-    def bar_chart(data, title, bar_color):
-        x_col = sort_col
-        x_lbl = "% Delta" if sort_by == "% Delta" else "$ Delta"
-        fig = go.Figure()
-        fig.add_bar(
-            x=data[x_col], y=data["name"], orientation="h",
-            marker_color=bar_color, opacity=0.7,
-            customdata=data[["team", "pos", "cap_hit", "predicted_value",
-                             "value_delta", "value_delta_pct"]].values,
-            hovertemplate=(
-                "<b>%{y}</b><br>"
-                "%{customdata[0]} · %{customdata[1]}<br>"
-                "Cap Hit: $%{customdata[2]:,.0f}<br>"
-                "Predicted: $%{customdata[3]:,.0f}<br>"
-                "Delta: $%{customdata[4]:,.0f} (%{customdata[5]:.1f}%)"
-                "<extra></extra>"
-            ),
+    def bar_chart(data, title, scale, ascending):
+        x_col  = sort_col
+        x_fmt  = ":.1f" if sort_by == "% Delta" else ":$,.0f"
+        x_lbl  = "% Delta" if sort_by == "% Delta" else "$ Delta"
+        fig = px.bar(
+            data, x=x_col, y="name", orientation="h",
+            color=x_col, color_continuous_scale=scale,
+            hover_data={
+                "team": True, "pos": True, "age": ":.0f",
+                "cap_hit": ":$,.0f", "predicted_value": ":$,.0f",
+                "value_delta": ":$,.0f", "value_delta_pct": ":.1f",
+            },
+            labels={x_col: x_lbl, "name": ""},
+            height=max(360, n * 28),
         )
         fig.update_layout(
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
-            showlegend=False,
+            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]), showlegend=False,
+            coloraxis_showscale=False,
             yaxis=dict(autorange="reversed"),
             xaxis=dict(
                 tickformat=".1f%" if sort_by == "% Delta" else "$,.0f",
                 title=x_lbl, gridcolor=_T["grid"],
             ),
             margin=dict(l=0, r=10, t=30, b=10),
-            title=dict(text=title, font=dict(family="'DM Sans', sans-serif",
-                       size=14, color=_T["plot_font"])),
-            height=max(360, n * 28),
+            title=dict(text=title, font=dict(family="'DM Sans', sans-serif", size=14, color=_T["plot_font"])),
         )
         return fig
 
     with col1:
         gems = df_c.nlargest(n, sort_col)
-        st.plotly_chart(bar_chart(gems, "Hidden Gems — Most Underpaid", _T["positive"]),
+        st.plotly_chart(bar_chart(gems, "Hidden Gems — Most Underpaid", "Greens", False),
                         use_container_width=True)
 
     with col2:
         over = df_c.nsmallest(n, sort_col)
-        st.plotly_chart(bar_chart(over, "Most Overpaid", _T["negative"]),
+        st.plotly_chart(bar_chart(over, "Most Overpaid", "Reds_r", True),
                         use_container_width=True)
 
     st.markdown("---")
