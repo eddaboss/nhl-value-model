@@ -101,7 +101,9 @@ def start_background_refresh(processed_dir: Path) -> None:
     if pred_path.exists():
         age_hours = (time.time() - pred_path.stat().st_mtime) / 3600
         if age_hours < _PREDICTIONS_MAX_AGE_HOURS:
-            _refresh_status["done"] = True
+            # Mark completed so we don't re-launch, but leave done=False so
+            # the main thread doesn't call st.rerun() and cause an infinite loop.
+            _refresh_status["done"] = False
             _refresh_status["completed"] = True
             return
 
