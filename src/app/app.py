@@ -3082,7 +3082,7 @@ def tab_insights(df: pd.DataFrame):
         if not _ps_df.empty:
             fig_ps = px.histogram(
                 _ps_df, x="performance_score", color="cluster_label",
-                color_discrete_map=CLUSTER_COLORS, nbins=40,
+                nbins=40,
                 barmode="stack",
                 labels={"performance_score": "Performance Score", "cluster_label": "Cluster"},
                 height=380,
