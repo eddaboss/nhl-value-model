@@ -143,11 +143,14 @@ def find_comps(
     pool_pp    = pd.to_numeric(pool["pp_pts"],            errors="coerce").fillna(p_pp)
 
     # Blended p60 for pool players too
-    pool_p60_cur  = pd.to_numeric(pool["p60"], errors="coerce").fillna(0)
-    pool_p60_prev = pd.to_numeric(pool.get("p60_24", pd.Series(dtype=float)), errors="coerce")
-    pool_p60 = pool_p60_cur.copy()
-    has_prev = pool_p60_prev.notna()
-    pool_p60[has_prev] = (pool_p60_cur[has_prev] + pool_p60_prev[has_prev]) / 2.0
+    pool_p60_cur = pd.to_numeric(pool["p60"], errors="coerce").fillna(0)
+    if "p60_24" in pool.columns:
+        pool_p60_prev = pd.to_numeric(pool["p60_24"], errors="coerce")
+        has_prev = pool_p60_prev.notna()
+        pool_p60 = pool_p60_cur.copy()
+        pool_p60.loc[has_prev] = (pool_p60_cur[has_prev] + pool_p60_prev[has_prev]) / 2.0
+    else:
+        pool_p60 = pool_p60_cur
 
     pool["_score_diff"] = (pool_score - p_score).abs()
 
