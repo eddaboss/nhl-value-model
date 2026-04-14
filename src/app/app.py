@@ -32,19 +32,15 @@ def _run_pipeline_background(processed_dir: Path) -> None:
         warnings.filterwarnings("ignore")
 
         from src.data.load import load_and_merge, CAP_CEILING
-        from src.features.build import build_features, get_feature_matrix, resign_label
-        from src.models.train import load_model
+        from src.features.build import build_features, resign_label
+        from src.models.comps import run_comps_model
 
         df_raw, ctx = load_and_merge()
-        df = build_features(df_raw)
-        X, _ = get_feature_matrix(df)
-        model = load_model("xgb")
+        df = build_features(df_raw)  # also applies clustering + performance_score
 
-        df["predicted_value"] = model.predict(X) * CAP_CEILING
-        df["value_delta"] = df.apply(
-            lambda r: r["predicted_value"] - r["cap_hit"]
-            if r.get("has_contract_data") else None, axis=1
-        )
+        # Comps model — primary predictions (same as pipeline.py)
+        df, _ = run_comps_model(df)
+
         df["resign_signal"] = df.apply(resign_label, axis=1)
 
         keep = [
@@ -54,6 +50,7 @@ def _run_pipeline_background(processed_dir: Path) -> None:
             "gp", "g", "a", "p", "ppg",
             "toi_per_g", "plus_minus", "pim",
             "g60", "p60", "pp_pts", "shots", "shooting_pct",
+            "cluster_label", "performance_score",
             "resign_signal", "player_id",
             "has_contract_data", "has_prior_market_data", "is_estimated",
             "has_extension", "extension_cap_hit", "extension_start_year",
@@ -1721,6 +1718,10 @@ def tab_team(df: pd.DataFrame, team_code: str):
         signal    = row.get("team_signal", "—")
         is_est    = bool(row.get("is_estimated", False))
         has_data  = bool(row.get("has_contract_data", False))
+        cluster   = row.get("cluster_label") or "—"
+        perf_raw  = row.get("performance_score")
+        perf_str  = f"{perf_raw:+.1f}" if pd.notna(perf_raw) else "—"
+        perf_clr  = _T.get("positive", "#2A7A4B") if (pd.notna(perf_raw) and perf_raw >= 0) else _T.get("negative", "#C0392B")
 
         ch_str = (fmt_m(ch) + ("*" if is_est else "")) if has_data and pd.notna(ch) else "UFA"
         pv_str = fmt_m(pv) if pd.notna(pv) else "—"
@@ -1797,6 +1798,12 @@ def tab_team(df: pd.DataFrame, team_code: str):
             f"           <div class='stat-value'>{exp_str} ({exp_st})</div></div>"
             f"      <div><div class='stat-label'>Yrs Left</div>"
             f"           <div class='stat-value'>{yrs_str}</div></div>"
+            f"      <div><div class='stat-label'>Role</div>"
+            f"           <div class='stat-value' style='font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+            f"letter-spacing:.04em;'>{cluster}</div></div>"
+            f"      <div><div class='stat-label'>Perf Score</div>"
+            f"           <div style='font-size:.88rem;font-weight:700;font-family:\"DM Mono\",monospace;"
+            f"color:{perf_clr};'>{perf_str}</div></div>"
             f"    </div>"
             f"    {ext_note}"
             f"  </div>"
@@ -2011,6 +2018,10 @@ def tab_kings(df: pd.DataFrame):
         signal    = row.get("kings_signal", "—")
         is_est    = bool(row.get("is_estimated", False))
         has_data  = bool(row.get("has_contract_data", False))
+        cluster   = row.get("cluster_label") or "—"
+        perf_raw  = row.get("performance_score")
+        perf_str  = f"{perf_raw:+.1f}" if pd.notna(perf_raw) else "—"
+        perf_clr  = _T.get("positive", "#2A7A4B") if (pd.notna(perf_raw) and perf_raw >= 0) else _T.get("negative", "#C0392B")
 
         ch_str = (fmt_m(ch) + ("*" if is_est else "")) if has_data and pd.notna(ch) else "UFA"
         pv_str = fmt_m(pv) if pd.notna(pv) else "—"
@@ -2088,6 +2099,12 @@ def tab_kings(df: pd.DataFrame):
             f"           <div class='stat-value'>{exp_str} ({exp_st})</div></div>"
             f"      <div><div class='stat-label'>Yrs Left</div>"
             f"           <div class='stat-value'>{yrs_str}</div></div>"
+            f"      <div><div class='stat-label'>Role</div>"
+            f"           <div class='stat-value' style='font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+            f"letter-spacing:.04em;'>{cluster}</div></div>"
+            f"      <div><div class='stat-label'>Perf Score</div>"
+            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"DM Mono\",monospace;"
+            f"color:{perf_clr};'>{perf_str}</div></div>"
             f"    </div>"
             f"    {ext_note}"
             f"  </div>"
@@ -2291,14 +2308,33 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
             unsafe_allow_html=True,
         )
 
-    # Re-sign signal
+    # Re-sign signal + cluster role + performance score
     signal    = player.get("resign_signal", "—")
     sig_color = RESIGN_PALETTE.get(signal, "#555")
+    cluster   = player.get("cluster_label") or "—"
+    perf_raw  = player.get("performance_score")
+    perf_str  = f"{perf_raw:+.1f}" if pd.notna(perf_raw) else "—"
+    perf_clr  = _T.get("positive", "#2A7A4B") if (pd.notna(perf_raw) and perf_raw >= 0) else _T.get("negative", "#C0392B")
+    _csub = _T["card_subtext"]; _ctxt = _T["card_text"]
     st.markdown(
-        f"<div style='margin:12px 0;display:flex;align-items:center;gap:12px;'>"
-        f"<span style='color:{_T['card_subtext']};font-size:.65rem;letter-spacing:.15em;"
+        f"<div style='margin:12px 0;display:flex;align-items:center;gap:20px;flex-wrap:wrap;'>"
+        f"<div style='display:flex;align-items:center;gap:10px;'>"
+        f"<span style='color:{_csub};font-size:.65rem;letter-spacing:.15em;"
         f"font-family:\"DM Sans\",sans-serif;text-transform:uppercase;'>Re-sign Signal</span>"
         f"<span class='signal-badge' style='background:{sig_color};color:#fff;'>{signal}</span>"
+        f"</div>"
+        f"<div style='display:flex;align-items:center;gap:8px;'>"
+        f"<span style='color:{_csub};font-size:.65rem;letter-spacing:.15em;"
+        f"font-family:\"DM Sans\",sans-serif;text-transform:uppercase;'>Role</span>"
+        f"<span style='color:{_ctxt};font-size:.82rem;font-family:\"DM Mono\",monospace;"
+        f"font-weight:600;'>{cluster}</span>"
+        f"</div>"
+        f"<div style='display:flex;align-items:center;gap:8px;'>"
+        f"<span style='color:{_csub};font-size:.65rem;letter-spacing:.15em;"
+        f"font-family:\"DM Sans\",sans-serif;text-transform:uppercase;'>Perf Score</span>"
+        f"<span style='color:{perf_clr};font-size:.9rem;font-weight:700;"
+        f"font-family:\"DM Mono\",monospace;'>{perf_str}</span>"
+        f"</div>"
         f"</div>",
         unsafe_allow_html=True,
     )
@@ -2554,21 +2590,20 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     # How is this value calculated?
     with st.expander("How is this value calculated?"):
         st.markdown(f"""
-**Model:** XGBoost trained on {int(df['has_contract_data'].fillna(False).sum())} NHL players
-with known contracts (CV R² = 0.829, RMSE ≈ $1.21M).
+**Model:** 4-step Comps Model trained on {int(df['has_contract_data'].fillna(False).sum())} NHL players
+with known contracts. XGBoost benchmark: CV R² = 0.809, RMSE ≈ $1.24M.
 
-**What goes in:**
-- *Current season stats* — points, TOI/game, power-play points, shooting %, G/60, P/60
-  (projected to 82-game pace from actual games played)
-- *Prior season stats* — same metrics from the previous season, for players with prior data
-- *Contract structure* — years remaining, contract length
-- *Bio* — age, draft position, draft round
-- *Position* — affects TOI benchmarks (D vs F)
+**How it works:**
+1. **K-means clustering** (k=6) groups players by deployment profile (TOI, PP pts, faceoff%, position)
+   → *Top-Line C/F, Top-Six F, PP Specialist, Checking C, Top-Pair D, Bottom-Pair D*
+2. **Performance score** (-100 → +100) ranks each player within their cluster using production stats
+3. **UFA comp finder** identifies the 5 nearest comparable free agents by cluster + score similarity
+4. **Predicted value** = weighted average cap hit of the 5 comps (weight = 1 / score distance)
 
-**What comes out:**
-The model predicts a player's **market-rate cap hit** — what they would command
-on the open free-agent market — expressed as a fraction of the current cap ceiling,
-then scaled back to dollars.
+**What goes into scoring:**
+- *Forwards* — G/60, P/60 (prior season), PP pts, shooting %, shots, plus/minus
+- *Defensemen* — TOI/game, PP pts, plus/minus, GP, shooting %
+- *Clustering* — TOI/game, PP pts, GP, plus/minus, faceoff%, position
 
 **Value Delta = Predicted Value − Actual Cap Hit**
 - **Positive** → player is worth more than paid → team surplus
@@ -2576,7 +2611,7 @@ then scaled back to dollars.
 
 **Important caveats:**
 - Defensive metrics (shot blocking, defensive zone starts) are partially captured
-  through TOI but not explicitly
+  through TOI and clustering but not explicitly
 - Leadership, locker-room value, and injury history are not modelled
 - ELC players (age < 25, cap hit < $1M) will almost always show a large positive delta
   because they are intentionally paid below market
