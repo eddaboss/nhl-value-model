@@ -1125,8 +1125,8 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         n_players = df["has_contract_data"].fillna(False).sum()
         _sb_section("Model")
         _sb_mono(
-            f"XGBoost &nbsp;·&nbsp; CV R² 0.829<br>"
-            f"RMSE $1.21M &nbsp;·&nbsp; {n_players} players"
+            f"Comps Model &nbsp;·&nbsp; k=7 Clusters<br>"
+            f"XGB Benchmark R² 0.83 &nbsp;·&nbsp; {n_players} players"
         )
 
         # Data freshness
@@ -1555,7 +1555,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
         f"{team_name}</div>"
         f"<div style='color:{_ksub};font-size:.72rem;"
         f"font-family:\"DM Mono\",monospace;letter-spacing:.1em;text-transform:uppercase;'>"
-        f"{_season_str(load_season_context())} &nbsp;·&nbsp; Roster Analysis &nbsp;·&nbsp; XGBoost</div>"
+        f"{_season_str(load_season_context())} &nbsp;·&nbsp; Roster Analysis &nbsp;·&nbsp; Comps Model</div>"
         f"<div style='height:1px;background:{_T['card_border']};margin-top:16px;'></div>"
         f"</div>",
         unsafe_allow_html=True,
@@ -1851,7 +1851,7 @@ def tab_kings(df: pd.DataFrame):
         f"Los Angeles Kings</div>"
         f"<div style='color:{_ksub};font-size:.72rem;"
         f"font-family:\"DM Mono\",monospace;letter-spacing:.1em;text-transform:uppercase;'>"
-        f"{_season_str(load_season_context())} &nbsp;·&nbsp; Roster Analysis &nbsp;·&nbsp; XGBoost</div>"
+        f"{_season_str(load_season_context())} &nbsp;·&nbsp; Roster Analysis &nbsp;·&nbsp; Comps Model</div>"
         f"<div style='height:1px;background:{_T['card_border']};margin-top:16px;'></div>"
         f"</div>",
         unsafe_allow_html=True,
@@ -2590,31 +2590,35 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     # How is this value calculated?
     with st.expander("How is this value calculated?"):
         st.markdown(f"""
-**Model:** 4-step Comps Model trained on {int(df['has_contract_data'].fillna(False).sum())} NHL players
-with known contracts. XGBoost benchmark: CV R² = 0.809, RMSE ≈ $1.24M.
+**Model:** Multi-layer Comps Model trained on {int(df['has_contract_data'].fillna(False).sum())} NHL players
+with known contracts. XGBoost runs as a validation benchmark (CV R² ≈ 0.83, RMSE ≈ $1.2M).
 
-**How it works:**
-1. **K-means clustering** (k=6) groups players by deployment profile (TOI, PP pts, faceoff%, position)
-   → *Top-Line C/F, Top-Six F, PP Specialist, Checking C, Top-Pair D, Bottom-Pair D*
-2. **Performance score** (-100 → +100) ranks each player within their cluster using production stats
-3. **UFA comp finder** identifies the 5 nearest comparable free agents by cluster + score similarity
-4. **Predicted value** = weighted average cap hit of the 5 comps (weight = 1 / score distance)
+**How it works — 5 layers:**
+1. **Data ingestion** — Live stats from NHL API + contract data from PuckPedia, normalized to 82-game pace
+2. **K-means clustering** (k=7) groups players by deployment profile (TOI, PP pts, ±, faceoff%, position)
+   → *Elite F, Top-Line C/F, Top-Six F, PP Specialist, Checking C, Bottom-Six F, Top-Pair D, Bottom-Pair D, 3rd-Pair D*
+3. **Performance score** (−100 → +100) ranks each player within their cluster using position-specific stats
+4. **Comps engine** finds the 5 nearest comparable players by a weighted distance metric:
+   - Points-per-60 (45%) + Performance score (30%) + Age (25%)
+   - UFA contracts weighted 1.5× (freely negotiated = truer market signal)
+   - Same-cluster comps prioritized, cross-cluster used to fill gaps
+5. **Predicted value** = weighted average AAV of the 5 closest comps (weight = 1 / distance)
 
 **What goes into scoring:**
-- *Forwards* — G/60, P/60 (prior season), PP pts, shooting %, shots, plus/minus
-- *Defensemen* — TOI/game, PP pts, plus/minus, GP, shooting %
-- *Clustering* — TOI/game, PP pts, GP, plus/minus, faceoff%, position
+- *Forwards (7 features)* — G/60, P/60 (current + prior), PP pts, shooting %, shots, ±
+- *Defensemen (4 features)* — TOI/game, PP pts, ±, shooting %
+- *Clustering (6 inputs)* — TOI/game, PP pts, ±, faceoff% (centers only), one-hot position
+
+**Re-sign signal** — 6-category heuristic (Must Sign, Priority RFA, Locked In, Let Walk, Buyout Candidate, Fair Deal) based on expiry status, underpaid/overpaid magnitude, and age tier.
 
 **Value Delta = Predicted Value − Actual Cap Hit**
 - **Positive** → player is worth more than paid → team surplus
 - **Negative** → player costs more than model-estimated market rate → team liability
 
 **Important caveats:**
-- Defensive metrics (shot blocking, defensive zone starts) are partially captured
-  through TOI and clustering but not explicitly
+- Defensive metrics (shot blocking, zone starts) are partially captured through TOI and clustering but not explicitly
 - Leadership, locker-room value, and injury history are not modelled
-- ELC players (age < 25, cap hit < $1M) will almost always show a large positive delta
-  because they are intentionally paid below market
+- ELC players (age < 25, cap hit < $1M) will almost always show a large positive delta because they are intentionally paid below market
 - Small sample sizes (e.g., rookies with < 20 GP) increase prediction uncertainty
 
 The model is retrained nightly from live NHL API stats.
@@ -2657,7 +2661,204 @@ def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame):
 
 # ── Tab 5: Model Insights ──────────────────────────────────────────────────────
 def tab_insights(df: pd.DataFrame):
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Model Insights — SHAP Feature Importance</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Model Insights</div>", unsafe_allow_html=True)
+
+    # ── Section 1: Model Architecture Pipeline Diagram ────────────────────────
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 16px;font-weight:400;'>How the Model Works</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div style='color:{_T['card_subtext']};font-size:.75rem;font-family:\"DM Sans\",sans-serif;"
+        f"margin-bottom:20px;line-height:1.6;max-width:700px;'>"
+        f"Player valuations are produced by a multi-layer pipeline that combines unsupervised clustering, "
+        f"position-specific performance scoring, and a comps-based valuation engine. "
+        f"XGBoost runs in parallel as a validation benchmark.</div>",
+        unsafe_allow_html=True,
+    )
+
+    # Architecture diagram — pure HTML/CSS pipeline flow
+    _abg = _T["card_bg"]; _abd = _T["card_border"]; _atxt = _T["card_text"]; _asub = _T["card_subtext"]
+    _accent = _T.get("accent", "#4A6FA5")
+    _pos_clr = _T.get("positive", "#2A7A4B")
+
+    def _arch_step(number: str, title: str, subtitle: str, detail: str, color: str = _accent) -> str:
+        return (
+            f"<div style='flex:1;min-width:160px;max-width:220px;background:{_abg};"
+            f"border:1px solid {_abd};padding:16px 14px;position:relative;'>"
+            f"<div style='position:absolute;top:-12px;left:14px;background:{color};"
+            f"color:#fff;font-family:\"DM Mono\",monospace;font-size:.65rem;"
+            f"padding:2px 8px;letter-spacing:.1em;'>{number}</div>"
+            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.85rem;"
+            f"font-weight:600;color:{_atxt};margin-top:6px;'>{title}</div>"
+            f"<div style='font-family:\"DM Mono\",monospace;font-size:.65rem;"
+            f"color:{_asub};margin-top:4px;letter-spacing:.04em;'>{subtitle}</div>"
+            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.72rem;"
+            f"color:{_asub};margin-top:8px;line-height:1.5;'>{detail}</div>"
+            f"</div>"
+        )
+
+    _arrow = (
+        f"<div style='display:flex;align-items:center;padding:0 4px;'>"
+        f"<svg width='24' height='24' viewBox='0 0 24 24' fill='none' "
+        f"xmlns='http://www.w3.org/2000/svg'>"
+        f"<path d='M5 12h14M13 6l6 6-6 6' stroke='{_asub}' stroke-width='2' "
+        f"stroke-linecap='round' stroke-linejoin='round'/></svg></div>"
+    )
+
+    st.markdown(
+        f"<div style='display:flex;align-items:stretch;flex-wrap:wrap;gap:8px;"
+        f"margin:24px 0 8px;overflow-x:auto;'>"
+        + _arch_step("01", "Data Ingestion",
+                     "NHL API + PuckPedia",
+                     "Roster stats, contract data, prior-season stats. "
+                     "All stats normalized to 82-game pace.")
+        + _arrow
+        + _arch_step("02", "K-Means Clustering",
+                     "k=7 · Unsupervised",
+                     "Groups players by deployment: TOI, PP pts, ±, faceoff%, position. "
+                     "Auto-labels roles (Elite F, Top-Pair D, etc).")
+        + _arrow
+        + _arch_step("03", "Performance Scoring",
+                     "−100 → +100 · Per Cluster",
+                     "FWD: G/60, P/60, PP pts, shots, shoot%, ±. "
+                     "DEF: TOI, PP pts, ±, shoot%. Z-scores within cluster.")
+        + _arrow
+        + _arch_step("04", "Comps Engine",
+                     "5 Nearest Comps",
+                     "Weighted distance: P/60 (45%) + Score (30%) + Age (25%). "
+                     "UFA contracts weighted 1.5×. Same-cluster priority.")
+        + _arrow
+        + _arch_step("05", "Predicted Value",
+                     "Weighted Avg AAV",
+                     "Final value = weighted average of 5 comps' AAVs. "
+                     "Delta = Predicted − Actual Cap Hit.",
+                     color=_pos_clr)
+        + f"</div>",
+        unsafe_allow_html=True,
+    )
+
+    # XGBoost benchmark callout
+    st.markdown(
+        f"<div style='background:{_abg};border:1px solid {_abd};border-left:3px solid {_asub};"
+        f"padding:10px 16px;margin:8px 0 28px;display:flex;align-items:center;gap:12px;'>"
+        f"<span style='font-size:.68rem;color:{_asub};font-family:\"DM Sans\",sans-serif;"
+        f"letter-spacing:.1em;text-transform:uppercase;'>Validation Benchmark</span>"
+        f"<span style='font-family:\"DM Mono\",monospace;font-size:.8rem;color:{_atxt};'>"
+        f"XGBoost + SHAP &nbsp;·&nbsp; 5-Fold CV R² ≈ 0.83 &nbsp;·&nbsp; RMSE ≈ $1.2M"
+        f"</span></div>",
+        unsafe_allow_html=True,
+    )
+
+    # ── Section 2: Cluster Distribution ───────────────────────────────────────
+    st.markdown("---")
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Distribution</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"margin-bottom:16px;'>K-means groups every skater into one of 7 role clusters. "
+        f"Bar heights show how many players fall into each role.</div>",
+        unsafe_allow_html=True,
+    )
+
+    if "cluster_label" in df.columns:
+        cluster_counts = df["cluster_label"].value_counts().reset_index()
+        cluster_counts.columns = ["Cluster", "Players"]
+        cluster_counts = cluster_counts.sort_values("Players", ascending=True)
+
+        fig_cl = px.bar(
+            cluster_counts, x="Players", y="Cluster", orientation="h",
+            color="Players", color_continuous_scale="Tealgrn",
+            height=max(300, len(cluster_counts) * 48),
+        )
+        fig_cl.update_layout(
+            paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            showlegend=False, coloraxis_showscale=False,
+            xaxis=dict(title="Number of Players", gridcolor=_T["grid"]),
+            yaxis=dict(title=""),
+            margin=dict(l=10, r=20, t=10, b=10),
+        )
+        fig_cl.update_traces(
+            text=cluster_counts["Players"].values,
+            textposition="inside", textfont_size=13,
+        )
+        st.plotly_chart(fig_cl, use_container_width=True)
+
+    # ── Section 3: Performance Score Distribution ─────────────────────────────
+    st.markdown("---")
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Performance Score Distribution</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"margin-bottom:16px;'>Each player is scored −100 to +100 within their cluster. "
+        f"A score of 0 means cluster-average; +100 is the top performer in that role.</div>",
+        unsafe_allow_html=True,
+    )
+
+    if "performance_score" in df.columns:
+        scores = df["performance_score"].dropna()
+        if not scores.empty:
+            fig_ps = px.histogram(
+                scores, nbins=40,
+                color_discrete_sequence=[_accent],
+                labels={"value": "Performance Score", "count": "Players"},
+                height=350,
+            )
+            fig_ps.update_layout(
+                paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+                font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+                showlegend=False,
+                xaxis=dict(title="Performance Score", gridcolor=_T["grid"],
+                           zeroline=True, zerolinecolor=_T["zero"], zerolinewidth=2),
+                yaxis=dict(title="Number of Players", gridcolor=_T["grid"]),
+                margin=dict(l=10, r=20, t=10, b=10),
+            )
+            st.plotly_chart(fig_ps, use_container_width=True)
+
+            # Summary stats row
+            ps_c1, ps_c2, ps_c3, ps_c4 = st.columns(4)
+            ps_c1.metric("Mean", f"{scores.mean():+.1f}")
+            ps_c2.metric("Std Dev", f"{scores.std():.1f}")
+            ps_c3.metric("Min", f"{scores.min():+.1f}")
+            ps_c4.metric("Max", f"{scores.max():+.1f}")
+
+    # ── Section 4: Comps Engine — Distance Weights ────────────────────────────
+    st.markdown("---")
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Comps Engine — Distance Weights</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"margin-bottom:16px;'>The comps engine finds the 5 most similar players using a weighted distance "
+        f"across three dimensions. UFA contracts receive 1.5× weight as freely-negotiated market signals.</div>",
+        unsafe_allow_html=True,
+    )
+
+    weights_df = pd.DataFrame({
+        "Dimension": ["Points-per-60", "Performance Score", "Age"],
+        "Weight": [45, 30, 25],
+    })
+    fig_w = px.pie(
+        weights_df, names="Dimension", values="Weight",
+        color_discrete_sequence=["#2A7A4B", "#4A6FA5", "#C0392B"],
+        hole=0.45, height=320,
+    )
+    fig_w.update_layout(
+        paper_bgcolor=_T["plot_paper"],
+        font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+        margin=dict(l=10, r=10, t=10, b=10),
+        legend=dict(orientation="h", yanchor="bottom", y=-0.15, xanchor="center", x=0.5),
+    )
+    fig_w.update_traces(
+        textinfo="label+percent",
+        textfont_size=13,
+    )
+    st.plotly_chart(fig_w, use_container_width=True)
+
+    # ── Section 5: SHAP Feature Importance (XGBoost benchmark) ────────────────
+    st.markdown("---")
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>XGBoost Benchmark — SHAP Feature Importance</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"margin-bottom:16px;'>SHAP values from the XGBoost validation model show which features "
+        f"have the largest impact on predicted salary. This validates the comps model's inputs.</div>",
+        unsafe_allow_html=True,
+    )
+
     shap_summary = load_shap_summary()
     shap_vals    = load_shap_values()
 
@@ -2665,7 +2866,6 @@ def tab_insights(df: pd.DataFrame):
         st.info("Run `py -3 pipeline.py` to generate SHAP values.")
         return
 
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>What drives predicted player value?</div>", unsafe_allow_html=True)
     top_n = int(st.number_input("Features to show", min_value=5, max_value=min(30, len(shap_summary)), value=15, step=1))
     top   = shap_summary.head(top_n).copy()
     top["feature"] = top["feature"].apply(_label)
@@ -2691,11 +2891,11 @@ def tab_insights(df: pd.DataFrame):
         margin=dict(l=10, r=20, t=10, b=10),
     )
     st.plotly_chart(fig, use_container_width=True)
-    st.caption("Mean absolute SHAP value = average dollar impact of each feature on predictions.")
+    st.caption("Mean absolute SHAP value = average dollar impact of each feature on the XGBoost benchmark predictions.")
 
     if not shap_vals.empty and "name" in shap_vals.columns:
         st.markdown("---")
-        st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Player-Level Explanation</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Player-Level SHAP Breakdown</div>", unsafe_allow_html=True)
         chosen = st.selectbox("Select a player",
                                sorted(df["name"].dropna().tolist()),
                                key="insights_player")
@@ -2810,7 +3010,7 @@ def main():
         f"</div>"
         f"<div style='font-family:\"DM Mono\",monospace;font-size:0.72rem;"
         f"color:{_T['card_subtext']};letter-spacing:0.08em;margin-top:8px;'>"
-        f"{_season_str(load_season_context())} &nbsp;·&nbsp; XGBoost + SHAP &nbsp;·&nbsp; Live Data"
+        f"{_season_str(load_season_context())} &nbsp;·&nbsp; Comps Model + K-Means Clustering &nbsp;·&nbsp; Live Data"
         f"</div>"
         f"<div style='height:1px;background:{_divider_color};margin:18px 0 8px;'></div>"
         f"</div>",
