@@ -521,9 +521,8 @@ TEAM_COLORS = {
 
 # ── Cluster constants ──────────────────────────────────────────────────────────
 CLUSTER_ORDER = [
-    "Elite F", "Top-Line C/F", "Top-Six F", "PP Specialist",
-    "Checking C", "Bottom-Six F",
-    "Top-Pair D", "Bottom-Pair D", "3rd-Pair D",
+    "Elite", "Top-Line F", "Middle-Six F", "Bottom-Six F",
+    "Top-Four D", "Bottom-Pair D", "Two-Way / Shutdown",
 ]
 
 
@@ -1145,8 +1144,12 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         pos_sel  = st.selectbox("Position", positions, key="sb_pos")
         teams_list = ["All"] + sorted(df["team"].dropna().unique().tolist())
         team_sel = st.selectbox("Team", teams_list, key="sb_team")
-        # Cluster filter
+        # Cluster filter — clear stale session state if cluster names changed
         cluster_opts = [c for c in CLUSTER_ORDER if c in df["cluster_label"].unique()]
+        if "sb_cluster" in st.session_state:
+            stale = [c for c in st.session_state["sb_cluster"] if c not in cluster_opts]
+            if stale:
+                del st.session_state["sb_cluster"]
         cluster_sel = st.multiselect("Role Cluster", cluster_opts, default=cluster_opts, key="sb_cluster")
 
         import math
@@ -1276,7 +1279,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
         + _arrow
         + _arch_step("02", "K-Means Clustering", "k=7 · Unsupervised",
                      "Groups players by deployment: TOI, PP pts, ±, faceoff%, position. "
-                     "Auto-labels roles (Elite F, Top-Pair D, etc).")
+                     "Auto-labels roles (Elite, Top-Line F, Top-Four D, etc).")
         + _arrow
         + _arch_step("03", "Performance Scoring", "−100 → +100 · Per Cluster",
                      "FWD: G/60, P/60, PP pts, shots, shoot%, ±. "
