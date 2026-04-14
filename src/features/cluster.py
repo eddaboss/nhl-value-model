@@ -16,7 +16,7 @@ MODELS_DIR = Path(__file__).parents[2] / "models"
 N_CLUSTERS = 6
 
 # Performance scoring features by position group
-FWD_SCORE_FEATURES = ["g60", "p60_24", "pp_pts", "shooting_pct", "shots", "plus_minus"]
+FWD_SCORE_FEATURES = ["g60", "p60", "p60_24", "pp_pts", "shooting_pct", "shots", "plus_minus"]
 DEF_SCORE_FEATURES = ["toi_per_g", "pp_pts", "plus_minus", "shooting_pct"]
 
 
