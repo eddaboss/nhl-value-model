@@ -220,7 +220,8 @@ def main(tune: bool = False, refresh: bool = False, refresh_all: bool = False):
         "gp", "g", "a", "p", "ppg",
         "toi_per_g", "plus_minus", "pim",
         "g60", "p60", "pp_pts", "shots", "shooting_pct",
-        "cluster_label", "performance_score",
+        "cluster_id", "cluster_label", "performance_score",
+        "faceoff_pct",
         "resign_signal", "player_id",
         "has_contract_data", "has_prior_market_data", "is_estimated",
     ]
