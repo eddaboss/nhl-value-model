@@ -50,19 +50,32 @@ _STAT_KEYS = [
     "pp_pts", "shots", "shooting_pct", "faceoff_pct",
     "g60", "p60",
 ]
+# Count stats scaled to full-season pace; rate stats (ppg, toi_per_g, g60, p60,
+# shooting_pct, faceoff_pct) are already per-game or per-60 and need no scaling.
 _COUNT_KEYS = {"g", "a", "p", "pim", "pp_pts", "shots"}
 
 
 def _project(stats: dict, season_length: int) -> dict:
+    """
+    Scale all count stats to `season_length`-game pace.
+
+    After projection:
+    - Count stats (g, a, p, pim, pp_pts, shots, plus_minus) are 82-game equivalents.
+    - Rate stats (toi_per_g, g60, p60, ppg, shooting_pct, faceoff_pct) are unchanged.
+    - gp is set to season_length so all players compare on equal footing in the model.
+      The raw games-played value is captured before this call when needed for display.
+    """
     gp = max(stats.get("gp") or 1, 1)
-    if gp >= season_length:
-        return stats
-    scale = season_length / gp
     out = dict(stats)
-    for k in _COUNT_KEYS:
-        if k in out and out[k] is not None:
-            out[k] = round(out[k] * scale, 2)
-    out["plus_minus"] = round((out.get("plus_minus") or 0) * scale, 1)
+    if gp < season_length:
+        scale = season_length / gp
+        for k in _COUNT_KEYS:
+            if k in out and out[k] is not None:
+                out[k] = round(out[k] * scale, 2)
+        out["plus_minus"] = round((out.get("plus_minus") or 0) * scale, 1)
+    # Standardize gp to season_length so injury-shortened seasons don't
+    # penalise players in clustering or feature comparisons.
+    out["gp"] = season_length
     return out
 
 
@@ -107,7 +120,10 @@ def _build_stats_df(
 
         _prior_keys = ["gp", "ppg", "toi_per_g", "plus_minus",
                        "g60", "p60", "pp_pts", "shots", "shooting_pct"]
-        stats_24 = {f"{k}_24": (prior.get(k) if prior else None) for k in _prior_keys}
+        # Project prior-season stats to full-season pace so a player who missed
+        # 20 games due to injury in the prior season isn't penalised in features.
+        prior_proj = _project(prior, season_length) if prior else {}
+        stats_24 = {f"{k}_24": (prior_proj.get(k) if prior_proj else None) for k in _prior_keys}
 
         draft = (player_raw.get("draft") or {})
 

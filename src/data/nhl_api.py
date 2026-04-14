@@ -273,36 +273,64 @@ def build_roster_lookup(force_refresh: bool = False, season: str | None = None) 
 
 # ── Per-player stats from landing page ───────────────────────────────────────
 def _extract_season_stats(season_totals: list, season_id: int) -> dict | None:
-    """Pull the NHL regular-season row for the requested season from seasonTotals."""
-    for row in season_totals:
-        if row.get("season") == season_id and row.get("gameTypeId") == 2 \
-                and row.get("leagueAbbrev") == "NHL":
-            toi_min = parse_toi(row.get("avgToi", "0:00"))
-            gp  = row.get("gamesPlayed", 0) or 1
-            g   = row.get("goals",   0)
-            a   = row.get("assists", 0)
-            p   = row.get("points",  0)
-            pim = row.get("pim",     0)
-            pp_pts = row.get("powerPlayPoints", 0)
-            shots  = row.get("shots", 0)
-            toi_total = gp * toi_min          # total minutes on ice
-            return {
-                "gp":        gp,
-                "g":         g,
-                "a":         a,
-                "p":         p,
-                "ppg":       round(p / gp, 4),
-                "toi_per_g": round(toi_min, 4),
-                "plus_minus": row.get("plusMinus", 0),
-                "pim":       pim,
-                "pp_pts":    pp_pts,
-                "shots":     shots,
-                "shooting_pct": row.get("shootingPctg", 0.0),
-                "faceoff_pct":  row.get("faceoffWinningPctg", 0.0),
-                "g60":  round(g / (toi_total / 60), 4) if toi_total > 0 else 0,
-                "p60":  round(p / (toi_total / 60), 4) if toi_total > 0 else 0,
-            }
-    return None
+    """
+    Pull and aggregate all NHL regular-season rows for the requested season.
+    Handles mid-season trades by summing count stats across stints and
+    computing weighted averages for rate stats (TOI, faceoff%).
+    """
+    rows = [
+        r for r in season_totals
+        if r.get("season") == season_id
+        and r.get("gameTypeId") == 2
+        and r.get("leagueAbbrev") == "NHL"
+    ]
+    if not rows:
+        return None
+
+    # Sum count stats across all stints (handles traded players)
+    gp         = sum(r.get("gamesPlayed",      0) or 0 for r in rows)
+    g          = sum(r.get("goals",            0) or 0 for r in rows)
+    a          = sum(r.get("assists",          0) or 0 for r in rows)
+    p          = sum(r.get("points",           0) or 0 for r in rows)
+    pim        = sum(r.get("pim",              0) or 0 for r in rows)
+    pp_pts     = sum(r.get("powerPlayPoints",  0) or 0 for r in rows)
+    shots      = sum(r.get("shots",            0) or 0 for r in rows)
+    plus_minus = sum(r.get("plusMinus",        0) or 0 for r in rows)
+
+    # TOI: reconstruct total minutes from avgToi × gamesPlayed per stint
+    total_toi_min = sum(
+        parse_toi(r.get("avgToi", "0:00")) * (r.get("gamesPlayed", 0) or 0)
+        for r in rows
+    )
+    gp = max(gp, 1)
+    toi_min = total_toi_min / gp   # weighted avg TOI per game
+
+    # Shooting %: recompute from totals (more accurate than averaging per-stint %)
+    shooting_pct = round(g / shots, 4) if shots > 0 else 0.0
+
+    # Faceoff %: weighted average by games played per stint
+    fo_num = sum(
+        (r.get("faceoffWinningPctg") or 0.0) * (r.get("gamesPlayed", 0) or 0)
+        for r in rows
+    )
+    faceoff_pct = round(fo_num / gp, 4)
+
+    return {
+        "gp":           gp,
+        "g":            g,
+        "a":            a,
+        "p":            p,
+        "ppg":          round(p / gp, 4),
+        "toi_per_g":    round(toi_min, 4),
+        "plus_minus":   plus_minus,
+        "pim":          pim,
+        "pp_pts":       pp_pts,
+        "shots":        shots,
+        "shooting_pct": shooting_pct,
+        "faceoff_pct":  faceoff_pct,
+        "g60":  round(g  / (total_toi_min / 60), 4) if total_toi_min > 0 else 0,
+        "p60":  round(p  / (total_toi_min / 60), 4) if total_toi_min > 0 else 0,
+    }
 
 
 def _extract_draft_info(landing: dict) -> dict:

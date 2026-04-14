@@ -17,7 +17,7 @@ N_CLUSTERS = 6
 
 # Performance scoring features by position group
 FWD_SCORE_FEATURES = ["g60", "p60_24", "pp_pts", "shooting_pct", "shots", "plus_minus"]
-DEF_SCORE_FEATURES = ["toi_per_g", "pp_pts", "plus_minus", "gp", "shooting_pct"]
+DEF_SCORE_FEATURES = ["toi_per_g", "pp_pts", "plus_minus", "shooting_pct"]
 
 
 # ── Feature preparation ────────────────────────────────────────────────────────
@@ -31,7 +31,6 @@ def _cluster_matrix(df: pd.DataFrame) -> np.ndarray:
     X = pd.DataFrame(index=df.index)
     X["toi_per_g"]  = pd.to_numeric(df["toi_per_g"],  errors="coerce").fillna(0.0)
     X["pp_pts"]     = pd.to_numeric(df["pp_pts"],     errors="coerce").fillna(0.0)
-    X["gp"]         = pd.to_numeric(df["gp"],         errors="coerce").fillna(0.0)
     X["plus_minus"] = pd.to_numeric(df["plus_minus"], errors="coerce").fillna(0.0)
 
     # faceoff_pct: real value for centers, 0 for everyone else
