@@ -85,8 +85,26 @@ def _run_pipeline_background(processed_dir: Path) -> None:
         _refresh_status["running"] = False
 
 
+_PREDICTIONS_MAX_AGE_HOURS = 12   # skip background refresh if file is this fresh
+
+
 def start_background_refresh(processed_dir: Path) -> None:
-    """Launch background pipeline thread once per process lifetime."""
+    """Launch background pipeline thread once per process lifetime.
+
+    Skipped when predictions.csv already exists and is recent (< MAX_AGE_HOURS).
+    This prevents the thread from overwriting committed, validated predictions
+    with a fresh K-means run that might produce different cluster assignments.
+    On Streamlit Cloud the committed file is always available at boot, so the
+    thread only fires when data is genuinely stale.
+    """
+    pred_path = processed_dir / "predictions.csv"
+    if pred_path.exists():
+        age_hours = (time.time() - pred_path.stat().st_mtime) / 3600
+        if age_hours < _PREDICTIONS_MAX_AGE_HOURS:
+            _refresh_status["done"] = True
+            _refresh_status["completed"] = True
+            return
+
     with _refresh_lock:
         if _refresh_status["running"] or _refresh_status["completed"]:
             return
