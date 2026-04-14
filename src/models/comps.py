@@ -112,7 +112,14 @@ def find_comps(
     if pool.empty:
         return pd.DataFrame()
 
-    p_cid   = player.get("cluster_id")
+    # Use cluster_id if available, fall back to cluster_label
+    if "cluster_id" in pool.columns:
+        p_cid = player.get("cluster_id")
+        _cluster_col = "cluster_id"
+    else:
+        p_cid = player.get("cluster_label")
+        _cluster_col = "cluster_label"
+
     p_score = float(player.get("performance_score") or 0)
     p_age   = float(player.get("age") or 27)
     p_p60   = float(player.get("p60") or 0)
@@ -138,7 +145,7 @@ def find_comps(
     ufa_mult = np.where(is_ufa, _UFA_WEIGHT_MULT, 1.0)
     pool["_weight"] = ufa_mult / (1.0 + pool["_dist"])
 
-    pool["_same"] = (pool["cluster_id"] == p_cid).astype(int)
+    pool["_same"] = (pool[_cluster_col] == p_cid).astype(int)
 
     same  = pool[pool["_same"] == 1]
     other = pool[pool["_same"] == 0]
