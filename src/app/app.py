@@ -41,6 +41,14 @@ def _run_pipeline_background(processed_dir: Path) -> None:
         # Comps model — primary predictions (same as pipeline.py)
         df, _ = run_comps_model(df)
 
+        # Suppress predictions for low-GP players (inflated rate stats)
+        _MIN_GP = 20
+        gp_actual = pd.to_numeric(df.get("gp_actual", pd.Series(82, index=df.index)),
+                                   errors="coerce").fillna(0)
+        low_gp = gp_actual < _MIN_GP
+        df.loc[low_gp, "predicted_value"] = None
+        df.loc[low_gp, "value_delta"] = None
+
         df["resign_signal"] = df.apply(resign_label, axis=1)
 
         keep = [
