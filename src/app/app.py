@@ -50,7 +50,8 @@ def _run_pipeline_background(processed_dir: Path) -> None:
             "gp", "g", "a", "p", "ppg",
             "toi_per_g", "plus_minus", "pim",
             "g60", "p60", "pp_pts", "shots", "shooting_pct",
-            "cluster_label", "performance_score",
+            "cluster_id", "cluster_label", "performance_score",
+            "faceoff_pct",
             "resign_signal", "player_id",
             "has_contract_data", "has_prior_market_data", "is_estimated",
             "has_extension", "extension_cap_hit", "extension_start_year",
@@ -490,6 +491,25 @@ TEAM_COLORS = {
     "WPG": {"primary": "#004C97", "secondary": "#AC162C"},
 }
 
+# ── Cluster constants ──────────────────────────────────────────────────────────
+CLUSTER_ORDER = [
+    "Elite F", "Top-Line C/F", "Top-Six F", "PP Specialist",
+    "Checking C", "Bottom-Six F",
+    "Top-Pair D", "Bottom-Pair D", "3rd-Pair D",
+]
+
+CLUSTER_COLORS = {
+    "Elite F":       "#FFD700",   # gold
+    "Top-Line C/F":  "#FF8C00",   # dark orange
+    "Top-Six F":     "#4ECDC4",   # teal
+    "PP Specialist": "#E056A0",   # pink
+    "Checking C":    "#7B68EE",   # medium slate blue
+    "Bottom-Six F":  "#8FBC8F",   # dark sea green
+    "Top-Pair D":    "#4A90D9",   # steel blue
+    "Bottom-Pair D": "#6C5B7B",   # muted purple
+    "3rd-Pair D":    "#A0522D",   # sienna
+}
+
 PERCENTILE_STATS = [
     ("ppg",       "Points/Game"),
     ("p60",       "Points/60 min"),
@@ -895,6 +915,24 @@ def load_last_updated() -> dict:
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
+# ── Comp pool helpers ──────────────────────────────────────────────────────────
+def _build_comp_pool(df: pd.DataFrame) -> pd.DataFrame:
+    """Build the comp pool from loaded predictions — cached per session."""
+    from src.models.comps import build_ufa_comp_pool
+    return build_ufa_comp_pool(df)
+
+
+def _get_player_comps(player: pd.Series, comp_pool: pd.DataFrame, n: int = 5) -> pd.DataFrame:
+    """Get the actual 5 comps for a player from the comps engine."""
+    from src.models.comps import find_comps
+    comps = find_comps(player, comp_pool, n=n)
+    if comps.empty:
+        return pd.DataFrame()
+    keep = ["name", "team", "pos", "age", "cap_hit", "performance_score",
+            "cluster_label", "cluster_id", "p60", "_dist", "_weight", "_same"]
+    return comps[[c for c in keep if c in comps.columns]].copy()
+
+
 # ── Helpers ────────────────────────────────────────────────────────────────────
 def fmt_m(v) -> str:
     """Format as $X.XXM."""
@@ -1090,6 +1128,10 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         pos_sel  = st.selectbox("Position", positions, key="sb_pos")
         teams_list = ["All"] + sorted(df["team"].dropna().unique().tolist())
         team_sel = st.selectbox("Team", teams_list, key="sb_team")
+        # Cluster filter
+        cluster_opts = [c for c in CLUSTER_ORDER if c in df["cluster_label"].unique()]
+        cluster_sel = st.multiselect("Role Cluster", cluster_opts, default=cluster_opts, key="sb_cluster")
+
         import math
         age_min = math.floor(df["age"].dropna().min())
         age_max = math.ceil(df["age"].dropna().max())
@@ -1114,6 +1156,9 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         # NaN-age players always pass through — don't drop them
         age_mask = filt["age"].isna() | ((filt["age"] >= age_r[0]) & (filt["age"] <= age_r[1]))
         filt = filt[age_mask]
+        # Cluster filter
+        if cluster_sel:
+            filt = filt[filt["cluster_label"].isin(cluster_sel)]
 
         # Season context
         ctx = load_season_context()
@@ -1166,51 +1211,70 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
         c4.metric("Most Overpaid",  worst["name"], delta=fmt_delta(worst["value_delta"]),
                   delta_color="inverse")
 
-    # ── Scatter: contracted players colored by delta ─────────────────────────
+    # ── Scatter: contracted players ───────────────────────────────────────────
     show_ufa = st.session_state.get("overview_show_ufa", False)
+    _sc_mode = st.radio("Color by", ["Role Cluster", "Value Delta"], horizontal=True, key="overview_color_mode")
 
     fig = go.Figure()
 
-    # Trace 1 — contracted players (colored by delta)
+    # Trace 1 — contracted players
     if not df_c.empty:
-        fig.add_trace(go.Scatter(
-            x=df_c["predicted_value"], y=df_c["cap_hit"],
-            mode="markers",
-            name="Contracted",
-            marker=dict(
-                size=7, opacity=0.82,
-                color=df_c["value_delta"],
-                colorscale="RdYlGn",
-                cmid=0,
-                line=dict(width=0.4, color="#000"),
-                colorbar=dict(title="Delta ($)", tickformat="$,.0f",
-                              len=0.65, thickness=12),
-            ),
-            customdata=df_c[["name", "team", "pos", "cap_hit",
-                              "predicted_value", "value_delta", "value_delta_pct"]].values,
-            hovertemplate=(
-                "<b>%{customdata[0]}</b><br>"
-                "%{customdata[1]} · %{customdata[2]}<br>"
-                "Cap Hit: $%{customdata[3]:,.0f}<br>"
-                "Predicted: $%{customdata[4]:,.0f}<br>"
-                "Delta: $%{customdata[5]:,.0f} (%{customdata[6]:.1f}%)<br>"
-                "<extra></extra>"
-            ),
-        ))
+        if _sc_mode == "Role Cluster":
+            # One trace per cluster for legend + consistent colors
+            for cl in CLUSTER_ORDER:
+                cl_data = df_c[df_c["cluster_label"] == cl]
+                if cl_data.empty:
+                    continue
+                cl_color = CLUSTER_COLORS.get(cl, "#888")
+                _custom = cl_data[["name", "team", "pos", "cap_hit",
+                                   "predicted_value", "value_delta", "value_delta_pct"]].values
+                fig.add_trace(go.Scatter(
+                    x=cl_data["predicted_value"], y=cl_data["cap_hit"],
+                    mode="markers", name=cl,
+                    marker=dict(size=7, opacity=0.82, color=cl_color,
+                                line=dict(width=0.4, color="#000")),
+                    customdata=_custom,
+                    hovertemplate=(
+                        "<b>%{customdata[0]}</b><br>"
+                        "%{customdata[1]} · %{customdata[2]}<br>"
+                        f"Role: {cl}<br>"
+                        "Cap Hit: $%{customdata[3]:,.0f}<br>"
+                        "Predicted: $%{customdata[4]:,.0f}<br>"
+                        "Delta: $%{customdata[5]:,.0f} (%{customdata[6]:.1f}%)<br>"
+                        "<extra></extra>"
+                    ),
+                ))
+        else:
+            fig.add_trace(go.Scatter(
+                x=df_c["predicted_value"], y=df_c["cap_hit"],
+                mode="markers", name="Contracted",
+                marker=dict(
+                    size=7, opacity=0.82,
+                    color=df_c["value_delta"], colorscale="RdYlGn", cmid=0,
+                    line=dict(width=0.4, color="#000"),
+                    colorbar=dict(title="Delta ($)", tickformat="$,.0f",
+                                  len=0.65, thickness=12),
+                ),
+                customdata=df_c[["name", "team", "pos", "cap_hit",
+                                  "predicted_value", "value_delta", "value_delta_pct"]].values,
+                hovertemplate=(
+                    "<b>%{customdata[0]}</b><br>"
+                    "%{customdata[1]} · %{customdata[2]}<br>"
+                    "Cap Hit: $%{customdata[3]:,.0f}<br>"
+                    "Predicted: $%{customdata[4]:,.0f}<br>"
+                    "Delta: $%{customdata[5]:,.0f} (%{customdata[6]:.1f}%)<br>"
+                    "<extra></extra>"
+                ),
+            ))
 
     # Trace 2 — UFA/unsigned players (diamond markers, only when toggled on)
     if show_ufa and not df_ufa.empty:
         fig.add_trace(go.Scatter(
             x=df_ufa["predicted_value"], y=[0] * len(df_ufa),
-            mode="markers",
-            name="UFA / Unsigned",
-            marker=dict(
-                symbol="diamond", size=11, opacity=0.85,
-                color=_T.get("accent", "#1A1A2E"),
-                line=dict(width=0),
-            ),
-            customdata=df_ufa[["name", "team", "pos",
-                                "predicted_value"]].values,
+            mode="markers", name="UFA / Unsigned",
+            marker=dict(symbol="diamond", size=11, opacity=0.85,
+                        color=_T.get("accent", "#1A1A2E"), line=dict(width=0)),
+            customdata=df_ufa[["name", "team", "pos", "predicted_value"]].values,
             hovertemplate=(
                 "<b>%{customdata[0]}</b> — UFA / Unsigned<br>"
                 "%{customdata[1]} · %{customdata[2]}<br>"
@@ -1230,6 +1294,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                            showarrow=False, font=dict(color=_fvline_color, size=12,
                                                       family="'DM Sans', sans-serif"))
 
+    _show_legend = (_sc_mode == "Role Cluster")
     fig.update_layout(
         paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
         font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
@@ -1237,7 +1302,9 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                    gridcolor=_T["grid"], zeroline=False),
         yaxis=dict(tickformat="$,.0f", title="Actual Cap Hit (0 = UFA/Unsigned)",
                    gridcolor=_T["grid"]),
-        showlegend=False,
+        showlegend=_show_legend,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
+                    font=dict(size=11)),
         height=600,
         margin=dict(l=10, r=10, t=30, b=10),
     )
@@ -1273,13 +1340,53 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
             if not match.empty:
                 p = match.iloc[0]
                 st.markdown(f"**Selected: {clicked_name}**")
-                mc1, mc2, mc3, mc4 = st.columns(4)
+                mc1, mc2, mc3, mc4, mc5 = st.columns(5)
                 mc1.metric("Team / Pos", f"{p.get('team','?')} · {p.get('pos','?')}")
                 mc2.metric("Cap Hit",         fmt_m(p.get("cap_hit")))
                 mc3.metric("Predicted Value", fmt_m(p.get("predicted_value")))
                 dv = p.get("value_delta")
                 mc4.metric("Delta", fmt_delta(dv),
                            delta_color="normal" if (dv or 0) >= 0 else "inverse")
+                _p_cl = p.get("cluster_label", "—")
+                _p_ps = p.get("performance_score")
+                _ps_s = f"{_p_ps:+.1f}" if pd.notna(_p_ps) else "—"
+                mc5.metric("Role / Score", f"{_p_cl} · {_ps_s}")
+
+    # ── Cluster Economics Summary ─────────────────────────────────────────────
+    if not df_c.empty and "cluster_label" in df_c.columns:
+        st.markdown("---")
+        st.markdown(
+            f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.5rem;"
+            f"color:{_T['page_text']};margin-bottom:14px;font-weight:400;'>Cluster Economics</div>",
+            unsafe_allow_html=True,
+        )
+        _cl_present = [c for c in CLUSTER_ORDER if c in df_c["cluster_label"].values]
+        _n_cols = min(len(_cl_present), 4)
+        for row_start in range(0, len(_cl_present), _n_cols):
+            row_clusters = _cl_present[row_start:row_start + _n_cols]
+            cl_cols = st.columns(len(row_clusters))
+            for ci, cl_name in enumerate(row_clusters):
+                cl_sub = df_c[df_c["cluster_label"] == cl_name]
+                cl_n = len(cl_sub)
+                cl_med_ch = cl_sub["cap_hit"].median()
+                cl_med_pv = cl_sub["predicted_value"].median()
+                cl_med_d  = cl_sub["value_delta"].median()
+                cl_clr = CLUSTER_COLORS.get(cl_name, "#888")
+                _d_clr = _T.get("positive") if cl_med_d >= 0 else _T.get("negative")
+                cl_cols[ci].markdown(
+                    f"<div style='background:{_T['card_bg']};border:1px solid {_T['card_border']};"
+                    f"border-top:3px solid {cl_clr};padding:12px 10px;'>"
+                    f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.75rem;font-weight:600;"
+                    f"color:{cl_clr};'>{cl_name}</div>"
+                    f"<div style='font-family:\"DM Mono\",monospace;font-size:.68rem;"
+                    f"color:{_T['card_subtext']};margin-top:6px;line-height:1.8;'>"
+                    f"{cl_n} players<br>"
+                    f"Cap: {fmt_m(cl_med_ch)}<br>"
+                    f"Pred: {fmt_m(cl_med_pv)}<br>"
+                    f"<span style='color:{_d_clr};'>Delta: {fmt_delta(cl_med_d)}</span>"
+                    f"</div></div>",
+                    unsafe_allow_html=True,
+                )
 
     # ── Most Interesting Players ──────────────────────────────────────────────
     if not df_c.empty:
@@ -1317,10 +1424,17 @@ def tab_leaderboards(df: pd.DataFrame):
     pos_opts = ["All", "C", "L", "R", "D", "F (all)"]
     pos_f = lc3.radio("Position", pos_opts, horizontal=True, key="lb_pos")
 
+    # Cluster filter
+    _lb_cl_opts = ["All Clusters"] + [c for c in CLUSTER_ORDER if c in df_c["cluster_label"].unique()]
+    _lb_cl_sel = st.selectbox("Filter by Role Cluster", _lb_cl_opts, key="lb_cluster")
+
     if pos_f == "F (all)":
         df_c = df_c[df_c["pos"].isin(["C", "L", "R"])]
     elif pos_f != "All":
         df_c = df_c[df_c["pos"] == pos_f]
+
+    if _lb_cl_sel != "All Clusters":
+        df_c = df_c[df_c["cluster_label"] == _lb_cl_sel]
 
     sort_col = "value_delta_pct" if sort_by == "% Delta" else "value_delta"
 
@@ -1404,10 +1518,11 @@ def tab_leaderboards(df: pd.DataFrame):
     )
 
     def _html_table(data, delta_col="value_delta"):
-        cols_order = ["name", "team", "pos", "age", "cap_hit",
+        cols_order = ["name", "team", "pos", "age", "cluster_label", "cap_hit",
                       "predicted_value", "value_delta", "value_delta_pct"]
         col_labels = {
             "name": "Player", "team": "Team", "pos": "Pos", "age": "Age",
+            "cluster_label": "Role",
             "cap_hit": "Cap Hit", "predicted_value": "Pred. Value",
             "value_delta": "$ Delta", "value_delta_pct": "% Delta",
         }
@@ -1438,6 +1553,9 @@ def tab_leaderboards(df: pd.DataFrame):
                 elif c == "team":
                     _team_accent = _T.get("accent", "#1A1A2E")
                     txt = f"<span style='color:{_team_accent};font-family:\"DM Mono\",monospace;'>{v}</span>"
+                elif c == "cluster_label":
+                    _cl_c = CLUSTER_COLORS.get(str(v), "#888")
+                    txt = f"<span style='color:{_cl_c};font-family:\"DM Sans\",sans-serif;font-size:.72rem;font-weight:600;'>{v}</span>"
                 else:
                     txt = str(v) if pd.notna(v) else "?"
                 cells += f"<td style='{_TD_CSS}'>{txt}</td>"
@@ -1538,6 +1656,58 @@ def tab_leaderboards(df: pd.DataFrame):
                 "sorted by predicted market value. These players have no active cap charge."
             )
 
+    # ── Value Leaders by Role ─────────────────────────────────────────────────
+    # Use the original (pre-filter) contracted data for this section
+    _vlr_df = df[df["cap_hit"].notna() & df["value_delta"].notna()].copy()
+    if not _vlr_df.empty and "cluster_label" in _vlr_df.columns:
+        st.markdown("---")
+        st.markdown(
+            f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;"
+            f"color:{_T['page_text']};margin-bottom:14px;font-weight:400;'>"
+            f"Value Leaders by Role</div>",
+            unsafe_allow_html=True,
+        )
+        _vlr_present = [c for c in CLUSTER_ORDER if c in _vlr_df["cluster_label"].values]
+        for cl_name in _vlr_present:
+            cl_sub = _vlr_df[_vlr_df["cluster_label"] == cl_name]
+            if len(cl_sub) < 2:
+                continue
+            cl_clr = CLUSTER_COLORS.get(cl_name, "#888")
+            best = cl_sub.nlargest(1, "value_delta").iloc[0]
+            worst = cl_sub.nsmallest(1, "value_delta").iloc[0]
+            _v1, _v2, _v3 = st.columns([1.5, 2, 2])
+            _v1.markdown(
+                f"<div style='padding:8px 0;'>"
+                f"<span style='color:{cl_clr};font-family:\"DM Sans\",sans-serif;"
+                f"font-size:.82rem;font-weight:600;'>{cl_name}</span>"
+                f"<br><span style='color:{_T['card_subtext']};font-family:\"DM Mono\",monospace;"
+                f"font-size:.68rem;'>{len(cl_sub)} players</span>"
+                f"</div>",
+                unsafe_allow_html=True,
+            )
+            _pos_c = _T.get("positive", "#2A7A4B")
+            _neg_c = _T.get("negative", "#C0392B")
+            _v2.markdown(
+                f"<div style='background:{_T['card_bg']};border:1px solid {_T['card_border']};"
+                f"border-left:3px solid {_pos_c};padding:8px 12px;'>"
+                f"<span style='color:{_T['card_text']};font-family:\"DM Sans\",sans-serif;"
+                f"font-size:.82rem;'>{best['name']}</span>"
+                f"<span style='color:{_pos_c};font-family:\"DM Mono\",monospace;"
+                f"font-size:.78rem;margin-left:8px;'>{fmt_delta(best['value_delta'])}</span>"
+                f"</div>",
+                unsafe_allow_html=True,
+            )
+            _v3.markdown(
+                f"<div style='background:{_T['card_bg']};border:1px solid {_T['card_border']};"
+                f"border-left:3px solid {_neg_c};padding:8px 12px;'>"
+                f"<span style='color:{_T['card_text']};font-family:\"DM Sans\",sans-serif;"
+                f"font-size:.82rem;'>{worst['name']}</span>"
+                f"<span style='color:{_neg_c};font-family:\"DM Mono\",monospace;"
+                f"font-size:.78rem;margin-left:8px;'>{fmt_delta(worst['value_delta'])}</span>"
+                f"</div>",
+                unsafe_allow_html=True,
+            )
+
 
 # ── Tab 3: Teams (generic, all 32 teams) ──────────────────────────────────────
 def tab_team(df: pd.DataFrame, team_code: str):
@@ -1591,6 +1761,89 @@ def tab_team(df: pd.DataFrame, team_code: str):
     cap_cols[4].metric("Expiring Contracts",   f"{n_expiring} players")
     st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
+    # ── Team Cluster Composition ─────────────────────────────────────────────
+    if "cluster_label" in team.columns:
+        st.markdown(
+            f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.8rem;"
+            f"font-weight:400;color:{_T['page_text']};margin:16px 0 12px;'>Role Composition</div>"
+            f"<div style='color:{_T['card_subtext']};font-size:.72rem;"
+            f"font-family:\"DM Mono\",monospace;letter-spacing:.06em;margin-bottom:12px;'>"
+            f"How this team's roster is distributed across role clusters</div>",
+            unsafe_allow_html=True,
+        )
+        cluster_counts = team.groupby("cluster_label").size().reindex(
+            [c for c in CLUSTER_ORDER if c in team["cluster_label"].values], fill_value=0
+        )
+        cluster_counts = cluster_counts[cluster_counts > 0]
+
+        fig_comp = go.Figure()
+        for clabel in cluster_counts.index:
+            cnt = cluster_counts[clabel]
+            fig_comp.add_bar(
+                name=clabel, y=["Roster"], x=[cnt], orientation="h",
+                marker_color=CLUSTER_COLORS.get(clabel, "#888"),
+                text=[f"{clabel} ({cnt})"], textposition="inside",
+                textfont=dict(size=11, color="#fff", family="'DM Sans', sans-serif"),
+                hovertemplate=f"{clabel}: {cnt} players<extra></extra>",
+            )
+        fig_comp.update_layout(
+            barmode="stack",
+            paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            xaxis=dict(title="Players", gridcolor=_T["grid_alt"]),
+            yaxis=dict(showticklabels=False),
+            showlegend=False, height=120,
+            margin=dict(l=10, r=10, t=10, b=30),
+        )
+        st.plotly_chart(fig_comp, use_container_width=True)
+
+    # ── Cluster Spending Breakdown ───────────────────────────────────────────
+    if "cluster_label" in team.columns:
+        cluster_spend = team.groupby("cluster_label").agg(
+            cap_total=("cap_hit", "sum"),
+            pred_total=("predicted_value", "sum"),
+            n_players=("name", "count"),
+        ).reindex([c for c in CLUSTER_ORDER if c in team["cluster_label"].values])
+        cluster_spend = cluster_spend[cluster_spend["n_players"] > 0].copy()
+
+        if not cluster_spend.empty:
+            st.markdown(
+                f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.8rem;"
+                f"font-weight:400;color:{_T['page_text']};margin:20px 0 12px;'>Cluster Spending</div>"
+                f"<div style='color:{_T['card_subtext']};font-size:.72rem;"
+                f"font-family:\"DM Mono\",monospace;letter-spacing:.06em;margin-bottom:12px;'>"
+                f"Total cap committed vs. predicted market value by role</div>",
+                unsafe_allow_html=True,
+            )
+            fig_spend = go.Figure()
+            fig_spend.add_bar(
+                name="Cap Committed",
+                x=cluster_spend.index, y=cluster_spend["cap_total"],
+                marker_color=T_SECOND, opacity=0.85,
+                text=cluster_spend["cap_total"].apply(fmt_m),
+                textposition="outside", textfont=dict(size=10, color=T_SECOND),
+            )
+            fig_spend.add_bar(
+                name="Predicted Value",
+                x=cluster_spend.index, y=cluster_spend["pred_total"],
+                marker_color=T_PRIMARY, opacity=0.85,
+                text=cluster_spend["pred_total"].apply(fmt_m),
+                textposition="outside", textfont=dict(size=10, color=T_PRIMARY),
+            )
+            fig_spend.update_layout(
+                barmode="group",
+                paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+                font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+                xaxis=dict(tickangle=-20, gridcolor=_T["grid_alt"]),
+                yaxis=dict(tickformat="$,.0f", title="", gridcolor=_T["grid_alt"], zeroline=False),
+                showlegend=True,
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
+                            font=dict(size=11)),
+                height=380,
+                margin=dict(l=10, r=10, t=50, b=10),
+            )
+            st.plotly_chart(fig_spend, use_container_width=True)
+
     # ── Cap Hit vs Predicted Value chart ─────────────────────────────────────
     ufa_key = f"team_{team_code}_show_ufa"
     if ufa_key not in st.session_state:
@@ -1603,7 +1856,12 @@ def tab_team(df: pd.DataFrame, team_code: str):
             ufa_players["cap_hit"] = 0
             chart_data = pd.concat([team, ufa_players], ignore_index=True)
 
-    sorted_data = chart_data.sort_values("cap_hit", ascending=False)
+    # Sort by cluster group, then by cap_hit within each group
+    _cluster_rank = {c: i for i, c in enumerate(CLUSTER_ORDER)}
+    chart_data["_cl_rank"] = chart_data["cluster_label"].map(_cluster_rank).fillna(99)
+    sorted_data = chart_data.sort_values(["_cl_rank", "cap_hit"], ascending=[True, False])
+    sorted_data = sorted_data.drop(columns=["_cl_rank"])
+
     fig = go.Figure()
     fig.add_bar(
         name="Cap Hit",
@@ -1623,7 +1881,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
         font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
         xaxis=dict(tickangle=-40, gridcolor=_T["grid_alt"]),
         yaxis=dict(tickformat="$,.0f", title="", gridcolor=_T["grid_alt"], zeroline=False),
-        title=dict(text="Cap Hit vs. Predicted Market Value",
+        title=dict(text="Cap Hit vs. Predicted Market Value (grouped by role)",
                    font=dict(color=T_PRIMARY, size=16)),
         showlegend=False,
         height=420,
@@ -2142,28 +2400,8 @@ def tab_kings(df: pd.DataFrame):
 
 
 # ── Tab 4: Player Search ───────────────────────────────────────────────────────
-def _similar_players(player: pd.Series, df: pd.DataFrame, n: int = 3) -> pd.DataFrame:
-    """Return n most similar players by position, age, and predicted value."""
-    pid = player.get("player_id")
-    pos = player.get("pos", "C")
-    age = player.get("age", 28) or 28
-    pv  = player.get("predicted_value", 0) or 0
-
-    similar = df[
-        (df.get("player_id", df.index) != pid) &
-        (df["pos"] == pos) &
-        (df["age"].between(age - 4, age + 4))
-    ].copy()
-
-    if len(similar) < n:
-        similar = df[df.get("player_id", df.index) != pid].copy()
-
-    similar["_sim_score"] = (similar["predicted_value"] - pv).abs()
-    return similar.nsmallest(n, "_sim_score").drop(columns=["_sim_score"])
-
-
 def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
-                 col_prefix: str = ""):
+                 comp_pool: pd.DataFrame = None, col_prefix: str = ""):
     name   = player["name"]
     team   = player.get("team",   "N/A")
     pos    = player.get("pos",    "N/A")
@@ -2355,13 +2593,22 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     )
     st.markdown("")
 
-    # Percentile bars
-    st.markdown("**Stat Percentiles (league-wide)**")
+    # Percentile bars with cluster toggle
+    _pct_mode = st.radio("Compare against", ["All Players", "Same Cluster"],
+                         horizontal=True, key=f"pct_mode_{col_prefix}")
+    if _pct_mode == "Same Cluster":
+        pct_pool = df[df["cluster_label"] == cluster]
+        _pct_label = f"Stat Percentiles (within {cluster})"
+    else:
+        pct_pool = df
+        _pct_label = "Stat Percentiles (league-wide)"
+    st.markdown(f"**{_pct_label}**")
+
     pct_data = []
     for col, label in PERCENTILE_STATS:
-        if col in df.columns and col in player.index and pd.notna(player.get(col)):
+        if col in pct_pool.columns and col in player.index and pd.notna(player.get(col)):
             val = player[col]
-            pct = pct_rank(df[col], val)
+            pct = pct_rank(pct_pool[col], val)
             pct_data.append({
                 "Stat": label,
                 "Percentile": pct,
@@ -2387,248 +2634,273 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
         st.plotly_chart(fig_pct, use_container_width=True)
 
-    # Value driver breakdown
-    if (not shap_vals.empty and "name" in shap_vals.columns
-            and name in shap_vals["name"].values):
-        row_shap     = shap_vals[shap_vals["name"] == name].iloc[0].drop("name")
-        vals_dollars = row_shap.astype(float) * CAP_CEILING
-        base         = float(df["predicted_value"].mean())
+    # ── A. Cluster Placement ──────────────────────────────────────────────────
+    st.markdown(
+        f"<div style='margin:32px 0 4px 0;font-family:\"Instrument Serif\",serif;"
+        f"font-size:2rem;font-weight:400;color:{_T['page_text']};'>"
+        f"How {name}'s value is calculated</div>"
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;margin-bottom:20px;"
+        f"font-family:\"DM Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
+        f"Cluster placement → within-cluster scoring → 5 closest comps → weighted value</div>",
+        unsafe_allow_html=True,
+    )
 
-        pos_factors = vals_dollars[vals_dollars > 0].nlargest(5)
-        neg_factors = vals_dollars[vals_dollars < 0].nsmallest(5)
-        max_abs     = max(
-            pos_factors.abs().max() if not pos_factors.empty else 0,
-            neg_factors.abs().max() if not neg_factors.empty else 0,
+    _cbg = _T["card_bg"]; _cbd = _T["card_border"]; _csub2 = _T["card_subtext"]; _ctxt2 = _T["card_text"]
+    _cl_color = CLUSTER_COLORS.get(cluster, "#888")
+
+    st.markdown(
+        f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
+        f"color:{_cl_color};margin-bottom:10px;"
+        f"border-left:3px solid {_cl_color};padding-left:10px;'>"
+        f"Step 1 — Cluster: {cluster}</div>",
+        unsafe_allow_html=True,
+    )
+
+    # Cluster feature comparison bars
+    cluster_features = [
+        ("toi_per_g", "TOI / Game"),
+        ("pp_pts", "PP Points"),
+        ("plus_minus", "Plus/Minus"),
+    ]
+    if player.get("pos") == "C":
+        cluster_features.append(("faceoff_pct", "Faceoff %"))
+
+    cluster_mates = df[df["cluster_label"] == cluster]
+    cf_data = []
+    for feat, label in cluster_features:
+        p_val = float(player.get(feat) or 0)
+        c_avg = float(cluster_mates[feat].mean()) if feat in cluster_mates.columns else 0
+        cf_data.append({"Feature": label, "Value": p_val, "Type": name})
+        cf_data.append({"Feature": label, "Value": c_avg, "Type": f"{cluster} Avg"})
+
+    if cf_data:
+        cf_df = pd.DataFrame(cf_data)
+        fig_cf = px.bar(
+            cf_df, x="Value", y="Feature", color="Type", barmode="group",
+            orientation="h", height=max(180, len(cluster_features) * 55),
+            color_discrete_map={name: _cl_color, f"{cluster} Avg": _T.get("grid", "#333")},
         )
+        fig_cf.update_layout(
+            paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            showlegend=True, legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
+            xaxis=dict(gridcolor=_T["grid"], title=""),
+            yaxis=dict(title=""),
+            margin=dict(l=0, r=10, t=10, b=10),
+        )
+        st.plotly_chart(fig_cf, use_container_width=True)
 
+    # ── B. Performance Within Cluster ─────────────────────────────────────────
+    st.markdown(
+        f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
+        f"color:{_cl_color};margin-bottom:10px;margin-top:20px;"
+        f"border-left:3px solid {_cl_color};padding-left:10px;'>"
+        f"Step 2 — Performance Score: {perf_str}</div>",
+        unsafe_allow_html=True,
+    )
+
+    if not cluster_mates.empty and "performance_score" in cluster_mates.columns:
+        cm_scores = cluster_mates["performance_score"].dropna()
+        p_score = float(perf_raw) if pd.notna(perf_raw) else 0
+        cm_rank = int((cm_scores >= p_score).sum())
+        cm_total = len(cm_scores)
+
+        # Strip plot: all cluster-mates as dots, this player highlighted
+        fig_strip = go.Figure()
+        fig_strip.add_trace(go.Scatter(
+            x=cm_scores, y=[""] * len(cm_scores),
+            mode="markers",
+            marker=dict(size=8, color=_T.get("grid", "#555"), opacity=0.4),
+            name=f"{cluster} players",
+            hovertext=cluster_mates.loc[cm_scores.index, "name"],
+            hovertemplate="%{hovertext}: %{x:.1f}<extra></extra>",
+        ))
+        fig_strip.add_trace(go.Scatter(
+            x=[p_score], y=[""],
+            mode="markers",
+            marker=dict(size=16, color=_cl_color, symbol="diamond",
+                        line=dict(width=2, color="#fff")),
+            name=name,
+            hovertemplate=f"{name}: {p_score:+.1f}<extra></extra>",
+        ))
+        fig_strip.update_layout(
+            paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            showlegend=True, legend=dict(orientation="h", yanchor="bottom", y=1.05, xanchor="left", x=0),
+            xaxis=dict(title="Performance Score", range=[-110, 110],
+                       gridcolor=_T["grid"], zeroline=True,
+                       zerolinecolor=_T["zero"], zerolinewidth=2),
+            yaxis=dict(visible=False),
+            height=140, margin=dict(l=0, r=10, t=10, b=30),
+        )
+        st.plotly_chart(fig_strip, use_container_width=True)
         st.markdown(
-            f"<div style='margin:32px 0 4px 0;font-family:\"Instrument Serif\",serif;"
-            f"font-size:2rem;font-weight:400;color:{_T['page_text']};'>"
-            f"What drives {name}'s value?</div>"
-            f"<div style='color:{_T['card_subtext']};font-size:.72rem;margin-bottom:20px;"
-            f"font-family:\"DM Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
-            f"Starting from league average — factors pushing value up or down</div>",
+            f"<div style='color:{_csub2};font-size:.75rem;font-family:\"DM Mono\",monospace;"
+            f"text-align:center;margin-top:-8px;'>"
+            f"Ranked <strong style='color:{_ctxt2};'>#{cm_rank}</strong> of {cm_total} "
+            f"in the {cluster} cluster</div>",
             unsafe_allow_html=True,
         )
 
-        # Section 1 — league average
-        _vdbg = _T["card_bg"]; _vdbd = _T["card_border"]; _vdsub = _T["card_subtext"]; _vdtxt = _T["card_text"]
-        st.markdown(
-            f"<div style='background:{_vdbg};border:1px solid {_vdbd};"
-            f"padding:10px 16px;margin-bottom:18px;display:flex;align-items:center;"
-            f"justify-content:space-between;'>"
-            f"<span style='font-size:.7rem;color:{_vdsub};font-family:\"DM Sans\",sans-serif;"
-            f"letter-spacing:.12em;text-transform:uppercase;'>League Average</span>"
-            f"<strong style='color:{_vdtxt};font-family:\"DM Mono\",monospace;"
-            f"font-size:.95rem;'>${base/1e6:.2f}M</strong></div>",
-            unsafe_allow_html=True,
-        )
+    # ── C. 5 Closest Comps ────────────────────────────────────────────────────
+    st.markdown(
+        f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
+        f"color:{_cl_color};margin-bottom:10px;margin-top:24px;"
+        f"border-left:3px solid {_cl_color};padding-left:10px;'>"
+        f"Step 3 — 5 Closest Comps</div>",
+        unsafe_allow_html=True,
+    )
 
-        # Section 2 — side-by-side factors with CSS hover tooltips
-        st.markdown(f"""
-<style>
-.vd-row{{position:relative;margin:5px 0;cursor:default;}}
-.vd-tip{{
-  visibility:hidden;opacity:0;
-  background:{_vdbg};color:{_vdtxt};
-  border:1px solid {_vdbd};border-radius:0;
-  padding:8px 12px;font-size:11px;line-height:1.6;
-  position:absolute;z-index:9999;
-  bottom:115%;left:0;
-  min-width:240px;max-width:340px;
-  white-space:normal;pointer-events:none;
-  transition:opacity .12s ease;
-  font-family:'DM Sans',sans-serif;
-}}
-.vd-row:hover .vd-tip{{visibility:visible;opacity:1;}}
-</style>
-""", unsafe_allow_html=True)
+    comps = _get_player_comps(player, comp_pool) if comp_pool is not None else pd.DataFrame()
+    if not comps.empty:
+        # Comp cards
+        n_comps = min(5, len(comps))
+        comp_cols = st.columns(n_comps)
+        for ci, (_, comp) in enumerate(comps.head(n_comps).iterrows()):
+            c_pid  = comp.get("player_id")
+            c_name = comp.get("name", "?")
+            c_team = comp.get("team", "?")
+            c_pos  = comp.get("pos", "?")
+            c_age  = comp.get("age")
+            c_ch   = comp.get("cap_hit")
+            c_wt   = comp.get("_weight", 0)
+            c_same = bool(comp.get("_same", 0))
+            c_cl   = comp.get("cluster_label", "")
 
-        def _factor_row(lbl: str, val: float, max_v: float, positive: bool, tip: str) -> str:
-            bar_pct  = int(abs(val) / max_v * 100) if max_v > 0 else 0
-            bar_pct  = max(bar_pct, 3)
-            color    = _T.get("positive", "#2A7A4B") if positive else _T.get("negative", "#C0392B")
-            sign_str = f"+${val/1e6:.2f}M" if positive else f"-${abs(val)/1e6:.2f}M"
-            safe_tip = tip.replace('"', "&quot;").replace("<br>", " ")
-            return (
-                f"<div class='vd-row'>"
-                f"<div class='vd-tip'><strong>{lbl}</strong><br>{safe_tip}</div>"
-                f"<div style='display:flex;justify-content:space-between;"
-                f"align-items:center;margin-bottom:3px;'>"
-                f"<span style='font-size:12px;color:{_T['card_text']};'>{lbl}</span>"
-                f"<span style='font-size:12px;color:{color};font-weight:600;'>{sign_str}</span>"
-                f"</div>"
-                f"<div style='height:12px;width:{bar_pct}%;background:{color};"
-                f"border-radius:0;opacity:0.85;'></div>"
-                f"</div>"
-            )
-
-        col_up, col_dn = st.columns(2)
-
-        with col_up:
-            st.markdown(
-                f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
-                f"color:{_T['positive']};margin-bottom:10px;"
-                f"border-left:3px solid {_T['positive']};padding-left:10px;'>"
-                "Pushing Value Up</div>",
-                unsafe_allow_html=True,
-            )
-            if pos_factors.empty:
-                st.markdown("<span style='color:#888888;font-size:12px;font-family:\"DM Sans\",sans-serif;'>None</span>",
-                            unsafe_allow_html=True)
-            else:
-                rows = "".join(
-                    _factor_row(_label(f), v, max_abs, True,
-                                _driver_tooltip(f, player, name, True))
-                    for f, v in pos_factors.items()
-                )
-                st.markdown(
-                    f"<div style='background:{_vdbg};border-radius:0;border:1px solid {_vdbd};"
-                    f"padding:10px 12px;'>{rows}</div>",
-                    unsafe_allow_html=True,
-                )
-
-        with col_dn:
-            st.markdown(
-                f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
-                f"color:{_T['negative']};margin-bottom:10px;"
-                f"border-left:3px solid {_T['negative']};padding-left:10px;'>"
-                "Pushing Value Down</div>",
-                unsafe_allow_html=True,
-            )
-            if neg_factors.empty:
-                st.markdown("<span style='color:#888888;font-size:12px;font-family:\"DM Sans\",sans-serif;'>None</span>",
-                            unsafe_allow_html=True)
-            else:
-                rows = "".join(
-                    _factor_row(_label(f), v, max_abs, False,
-                                _driver_tooltip(f, player, name, False))
-                    for f, v in neg_factors.items()
-                )
-                st.markdown(
-                    f"<div style='background:{_vdbg};border-radius:0;border:1px solid {_vdbd};"
-                    f"padding:10px 12px;'>{rows}</div>",
-                    unsafe_allow_html=True,
-                )
-
-        # Section 3 — result
-        pv_val   = pv or base
-        pv_color = _T.get("positive", "#2A7A4B") if (delta or 0) >= 0 else _T.get("negative", "#C0392B")
-        cap_str  = f"${ch/1e6:.2f}M" if ch else "—"
-        if delta is not None:
-            delta_str = f"+${delta/1e6:.2f}M" if delta >= 0 else f"-${abs(delta)/1e6:.2f}M"
-        else:
-            delta_str = "—"
-        st.markdown(
-            f"<div style='background:#1A1A2E;padding:20px 24px;margin-top:20px;width:100%;'>"
-            f"<div style='font-size:.65rem;color:#888888;font-family:\"DM Sans\",sans-serif;"
-            f"letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px;'>"
-            f"Estimated Market Value</div>"
-            f"<div style='font-size:2.2rem;font-weight:400;color:#FFFFFF;"
-            f"font-family:\"Instrument Serif\",serif;margin-bottom:10px;'>"
-            f"${pv_val/1e6:.2f}M</div>"
-            f"<div style='font-size:.8rem;color:#888888;font-family:\"DM Mono\",monospace;'>"
-            f"Cap Hit: <span style='color:#F5F5F2;'>{cap_str}</span>"
-            f"&nbsp;&nbsp;·&nbsp;&nbsp;"
-            f"Delta: <span style='color:{pv_color};font-weight:600;'>{delta_str}</span>"
-            f"</div></div>",
-            unsafe_allow_html=True,
-        )
-
-    # Similar players
-    st.markdown("---")
-    st.markdown("**Similar Players**")
-    sim = _similar_players(player, df, n=3)
-    if not sim.empty:
-        sim_cols = st.columns(len(sim))
-        for col_i, (_, sp) in enumerate(sim.iterrows()):
-            sp_pid  = sp.get("player_id")
-            sp_name = sp.get("name", "?")
-            sp_team = sp.get("team", "?")
-            sp_pos  = sp.get("pos", "?")
-            sp_age  = sp.get("age")
-            sp_ch   = sp.get("cap_hit")
-            sp_pv   = sp.get("predicted_value")
-            sp_dlt  = sp.get("value_delta")
-
-            sp_hs = ""
-            if sp_pid and pd.notna(sp_pid):
-                sp_hs_url = headshot_url(sp_pid, sp_team)
-                sp_hs = (
-                    f"<img src='{sp_hs_url}' width='56' height='56' "
+            c_hs = ""
+            if c_pid and pd.notna(c_pid):
+                c_hs_url = headshot_url(c_pid, c_team)
+                c_hs = (
+                    f"<img src='{c_hs_url}' width='48' height='48' "
                     f"style='object-fit:cover;display:block;margin:0 auto;' "
                     f"onerror=\"this.style.display='none'\">"
                 )
-            clr = _T.get("positive", "#2A7A4B") if (sp_dlt or 0) >= 0 else _T.get("negative", "#C0392B")
-            _scbg = _T["card_bg"]; _scbd = _T["card_border"]
-            _sctxt = _T["card_text"]; _scsub = _T["card_subtext"]
-            sim_cols[col_i].markdown(
-                f"<div style='background:{_scbg};padding:14px 10px;"
-                f"border:1px solid {_scbd};border-top:3px solid {clr};text-align:center;'>"
-                f"  {sp_hs}"
-                f"  <div style='font-weight:400;color:{_sctxt};margin-top:8px;"
-                f"font-size:.95rem;font-family:\"Instrument Serif\",serif;'>{sp_name}</div>"
-                f"  <div style='color:{_scsub};font-size:.7rem;margin:3px 0;"
-                f"font-family:\"DM Sans\",sans-serif;letter-spacing:.06em;text-transform:uppercase;'>"
-                f"    {sp_team} · {sp_pos}"
-                f"    {f'· {sp_age:.0f}' if pd.notna(sp_age) else ''}"
+
+            same_badge = (
+                f"<div style='font-size:.55rem;color:{_cl_color};font-family:\"DM Sans\",sans-serif;"
+                f"letter-spacing:.1em;text-transform:uppercase;margin-top:4px;'>SAME CLUSTER</div>"
+                if c_same else
+                f"<div style='font-size:.55rem;color:{_csub2};font-family:\"DM Sans\",sans-serif;"
+                f"letter-spacing:.1em;text-transform:uppercase;margin-top:4px;'>{c_cl}</div>"
+            )
+            ch_str = f"${c_ch/1e6:.2f}M" if c_ch and pd.notna(c_ch) else "—"
+            wt_pct = f"{c_wt:.2f}"
+            age_s = f"{c_age:.0f}" if pd.notna(c_age) else "?"
+
+            comp_cols[ci].markdown(
+                f"<div style='background:{_cbg};padding:12px 8px;"
+                f"border:1px solid {_cbd};text-align:center;"
+                f"border-left:3px solid {CLUSTER_COLORS.get(c_cl, _cbd)};'>"
+                f"  {c_hs}"
+                f"  <div style='font-weight:400;color:{_ctxt2};margin-top:6px;"
+                f"font-size:.85rem;font-family:\"Instrument Serif\",serif;"
+                f"white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{c_name}</div>"
+                f"  <div style='color:{_csub2};font-size:.65rem;margin:2px 0;"
+                f"font-family:\"DM Sans\",sans-serif;letter-spacing:.06em;'>"
+                f"    {c_team} · {c_pos} · {age_s}"
                 f"  </div>"
-                f"  <div style='margin-top:8px;font-size:.8rem;"
-                f"font-family:\"DM Mono\",monospace;color:{_scsub};'>"
-                f"    Pred: <span style='color:{_sctxt};'>{fmt_m(sp_pv)}</span>"
-                f"  </div>"
-                f"  <div style='color:{clr};font-size:.85rem;"
-                f"font-family:\"DM Mono\",monospace;margin-top:3px;'>"
-                f"    {fmt_delta(sp_dlt)}"
-                f"  </div>"
+                f"  {same_badge}"
+                f"  <div style='margin-top:6px;font-size:.82rem;"
+                f"font-family:\"DM Mono\",monospace;color:{_ctxt2};'>{ch_str}</div>"
+                f"  <div style='color:{_csub2};font-size:.6rem;"
+                f"font-family:\"DM Mono\",monospace;margin-top:2px;'>wt: {wt_pct}</div>"
                 f"</div>",
                 unsafe_allow_html=True,
             )
+
+        # Comp AAV bar chart with weighted average line
+        comp_chart = comps.head(n_comps).copy()
+        comp_chart["cap_hit_m"] = pd.to_numeric(comp_chart["cap_hit"], errors="coerce") / 1e6
+        comp_chart["label"] = comp_chart["name"].str.split().str[-1]  # last name
+        weighted_avg = pv / 1e6 if pv else 0
+
+        fig_comps = px.bar(
+            comp_chart, x="cap_hit_m", y="label", orientation="h",
+            color="cluster_label", color_discrete_map=CLUSTER_COLORS,
+            labels={"cap_hit_m": "Cap Hit ($M)", "label": ""},
+            height=max(180, n_comps * 38),
+        )
+        fig_comps.add_vline(
+            x=weighted_avg, line_dash="dash", line_color="#fff", line_width=2,
+            annotation_text=f"Predicted: ${weighted_avg:.2f}M",
+            annotation_position="top right",
+            annotation_font=dict(color=_T["plot_font"], size=12),
+        )
+        fig_comps.update_layout(
+            paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            showlegend=False,
+            xaxis=dict(title="Cap Hit ($M)", gridcolor=_T["grid"], tickprefix="$"),
+            yaxis=dict(title=""),
+            margin=dict(l=0, r=10, t=30, b=10),
+        )
+        st.plotly_chart(fig_comps, use_container_width=True)
+        st.caption("Dashed line = weighted average AAV of comps = predicted market value.")
     else:
-        st.caption("No similar players found.")
+        st.caption("No comparable players found (player may lack performance score data).")
 
-    # How is this value calculated?
-    with st.expander("How is this value calculated?"):
-        st.markdown(f"""
-**Model:** Multi-layer Comps Model trained on {int(df['has_contract_data'].fillna(False).sum())} NHL players
-with known contracts. XGBoost runs as a validation benchmark (CV R² ≈ 0.83, RMSE ≈ $1.2M).
+    # Estimated Market Value result box
+    pv_val   = pv or 0
+    pv_color = _T.get("positive", "#2A7A4B") if (delta or 0) >= 0 else _T.get("negative", "#C0392B")
+    cap_str  = f"${ch/1e6:.2f}M" if ch else "—"
+    if delta is not None:
+        delta_str = f"+${delta/1e6:.2f}M" if delta >= 0 else f"-${abs(delta)/1e6:.2f}M"
+    else:
+        delta_str = "—"
+    st.markdown(
+        f"<div style='background:#1A1A2E;padding:20px 24px;margin-top:20px;width:100%;'>"
+        f"<div style='font-size:.65rem;color:#888888;font-family:\"DM Sans\",sans-serif;"
+        f"letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px;'>"
+        f"Estimated Market Value</div>"
+        f"<div style='font-size:2.2rem;font-weight:400;color:#FFFFFF;"
+        f"font-family:\"Instrument Serif\",serif;margin-bottom:10px;'>"
+        f"${pv_val/1e6:.2f}M</div>"
+        f"<div style='font-size:.8rem;color:#888888;font-family:\"DM Mono\",monospace;'>"
+        f"Cap Hit: <span style='color:#F5F5F2;'>{cap_str}</span>"
+        f"&nbsp;&nbsp;·&nbsp;&nbsp;"
+        f"Delta: <span style='color:{pv_color};font-weight:600;'>{delta_str}</span>"
+        f"</div></div>",
+        unsafe_allow_html=True,
+    )
 
-**How it works — 5 layers:**
-1. **Data ingestion** — Live stats from NHL API + contract data from PuckPedia, normalized to 82-game pace
-2. **K-means clustering** (k=7) groups players by deployment profile (TOI, PP pts, ±, faceoff%, position)
-   → *Elite F, Top-Line C/F, Top-Six F, PP Specialist, Checking C, Bottom-Six F, Top-Pair D, Bottom-Pair D, 3rd-Pair D*
-3. **Performance score** (−100 → +100) ranks each player within their cluster using position-specific stats
-4. **Comps engine** finds the 5 nearest comparable players by a weighted distance metric:
-   - Points-per-60 (45%) + Performance score (30%) + Age (25%)
-   - UFA contracts weighted 1.5× (freely negotiated = truer market signal)
-   - Same-cluster comps prioritized, cross-cluster used to fill gaps
-5. **Predicted value** = weighted average AAV of the 5 closest comps (weight = 1 / distance)
+    # ── Demoted: XGBoost SHAP breakdown ───────────────────────────────────────
+    if (not shap_vals.empty and "name" in shap_vals.columns
+            and name in shap_vals["name"].values):
+        with st.expander("XGBoost Benchmark — SHAP Analysis", expanded=False):
+            st.caption("These SHAP values are from the XGBoost validation model, not the primary comps model. Shown for reference.")
+            row_shap     = shap_vals[shap_vals["name"] == name].iloc[0].drop("name")
+            vals_dollars = row_shap.astype(float) * CAP_CEILING
+            pos_factors = vals_dollars[vals_dollars > 0].nlargest(5)
+            neg_factors = vals_dollars[vals_dollars < 0].nsmallest(5)
+            all_factors = pd.concat([neg_factors, pos_factors]).sort_values()
+            if not all_factors.empty:
+                sf_df = pd.DataFrame({
+                    "Feature": [_label(f) for f in all_factors.index],
+                    "SHAP": all_factors.values,
+                })
+                fig_shap = px.bar(
+                    sf_df, x="SHAP", y="Feature", orientation="h",
+                    color="SHAP", color_continuous_scale="RdYlGn",
+                    color_continuous_midpoint=0, height=max(250, len(sf_df) * 32),
+                )
+                fig_shap.update_layout(
+                    paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+                    font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+                    showlegend=False, coloraxis_showscale=False,
+                    xaxis=dict(title="Dollar Impact", gridcolor=_T["grid"],
+                               zeroline=True, zerolinecolor=_T["zero"]),
+                    yaxis=dict(title=""), margin=dict(l=0, r=10, t=10, b=10),
+                )
+                st.plotly_chart(fig_shap, use_container_width=True)
 
-**What goes into scoring:**
-- *Forwards (7 features)* — G/60, P/60 (current + prior), PP pts, shooting %, shots, ±
-- *Defensemen (4 features)* — TOI/game, PP pts, ±, shooting %
-- *Clustering (6 inputs)* — TOI/game, PP pts, ±, faceoff% (centers only), one-hot position
 
-**Re-sign signal** — 6-category heuristic (Must Sign, Priority RFA, Locked In, Let Walk, Buyout Candidate, Fair Deal) based on expiry status, underpaid/overpaid magnitude, and age tier.
-
-**Value Delta = Predicted Value − Actual Cap Hit**
-- **Positive** → player is worth more than paid → team surplus
-- **Negative** → player costs more than model-estimated market rate → team liability
-
-**Important caveats:**
-- Defensive metrics (shot blocking, zone starts) are partially captured through TOI and clustering but not explicitly
-- Leadership, locker-room value, and injury history are not modelled
-- ELC players (age < 25, cap hit < $1M) will almost always show a large positive delta because they are intentionally paid below market
-- Small sample sizes (e.g., rookies with < 20 GP) increase prediction uncertainty
-
-The model is retrained nightly from live NHL API stats.
-        """)
-
-
-def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame):
+def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame, full_df: pd.DataFrame):
     st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Player Search</div>", unsafe_allow_html=True)
 
-    all_names = sorted(df["name"].dropna().tolist())
+    # Build comp pool from full (unfiltered) data
+    comp_pool = _build_comp_pool(full_df)
+
+    all_names = sorted(full_df["name"].dropna().tolist())
     search1 = st.text_input(
         "Search by name (partial match)",
         placeholder="e.g. byf, kopitar, mcdavid, kempe…",
@@ -2640,7 +2912,7 @@ def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame):
         return
 
     selected1 = st.selectbox("Select player", matches1, key="sel1")
-    player1   = df[df["name"] == selected1].iloc[0]
+    player1   = full_df[full_df["name"] == selected1].iloc[0]
 
     compare = st.checkbox("Compare with another player")
     if compare:
@@ -2648,15 +2920,15 @@ def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame):
                                   key="search2")
         matches2 = [n for n in all_names if search2.lower() in n.lower()] if search2 else all_names
         sel2     = st.selectbox("Select", matches2, key="sel2")
-        player2  = df[df["name"] == sel2].iloc[0]
+        player2  = full_df[full_df["name"] == sel2].iloc[0]
 
         col_a, col_b = st.columns(2)
         with col_a:
-            _player_card(player1, df, shap_vals, "p1")
+            _player_card(player1, full_df, shap_vals, comp_pool, "p1")
         with col_b:
-            _player_card(player2, df, shap_vals, "p2")
+            _player_card(player2, full_df, shap_vals, comp_pool, "p2")
     else:
-        _player_card(player1, df, shap_vals)
+        _player_card(player1, full_df, shap_vals, comp_pool)
 
 
 # ── Tab 5: Model Insights ──────────────────────────────────────────────────────
@@ -2760,25 +3032,25 @@ def tab_insights(df: pd.DataFrame):
     if "cluster_label" in df.columns:
         cluster_counts = df["cluster_label"].value_counts().reset_index()
         cluster_counts.columns = ["Cluster", "Players"]
-        cluster_counts = cluster_counts.sort_values("Players", ascending=True)
+        # Sort by CLUSTER_ORDER
+        _order = {c: i for i, c in enumerate(CLUSTER_ORDER)}
+        cluster_counts["_ord"] = cluster_counts["Cluster"].map(_order).fillna(99)
+        cluster_counts = cluster_counts.sort_values("_ord", ascending=False).drop(columns=["_ord"])
 
         fig_cl = px.bar(
             cluster_counts, x="Players", y="Cluster", orientation="h",
-            color="Players", color_continuous_scale="Tealgrn",
+            color="Cluster", color_discrete_map=CLUSTER_COLORS,
             height=max(300, len(cluster_counts) * 48),
         )
         fig_cl.update_layout(
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
             font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
-            showlegend=False, coloraxis_showscale=False,
+            showlegend=False,
             xaxis=dict(title="Number of Players", gridcolor=_T["grid"]),
             yaxis=dict(title=""),
             margin=dict(l=10, r=20, t=10, b=10),
         )
-        fig_cl.update_traces(
-            text=cluster_counts["Players"].values,
-            textposition="inside", textfont_size=13,
-        )
+        fig_cl.update_traces(texttemplate="%{x}", textposition="inside", textfont_size=13)
         st.plotly_chart(fig_cl, use_container_width=True)
 
     # ── Section 3: Performance Score Distribution ─────────────────────────────
@@ -2791,19 +3063,21 @@ def tab_insights(df: pd.DataFrame):
         unsafe_allow_html=True,
     )
 
-    if "performance_score" in df.columns:
-        scores = df["performance_score"].dropna()
-        if not scores.empty:
+    if "performance_score" in df.columns and "cluster_label" in df.columns:
+        _ps_df = df[["performance_score", "cluster_label"]].dropna()
+        if not _ps_df.empty:
             fig_ps = px.histogram(
-                scores, nbins=40,
-                color_discrete_sequence=[_accent],
-                labels={"value": "Performance Score", "count": "Players"},
-                height=350,
+                _ps_df, x="performance_score", color="cluster_label",
+                color_discrete_map=CLUSTER_COLORS, nbins=40,
+                barmode="stack",
+                labels={"performance_score": "Performance Score", "cluster_label": "Cluster"},
+                height=380,
             )
             fig_ps.update_layout(
                 paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
                 font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
-                showlegend=False,
+                showlegend=True,
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0, font=dict(size=10)),
                 xaxis=dict(title="Performance Score", gridcolor=_T["grid"],
                            zeroline=True, zerolinecolor=_T["zero"], zerolinewidth=2),
                 yaxis=dict(title="Number of Players", gridcolor=_T["grid"]),
@@ -2811,7 +3085,7 @@ def tab_insights(df: pd.DataFrame):
             )
             st.plotly_chart(fig_ps, use_container_width=True)
 
-            # Summary stats row
+            scores = _ps_df["performance_score"]
             ps_c1, ps_c2, ps_c3, ps_c4 = st.columns(4)
             ps_c1.metric("Mean", f"{scores.mean():+.1f}")
             ps_c2.metric("Std Dev", f"{scores.std():.1f}")
@@ -2849,7 +3123,172 @@ def tab_insights(df: pd.DataFrame):
     )
     st.plotly_chart(fig_w, use_container_width=True)
 
-    # ── Section 5: SHAP Feature Importance (XGBoost benchmark) ────────────────
+    # ── Section 5: Cross-Cluster Value Map ───────────────────────────────────
+    st.markdown("---")
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cross-Cluster Value Map</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"margin-bottom:16px;'>Every player plotted by performance score vs cap hit, colored by cluster. "
+        f"Shows how the market prices different roles and performance levels.</div>",
+        unsafe_allow_html=True,
+    )
+
+    _map_df = df[df["cap_hit"].notna() & df["performance_score"].notna()].copy()
+    if not _map_df.empty:
+        fig_map = px.scatter(
+            _map_df, x="performance_score", y="cap_hit",
+            color="cluster_label", color_discrete_map=CLUSTER_COLORS,
+            hover_data=["name", "team", "pos", "age"],
+            labels={"performance_score": "Performance Score", "cap_hit": "Cap Hit ($)",
+                    "cluster_label": "Cluster"},
+            height=500,
+        )
+        fig_map.update_layout(
+            paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            showlegend=True,
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0, font=dict(size=10)),
+            xaxis=dict(gridcolor=_T["grid"], zeroline=True, zerolinecolor=_T["zero"]),
+            yaxis=dict(tickformat="$,.0f", gridcolor=_T["grid"]),
+            margin=dict(l=10, r=10, t=10, b=10),
+        )
+        fig_map.update_traces(marker=dict(size=7, opacity=0.75, line=dict(width=0.4, color="#000")))
+        st.plotly_chart(fig_map, use_container_width=True)
+
+    # ── Section 6: Cluster Comparison Table ───────────────────────────────────
+    st.markdown("---")
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Comparison</div>", unsafe_allow_html=True)
+
+    if "cluster_label" in df.columns:
+        _cl_rows = []
+        for cl in CLUSTER_ORDER:
+            cl_sub = df[df["cluster_label"] == cl]
+            if cl_sub.empty:
+                continue
+            _cl_rows.append({
+                "Cluster": cl,
+                "Players": len(cl_sub),
+                "Avg Age": cl_sub["age"].mean(),
+                "Avg Cap Hit": cl_sub["cap_hit"].dropna().mean(),
+                "Avg Predicted": cl_sub["predicted_value"].dropna().mean(),
+                "Avg Delta": cl_sub["value_delta"].dropna().mean(),
+                "Avg Perf Score": cl_sub["performance_score"].dropna().mean(),
+            })
+        if _cl_rows:
+            _cl_table = pd.DataFrame(_cl_rows)
+            # Build HTML table
+            _hdr_style = (f"font-family:'DM Sans',sans-serif;font-size:.65rem;letter-spacing:.1em;"
+                          f"text-transform:uppercase;color:{_T['card_subtext']};padding:8px 10px;"
+                          f"border-bottom:2px solid {_T['card_border']};text-align:right;")
+            _cell_style = (f"font-family:'DM Mono',monospace;font-size:.78rem;color:{_T['card_text']};"
+                           f"padding:8px 10px;border-bottom:1px solid {_T['card_border']};text-align:right;")
+            _name_style = (f"font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;"
+                           f"padding:8px 10px;border-bottom:1px solid {_T['card_border']};text-align:left;")
+
+            _rows_html = ""
+            for _, r in _cl_table.iterrows():
+                _cl_c = CLUSTER_COLORS.get(r["Cluster"], "#888")
+                _d_c = _T.get("positive") if r["Avg Delta"] >= 0 else _T.get("negative")
+                _rows_html += (
+                    f"<tr>"
+                    f"<td style='{_name_style}color:{_cl_c};'>{r['Cluster']}</td>"
+                    f"<td style='{_cell_style}'>{r['Players']}</td>"
+                    f"<td style='{_cell_style}'>{r['Avg Age']:.1f}</td>"
+                    f"<td style='{_cell_style}'>{fmt_m(r['Avg Cap Hit'])}</td>"
+                    f"<td style='{_cell_style}'>{fmt_m(r['Avg Predicted'])}</td>"
+                    f"<td style='{_cell_style}color:{_d_c};'>{fmt_delta(r['Avg Delta'])}</td>"
+                    f"<td style='{_cell_style}'>{r['Avg Perf Score']:+.1f}</td>"
+                    f"</tr>"
+                )
+            st.markdown(
+                f"<div style='overflow-x:auto;'>"
+                f"<table style='width:100%;border-collapse:collapse;background:{_T['card_bg']};'>"
+                f"<thead><tr>"
+                f"<th style='{_hdr_style}text-align:left;'>Cluster</th>"
+                f"<th style='{_hdr_style}'>N</th>"
+                f"<th style='{_hdr_style}'>Avg Age</th>"
+                f"<th style='{_hdr_style}'>Avg Cap</th>"
+                f"<th style='{_hdr_style}'>Avg Pred</th>"
+                f"<th style='{_hdr_style}'>Avg Delta</th>"
+                f"<th style='{_hdr_style}'>Avg Score</th>"
+                f"</tr></thead>"
+                f"<tbody>{_rows_html}</tbody>"
+                f"</table></div>",
+                unsafe_allow_html=True,
+            )
+
+    # ── Section 7: Cluster Deep-Dive ──────────────────────────────────────────
+    st.markdown("---")
+    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Deep-Dive</div>", unsafe_allow_html=True)
+
+    _dive_opts = [c for c in CLUSTER_ORDER if c in df["cluster_label"].unique()]
+    if _dive_opts:
+        _dive_sel = st.selectbox("Select a cluster to explore", _dive_opts, key="insights_cluster_dive")
+        _dive_df = df[df["cluster_label"] == _dive_sel].copy()
+        _dive_clr = CLUSTER_COLORS.get(_dive_sel, "#888")
+
+        # Summary metrics
+        dc1, dc2, dc3, dc4, dc5 = st.columns(5)
+        dc1.metric("Players", len(_dive_df))
+        _pos_bk = _dive_df["pos"].value_counts().to_dict()
+        _pos_str = ", ".join(f"{p}: {n}" for p, n in sorted(_pos_bk.items()))
+        dc2.metric("Positions", _pos_str)
+        dc3.metric("Avg Age", f"{_dive_df['age'].mean():.1f}")
+        dc4.metric("Avg Cap Hit", fmt_m(_dive_df["cap_hit"].dropna().mean()))
+        _d_avg = _dive_df["value_delta"].dropna().mean()
+        dc5.metric("Avg Delta", fmt_delta(_d_avg),
+                    delta_color="normal" if _d_avg >= 0 else "inverse")
+
+        # Scatter: performance_score vs cap_hit
+        _dive_c = _dive_df[_dive_df["cap_hit"].notna() & _dive_df["performance_score"].notna()]
+        if not _dive_c.empty:
+            _dive_c = add_delta_pct(_dive_c)
+            fig_dive = px.scatter(
+                _dive_c, x="performance_score", y="cap_hit",
+                color="value_delta", color_continuous_scale="RdYlGn",
+                color_continuous_midpoint=0,
+                hover_data=["name", "team", "pos", "age", "predicted_value"],
+                labels={"performance_score": "Performance Score", "cap_hit": "Cap Hit ($)"},
+                height=420,
+            )
+            fig_dive.update_layout(
+                paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+                font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+                showlegend=False, coloraxis_showscale=True,
+                coloraxis_colorbar=dict(title="Delta ($)", tickformat="$,.0f"),
+                xaxis=dict(gridcolor=_T["grid"], zeroline=True, zerolinecolor=_T["zero"]),
+                yaxis=dict(tickformat="$,.0f", gridcolor=_T["grid"]),
+                margin=dict(l=10, r=10, t=10, b=10),
+                title=dict(text=f"{_dive_sel} — Performance vs. Cap Hit",
+                           font=dict(family="'DM Sans', sans-serif", color=_dive_clr)),
+            )
+            fig_dive.update_traces(marker=dict(size=10, opacity=0.85, line=dict(width=0.5, color="#000")))
+            st.plotly_chart(fig_dive, use_container_width=True)
+
+        # Top underpaid/overpaid within cluster
+        _dive_ranked = _dive_df[_dive_df["value_delta"].notna()]
+        if len(_dive_ranked) >= 3:
+            _di1, _di2 = st.columns(2)
+            with _di1:
+                st.markdown(
+                    f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+                    f"letter-spacing:.12em;text-transform:uppercase;color:{_T['positive']};margin-bottom:8px;"
+                    f"border-left:2px solid {_T['positive']};padding-left:8px;'>"
+                    f"Top 3 Underpaid {_dive_sel}</div>",
+                    unsafe_allow_html=True,
+                )
+                _mini_player_cards(_dive_ranked.nlargest(3, "value_delta"))
+            with _di2:
+                st.markdown(
+                    f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+                    f"letter-spacing:.12em;text-transform:uppercase;color:{_T['negative']};margin-bottom:8px;"
+                    f"border-left:2px solid {_T['negative']};padding-left:8px;'>"
+                    f"Top 3 Overpaid {_dive_sel}</div>",
+                    unsafe_allow_html=True,
+                )
+                _mini_player_cards(_dive_ranked.nsmallest(3, "value_delta"))
+
+    # ── Section 8: SHAP Feature Importance (XGBoost benchmark) ────────────────
     st.markdown("---")
     st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>XGBoost Benchmark — SHAP Feature Importance</div>", unsafe_allow_html=True)
     st.markdown(
@@ -2993,13 +3432,14 @@ def main():
     _set_theme(_dark)
     _inject_css(_dark)
 
-    # Kick off background data refresh on every cold start (non-blocking)
-    start_background_refresh(PROCESSED_DIR)
+    # Background data refresh disabled for now — load from cached predictions only
+    # start_background_refresh(PROCESSED_DIR)
 
     # If background job just finished, trigger a rerun so UI picks up fresh mtime
-    if _refresh_status["done"]:
-        _refresh_status["done"] = False
-        st.rerun()
+    # (disabled while background refresh is paused)
+    # if _refresh_status["done"]:
+    #     _refresh_status["done"] = False
+    #     st.rerun()
 
     _divider_color = _T["card_border"]
     st.markdown(
@@ -3094,7 +3534,7 @@ def main():
         _sel_code  = _all_team_codes[_team_labels.index(_sel_label)] if _sel_label in _team_labels else "LAK"
         tab_team(df, _sel_code)
     with tab4:
-        tab_player_search(df, shap_vals)
+        tab_player_search(filtered, shap_vals, df)
     with tab5:
         tab_insights(df)
 
