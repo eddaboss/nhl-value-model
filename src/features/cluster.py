@@ -1,5 +1,5 @@
 """
-Step 1 — K-means role clustering (k=6) using deployment features.
+Step 1 — K-means role clustering (k=7) using deployment features.
 Step 2 — Performance scoring within cluster (-100 to 100).
 
 Called from build_features() to add cluster_label and performance_score
@@ -13,7 +13,7 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
 MODELS_DIR = Path(__file__).parents[2] / "models"
-N_CLUSTERS = 6
+N_CLUSTERS = 7
 
 # Performance scoring features by position group
 FWD_SCORE_FEATURES = ["g60", "p60", "p60_24", "pp_pts", "shooting_pct", "shots", "plus_minus"]
@@ -89,7 +89,8 @@ def _label_clusters(df: pd.DataFrame, cluster_ids: np.ndarray) -> dict[int, str]
     f_sorted = f_stats.sort_values("rank_score", ascending=False)
 
     # Names in order of descending offensive deployment
-    f_names = ["Top-Line C/F", "Top-Six F", "PP Specialist", "Checking C", "Bottom-Six F"]
+    # With k=7 the top F cluster is the elite/star tier; the rest follow
+    f_names = ["Elite F", "Top-Line C/F", "Top-Six F", "PP Specialist", "Checking C", "Bottom-Six F"]
     for i, c in enumerate(f_sorted.index):
         label_map[int(c)] = f_names[min(i, len(f_names) - 1)]
 
