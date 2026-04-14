@@ -32,19 +32,15 @@ def _run_pipeline_background(processed_dir: Path) -> None:
         warnings.filterwarnings("ignore")
 
         from src.data.load import load_and_merge, CAP_CEILING
-        from src.features.build import build_features, get_feature_matrix, resign_label
-        from src.models.train import load_model
+        from src.features.build import build_features, resign_label
+        from src.models.comps import run_comps_model
 
         df_raw, ctx = load_and_merge()
-        df = build_features(df_raw)
-        X, _ = get_feature_matrix(df)
-        model = load_model("xgb")
+        df = build_features(df_raw)  # also applies clustering + performance_score
 
-        df["predicted_value"] = model.predict(X) * CAP_CEILING
-        df["value_delta"] = df.apply(
-            lambda r: r["predicted_value"] - r["cap_hit"]
-            if r.get("has_contract_data") else None, axis=1
-        )
+        # Comps model — primary predictions (same as pipeline.py)
+        df, _ = run_comps_model(df)
+
         df["resign_signal"] = df.apply(resign_label, axis=1)
 
         keep = [
@@ -54,6 +50,7 @@ def _run_pipeline_background(processed_dir: Path) -> None:
             "gp", "g", "a", "p", "ppg",
             "toi_per_g", "plus_minus", "pim",
             "g60", "p60", "pp_pts", "shots", "shooting_pct",
+            "cluster_label", "performance_score",
             "resign_signal", "player_id",
             "has_contract_data", "has_prior_market_data", "is_estimated",
             "has_extension", "extension_cap_hit", "extension_start_year",
@@ -374,25 +371,37 @@ def _set_theme(dark: bool) -> None:
     global _T
     if dark:
         _T.update({
-            "page_text":   "#E8E4DC",
-            "plot_paper":  "#040404",
-            "plot_bg":     "#0d0d1a",
-            "plot_font":   "#A0A0A0",
-            "grid":        "#1e1e35",
-            "grid_alt":    "#1e1e35",
-            "zero":        "#2a2a4a",
-            "legend_bg":   "#1a1a2e",
+            "page_text":     "#E8E4DC",
+            "plot_paper":    "#040404",
+            "plot_bg":       "#0d0d1a",
+            "plot_font":     "#A0A0A0",
+            "grid":          "#1e1e35",
+            "grid_alt":      "#1e1e35",
+            "zero":          "#2a2a4a",
+            "legend_bg":     "#1a1a2e",
+            "card_bg":       "#1a1a2e",
+            "card_border":   "#252545",
+            "card_text":     "#E8E4DC",
+            "card_subtext":  "#A0A0A0",
+            "card_header":   "#141428",
+            "row_divider":   "#1e1e35",
         })
     else:
         _T.update({
-            "page_text":   "#1C1C1C",
-            "plot_paper":  "rgba(0,0,0,0)",
-            "plot_bg":     "#EDE9E0",
-            "plot_font":   "#333333",
-            "grid":        "#D8D3C8",
-            "grid_alt":    "#D8D3C8",
-            "zero":        "#AAAAAA",
-            "legend_bg":   "#1a1a2e",
+            "page_text":     "#1C1C1C",
+            "plot_paper":    "rgba(0,0,0,0)",
+            "plot_bg":       "#EDE9E0",
+            "plot_font":     "#333333",
+            "grid":          "#D8D3C8",
+            "grid_alt":      "#D8D3C8",
+            "zero":          "#AAAAAA",
+            "legend_bg":     "#1a1a2e",
+            "card_bg":       "#EDE9DF",
+            "card_border":   "#C8C3B8",
+            "card_text":     "#1a1a1a",
+            "card_subtext":  "#666666",
+            "card_header":   "#E0DBD0",
+            "row_divider":   "#D8D3C8",
         })
 
 # ── Resign signal palettes ─────────────────────────────────────────────────────
@@ -417,6 +426,62 @@ KINGS_SIGNAL_PALETTE = {
     "Let Walk":         "#8B2200",
     "Buyout Candidate": "#7B0D42",
     "UFA":              "#2A1A10",
+}
+
+TEAM_NAMES = {
+    "ANA": "Anaheim Ducks",       "BOS": "Boston Bruins",
+    "BUF": "Buffalo Sabres",      "CGY": "Calgary Flames",
+    "CAR": "Carolina Hurricanes", "CHI": "Chicago Blackhawks",
+    "COL": "Colorado Avalanche",  "CBJ": "Columbus Blue Jackets",
+    "DAL": "Dallas Stars",        "DET": "Detroit Red Wings",
+    "EDM": "Edmonton Oilers",     "FLA": "Florida Panthers",
+    "LAK": "Los Angeles Kings",   "MIN": "Minnesota Wild",
+    "MTL": "Montréal Canadiens",  "NSH": "Nashville Predators",
+    "NJD": "New Jersey Devils",   "NYI": "New York Islanders",
+    "NYR": "New York Rangers",    "OTT": "Ottawa Senators",
+    "PHI": "Philadelphia Flyers", "PIT": "Pittsburgh Penguins",
+    "SEA": "Seattle Kraken",      "SJS": "San Jose Sharks",
+    "STL": "St. Louis Blues",     "TBL": "Tampa Bay Lightning",
+    "TOR": "Toronto Maple Leafs", "UTA": "Utah Hockey Club",
+    "VAN": "Vancouver Canucks",   "VGK": "Vegas Golden Knights",
+    "WSH": "Washington Capitals", "WPG": "Winnipeg Jets",
+}
+
+# primary = main accent (borders, highlights, chart bars)
+# secondary = secondary chart bar color
+TEAM_COLORS = {
+    "ANA": {"primary": "#FC4C02", "secondary": "#A2AAAD"},
+    "BOS": {"primary": "#FCB514", "secondary": "#1a1a2e"},
+    "BUF": {"primary": "#FCB514", "secondary": "#003087"},
+    "CGY": {"primary": "#C8102E", "secondary": "#F1BE48"},
+    "CAR": {"primary": "#CC0000", "secondary": "#A4A9AD"},
+    "CHI": {"primary": "#CF0A2C", "secondary": "#FF671B"},
+    "COL": {"primary": "#6F263D", "secondary": "#236192"},
+    "CBJ": {"primary": "#CE1126", "secondary": "#002654"},
+    "DAL": {"primary": "#006847", "secondary": "#8F8F8C"},
+    "DET": {"primary": "#CE1126", "secondary": "#FFFFFF"},
+    "EDM": {"primary": "#FF4C00", "secondary": "#041E42"},
+    "FLA": {"primary": "#C8102E", "secondary": "#B9975B"},
+    "LAK": {"primary": "#C8A84B", "secondary": "#8A9499"},
+    "MIN": {"primary": "#A6192E", "secondary": "#154734"},
+    "MTL": {"primary": "#AF1E2D", "secondary": "#192168"},
+    "NSH": {"primary": "#FFB81C", "secondary": "#041E42"},
+    "NJD": {"primary": "#CE1126", "secondary": "#000000"},
+    "NYI": {"primary": "#F47D30", "secondary": "#00539B"},
+    "NYR": {"primary": "#0038A8", "secondary": "#CE1126"},
+    "OTT": {"primary": "#C52032", "secondary": "#C69214"},
+    "PHI": {"primary": "#F74902", "secondary": "#1a1a2e"},
+    "PIT": {"primary": "#FCB514", "secondary": "#1a1a2e"},
+    "SEA": {"primary": "#99D9D9", "secondary": "#001628"},
+    "SJS": {"primary": "#006D75", "secondary": "#EA7200"},
+    "STL": {"primary": "#003087", "secondary": "#FCB514"},
+    "TBL": {"primary": "#002868", "secondary": "#FFFFFF"},
+    "TOR": {"primary": "#00205B", "secondary": "#FFFFFF"},
+    "UTA": {"primary": "#6CAEDF", "secondary": "#D09C47"},
+    "VAN": {"primary": "#00843D", "secondary": "#00205B"},
+    "VGK": {"primary": "#B4975A", "secondary": "#333F42"},
+    "WSH": {"primary": "#C8102E", "secondary": "#041E42"},
+    "WPG": {"primary": "#004C97", "secondary": "#AC162C"},
 }
 
 PERCENTILE_STATS = [
@@ -513,7 +578,14 @@ _DARK_CSS  = """<style>
   .section-header { color: #E8E4DC; }
   .group-label { color: #A0A0A0; border-left-color: #C8A84B; }
   .signal-badge { color: #fff !important; }
-  [data-testid="stExpander"] { border: 1px solid #252545 !important; background-color: #1a1a2e !important; }
+  [data-testid="stExpander"],
+  [data-testid="stExpander"] > *,
+  [data-testid="stExpander"] details,
+  [data-testid="stExpander"] details > div { border: none !important; outline: none !important; box-shadow: none !important; }
+  [data-testid="stExpander"] { background-color: #1a1a2e !important; }
+  [data-testid="stExpander"] details { background-color: #1a1a2e !important; }
+  [data-testid="stExpander"] details summary { background-color: #141428 !important; color: #E8E4DC !important; border: none !important; }
+  [data-testid="stExpander"] details > div { background-color: #1a1a2e !important; }
   [data-testid="stCaptionContainer"] p { color: #A0A0A0 !important; }
   [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #E8E4DC !important; }
   input, [data-baseweb="input"] input { background: #0C0C0C !important; border-color: #1C1C1C !important; color: #E8E4DC !important; }
@@ -541,9 +613,23 @@ _DARK_CSS  = """<style>
   /* Tick bar labels */
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #A0A0A0 !important; }
-  /* Dataframe — invert iframe to match dark theme */
-  [data-testid="stDataFrameContainer"] { background: #1a1a2e !important; }
-  [data-testid="stDataFrameContainer"] > div { filter: invert(0.88) hue-rotate(180deg); }
+  /* Number input */
+  [data-testid="stNumberInput"] input {
+      background: #0C0C0C !important; color: #E8E4DC !important;
+      border-color: #2C2C2C !important; border-radius: 0 !important;
+      font-family: 'IBM Plex Mono', monospace !important;
+  }
+  [data-testid="stNumberInput"] input:focus { border-color: #C8A84B !important; box-shadow: none !important; }
+  [data-testid="stNumberInput"] button {
+      background: #141414 !important; border-color: #2C2C2C !important; color: #A0A0A0 !important;
+  }
+  [data-testid="stNumberInput"] button svg { fill: #A0A0A0 !important; }
+  [data-testid="stNumberInput"] button:hover { border-color: #C8A84B !important; color: #E8E4DC !important; }
+  [data-testid="stNumberInput"] button:hover svg { fill: #E8E4DC !important; }
+  /* Dataframe — invert to match dark theme */
+  [data-testid="stDataFrameContainer"],
+  [data-testid="stDataFrame"],
+  .stDataFrame { filter: invert(0.88) hue-rotate(180deg) !important; background: #e8e4dc !important; }
   /* Markdown container general text */
   [data-testid="stMainBlockContainer"] p,
   [data-testid="stMainBlockContainer"] li { color: #E8E4DC !important; }
@@ -624,24 +710,35 @@ _LIGHT_CSS = """<style>
   [data-baseweb="tab"] { color: #666 !important; border-right: 1px solid #D8D3C8 !important; }
   [aria-selected="true"][data-baseweb="tab"] { color: #A8861A !important; border-bottom: 2px solid #A8861A !important; }
 
-  /* ── CARDS: dark navy on cream — intentional editorial contrast ── */
-  .player-card { background: #1a1a2e; border: 1px solid #252545; border-left-color: #A8861A; }
-  .kings-card  { background: #1a1a2e; border: 1px solid #252545; border-left-color: #A8861A; }
-  .kings-card:hover { background: #1e2235; }
+  /* ── CARDS: cream on cream — same surface, subtle border ── */
+  .player-card { background: #EDE9DF; border: 1px solid #C8C3B8; border-left-color: #A8861A; }
+  .kings-card  { background: #EDE9DF; border: 1px solid #C8C3B8; border-left-color: #A8861A; }
+  .kings-card:hover { background: #E4DFD3; }
 
-  /* Text ON dark navy cards stays white */
-  .stat-label { color: #9090b0; }
-  .stat-value { color: #E8E4DC; }
-  .delta-pos  { color: #1FBFA0; }
-  .delta-neg  { color: #E84040; }
-  .pct-pos    { color: #3ED4B6; }
-  .pct-neg    { color: #EF7070; }
-  .kings-gold { color: #C8A84B; font-weight: 700; }
+  /* Text ON light cards */
+  .stat-label { color: #666; }
+  .stat-value { color: #1a1a1a; }
+  .delta-pos  { color: #0E8A5F; }
+  .delta-neg  { color: #C62828; }
+  .pct-pos    { color: #0E8A5F; }
+  .pct-neg    { color: #C62828; }
+  .kings-gold { color: #8B6914; font-weight: 700; }
 
-  /* Section headers sit on cream page — use dark text */
+  /* Section headers */
   .section-header { color: #1a1a1a; }
-  .group-label { color: #9090b0; border-left-color: #A8861A; }
+  .group-label { color: #666; border-left-color: #A8861A; }
   .signal-badge { color: #fff !important; }
+
+  /* ── Flip remaining hardcoded dark inline backgrounds to cream ── */
+  [style*="background:#1a1a2e"] { background: #EDE9DF !important; }
+  [style*="background: #1a1a2e"] { background: #EDE9DF !important; }
+  /* Text inside those containers */
+  [style*="background:#1a1a2e"] [style*="color:#E8E4DC"],
+  [style*="background:#1a1a2e"] [style*="color: #E8E4DC"] { color: #1a1a1a !important; }
+  [style*="background:#1a1a2e"] [style*="color:#A0A0A0"] { color: #666 !important; }
+  /* Borders on inline dark cards */
+  [style*="border:1px solid #252545"] { border-color: #C8C3B8 !important; }
+  [style*="border: 1px solid #252545"] { border-color: #C8C3B8 !important; }
 
   /* Expanders — light */
   [data-testid="stExpander"] { border: 1px solid #D8D3C8 !important; background-color: #F8F5EE !important; }
@@ -654,36 +751,34 @@ _LIGHT_CSS = """<style>
   [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #333 !important; }
 
   /* Inputs */
-  input, [data-baseweb="input"] input { background: #FFFFFF !important; border-color: #D8D3C8 !important; color: #1a1a1a !important; }
+  input, [data-baseweb="input"] input { background: #F4F1EC !important; border-color: #C8C3B8 !important; color: #1a1a1a !important; }
   ::-webkit-scrollbar-track { background: #F4F1EC; }
   ::-webkit-scrollbar-thumb { background: #D8D3C8; }
   hr { border-color: #E0DBD0 !important; }
 
-  /* ── CLASS OVERRIDES for dark-card classes on light page ── */
-  /* Ensure stMarkdownContainer class styles match dark-card intent */
-  [data-testid="stMarkdownContainer"] .stat-value { color: #E8E4DC !important; }
-  [data-testid="stMarkdownContainer"] .stat-label  { color: #9090b0 !important; }
-  [data-testid="stMarkdownContainer"] .delta-pos   { color: #1FBFA0 !important; }
-  [data-testid="stMarkdownContainer"] .delta-neg   { color: #E84040 !important; }
-  [data-testid="stMarkdownContainer"] .kings-gold  { color: #C8A84B !important; }
-  [data-testid="stMarkdownContainer"] .group-label { color: #9090b0 !important; }
-
-  /* ── WIDGET OVERRIDES (Streamlit base=light, just need our custom colours) ── */
+  /* ── WIDGET OVERRIDES ── */
   [data-testid="stButton"] button {
       background: #EDE9DF !important; color: #1a1a1a !important;
       border: 1px solid #C8C3B8 !important; border-radius: 0 !important;
       font-family: 'Manrope', sans-serif !important;
   }
   [data-testid="stButton"] button:hover { background: #E0DBD0 !important; border-color: #A8861A !important; }
-  [data-baseweb="select"] > div { background: #FFFFFF !important; border-color: #C8C3B8 !important; }
+  /* Selectbox */
+  [data-baseweb="select"] > div { background: #F4F1EC !important; border-color: #C8C3B8 !important; }
   [data-baseweb="select"] span { color: #1a1a1a !important; }
-  [data-baseweb="popover"] { background: #FFFFFF !important; }
-  [data-baseweb="menu"] { background: #FFFFFF !important; border: 1px solid #D8D3C8 !important; }
-  [data-baseweb="menu-item"], [role="option"] { color: #1a1a1a !important; background: #FFFFFF !important; }
-  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #F0EBE0 !important; }
-  /* Tick bar labels */
-  [data-testid="stSlider"] [data-testid="stTickBarMin"],
-  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #888 !important; }
+  [data-baseweb="popover"] { background: #F4F1EC !important; }
+  [data-baseweb="menu"] { background: #F4F1EC !important; border: 1px solid #D8D3C8 !important; }
+  [data-baseweb="menu-item"], [role="option"] { color: #1a1a1a !important; background: #F4F1EC !important; }
+  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #EDE9DF !important; }
+  /* Text inputs and number inputs */
+  input, [data-baseweb="input"] input { background: #F4F1EC !important; border-color: #C8C3B8 !important; color: #1a1a1a !important; }
+  [data-testid="stNumberInput"] input {
+      background: #F4F1EC !important; color: #1a1a1a !important;
+      border-color: #C8C3B8 !important; border-radius: 0 !important;
+      font-family: 'IBM Plex Mono', monospace !important;
+  }
+  [data-testid="stNumberInput"] input:focus { border-color: #A8861A !important; box-shadow: none !important; }
+  [data-testid="stNumberInput"] button { background: #EDE9DF !important; border-color: #C8C3B8 !important; }
   .stCaptionContainer p { color: #666 !important; }
 </style>"""
 
@@ -830,14 +925,18 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
             f"onerror=\"this.style.display='none'\">"
         )
 
+        _card_bg  = _T["card_bg"]
+        _card_bd  = _T["card_border"]
+        _card_txt = _T["card_text"]
+        _card_sub = _T["card_subtext"]
         cols[i].markdown(
-            f"<div style='background:#1a1a2e;border-radius:2px;padding:12px 8px;"
-            f"text-align:center;border:1px solid #252545;border-bottom:2px solid {clr};'>"
+            f"<div style='background:{_card_bg};border-radius:2px;padding:12px 8px;"
+            f"text-align:center;border:1px solid {_card_bd};border-bottom:2px solid {clr};'>"
             f"  {hs_html}"
-            f"  <div style='font-weight:700;color:#E8E4DC;font-size:.8rem;"
+            f"  <div style='font-weight:700;color:{_card_txt};font-size:.8rem;"
             f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
             f"    max-width:100%;font-family:\"Manrope\",sans-serif;'>{name}</div>"
-            f"  <div style='color:#A0A0A0;font-size:.85rem;margin:3px 0;"
+            f"  <div style='color:{_card_sub};font-size:.85rem;margin:3px 0;"
             f"    font-family:\"IBM Plex Mono\",monospace;letter-spacing:.04em;'>"
             f"    {team} · {pos}</div>"
             f"  <div style='color:{clr};font-size:.82rem;font-weight:700;"
@@ -938,7 +1037,11 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         import math
         age_min = math.floor(df["age"].dropna().min())
         age_max = math.ceil(df["age"].dropna().max())
-        age_r = st.slider("Age range", age_min, age_max, (age_min, age_max))
+        st.markdown("<div style='font-size:.8rem;color:#888;margin-bottom:2px;font-family:\"IBM Plex Mono\",monospace;letter-spacing:.06em;text-transform:uppercase;'>Age range</div>", unsafe_allow_html=True)
+        _ac1, _ac2 = st.columns(2)
+        age_lo = _ac1.number_input("Min age", min_value=age_min, max_value=age_max, value=age_min, step=1, label_visibility="collapsed", key="age_lo")
+        age_hi = _ac2.number_input("Max age", min_value=age_min, max_value=age_max, value=age_max, step=1, label_visibility="collapsed", key="age_hi")
+        age_r = (int(age_lo), int(age_hi))
 
         filt = df.copy()
         if pos_sel == "F (all)":
@@ -1146,7 +1249,7 @@ def tab_leaderboards(df: pd.DataFrame):
     df_ufa = df[df["cap_hit"].isna() & df["predicted_value"].notna()].copy()
 
     lc1, lc2, lc3 = st.columns([1, 1, 2])
-    n = lc1.slider("Show top N", 5, 30, 15, key="lb_n")
+    n = int(lc1.number_input("Show top N", min_value=5, max_value=30, value=15, step=1, key="lb_n"))
     sort_by = lc2.radio("Sort by", ["% Delta", "$ Delta"], horizontal=True, key="lb_sort")
     pos_opts = ["All", "C", "L", "R", "D", "F (all)"]
     pos_f = lc3.radio("Position", pos_opts, horizontal=True, key="lb_pos")
@@ -1223,31 +1326,84 @@ def tab_leaderboards(df: pd.DataFrame):
         _mini_player_cards(df_c.nsmallest(5, sort_col))
 
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
-    t1, t2 = st.columns(2)
 
-    def fmt_table(data):
-        cols = ["name", "team", "pos", "age", "cap_hit",
-                "predicted_value", "value_delta", "value_delta_pct"]
-        d = data[[c for c in cols if c in data.columns]].copy()
-        d["age"]             = d["age"].apply(lambda v: f"{v:.0f}" if pd.notna(v) else "?")
-        d["cap_hit"]         = d["cap_hit"].apply(fmt_m)
-        d["predicted_value"] = d["predicted_value"].apply(fmt_m)
-        d["value_delta"]     = d["value_delta"].apply(fmt_delta)
-        d["value_delta_pct"] = d["value_delta_pct"].apply(fmt_pct)
-        return d.rename(columns={
+    _TABLE_CSS = (
+        f"width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;"
+        f"font-size:.78rem;background:{_T['card_bg']};"
+    )
+    _TH_CSS = (
+        f"padding:7px 10px;text-align:left;color:{_T['card_subtext']};font-weight:600;"
+        f"letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid {_T['card_border']};"
+        f"background:{_T['card_header']};"
+    )
+    _TD_CSS = f"padding:6px 10px;color:{_T['card_text']};border-bottom:1px solid {_T['row_divider']};"
+
+    def _html_table(data, delta_col="value_delta"):
+        cols_order = ["name", "team", "pos", "age", "cap_hit",
+                      "predicted_value", "value_delta", "value_delta_pct"]
+        col_labels = {
             "name": "Player", "team": "Team", "pos": "Pos", "age": "Age",
             "cap_hit": "Cap Hit", "predicted_value": "Pred. Value",
             "value_delta": "$ Delta", "value_delta_pct": "% Delta",
-        })
+        }
+        cols = [c for c in cols_order if c in data.columns]
+        rows_html = ""
+        for _, row in data.iterrows():
+            delta_v = row.get(delta_col, 0) or 0
+            _rbg = _T["card_bg"]
+            _ctxt = _T["card_text"]
+            row_bg  = f"background:{_rbg};"
+            cells = ""
+            for c in cols:
+                v = row.get(c)
+                if c == "age":
+                    txt = f"{v:.0f}" if pd.notna(v) else "?"
+                elif c == "cap_hit":
+                    txt = fmt_m(v)
+                elif c == "predicted_value":
+                    txt = fmt_m(v)
+                elif c == "value_delta":
+                    color = "#1FBFA0" if (v or 0) >= 0 else "#E84040"
+                    txt = f"<span style='color:{color};font-weight:700;'>{fmt_delta(v)}</span>"
+                elif c == "value_delta_pct":
+                    color = "#1FBFA0" if (v or 0) >= 0 else "#E84040"
+                    txt = f"<span style='color:{color};'>{fmt_pct(v)}</span>"
+                elif c == "name":
+                    txt = f"<span style='color:{_ctxt};font-weight:700;'>{v}</span>"
+                elif c == "team":
+                    txt = f"<span style='color:#C8A84B;'>{v}</span>"
+                else:
+                    txt = str(v) if pd.notna(v) else "?"
+                cells += f"<td style='{_TD_CSS}'>{txt}</td>"
+            rows_html += f"<tr style='{row_bg}'>{cells}</tr>"
+        header = "".join(f"<th style='{_TH_CSS}'>{col_labels.get(c, c)}</th>" for c in cols)
+        _cbg = _T["card_bg"]; _cbd = _T["card_border"]
+        return (
+            f"<div style='background:{_cbg};border:1px solid {_cbd};border-radius:2px;"
+            f"overflow:hidden;margin-bottom:4px;'>"
+            f"<table style='{_TABLE_CSS}'>"
+            f"<thead><tr>{header}</tr></thead>"
+            f"<tbody>{rows_html}</tbody>"
+            f"</table></div>"
+        )
 
+    t1, t2 = st.columns(2)
     with t1:
-        st.caption(f"**Hidden Gems** — top {n} by {sort_by}")
-        st.dataframe(fmt_table(df_c.nlargest(n, sort_col)),
-                     use_container_width=True, hide_index=True)
+        st.markdown(
+            "<div style='color:#1FBFA0;font-size:.78rem;font-weight:700;letter-spacing:.1em;"
+            "text-transform:uppercase;font-family:\"IBM Plex Mono\",monospace;margin-bottom:6px;'>"
+            "Hidden Gems</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(_html_table(df_c.nlargest(n, sort_col)), unsafe_allow_html=True)
     with t2:
-        st.caption(f"**Overpaid** — bottom {n} by {sort_by}")
-        st.dataframe(fmt_table(df_c.nsmallest(n, sort_col)),
-                     use_container_width=True, hide_index=True)
+        st.markdown(
+            "<div style='color:#E84040;font-size:.78rem;font-weight:700;letter-spacing:.1em;"
+            "text-transform:uppercase;font-family:\"IBM Plex Mono\",monospace;margin-bottom:6px;'>"
+            "Overpaid</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(_html_table(df_c.nsmallest(n, sort_col)), unsafe_allow_html=True)
 
     # ── UFA / Unsigned players ────────────────────────────────────────────────
     if not df_ufa.empty:
@@ -1270,37 +1426,361 @@ def tab_leaderboards(df: pd.DataFrame):
             )
             top_ufa = ufa_filtered.nlargest(min(n, len(ufa_filtered)), "predicted_value")
             ufa_disp = top_ufa[["name", "team", "pos", "age", "predicted_value"]].copy()
-            ufa_disp["age"] = ufa_disp["age"].apply(
-                lambda v: f"{v:.0f}" if pd.notna(v) else "?"
-            )
-            ufa_disp["predicted_value"] = ufa_disp["predicted_value"].apply(fmt_m)
-            ufa_disp = ufa_disp.rename(columns={
-                "name": "Player", "team": "Team", "pos": "Pos", "age": "Age",
-                "predicted_value": "Predicted Value",
-            })
-            st.dataframe(ufa_disp, use_container_width=True, hide_index=True)
+
+            def _ufa_html_table(data):
+                cols = ["name", "team", "pos", "age", "predicted_value"]
+                col_labels = {"name": "Player", "team": "Team", "pos": "Pos",
+                              "age": "Age", "predicted_value": "Predicted Value"}
+                rows_html = ""
+                for _, row in data.iterrows():
+                    cells = ""
+                    for c in cols:
+                        v = row.get(c)
+                        if c == "age":
+                            txt = f"{v:.0f}" if pd.notna(v) else "?"
+                        elif c == "predicted_value":
+                            txt = f"<span style='color:#C8A84B;font-weight:700;'>{fmt_m(v)}</span>"
+                        elif c == "name":
+                            _ct = _T["card_text"]
+                            txt = f"<span style='color:{_ct};font-weight:700;'>{v}</span>"
+                        elif c == "team":
+                            txt = f"<span style='color:#C8A84B;'>{v}</span>"
+                        else:
+                            txt = str(v) if pd.notna(v) else "?"
+                        cells += f"<td style='{_TD_CSS}'>{txt}</td>"
+                    rows_html += f"<tr>{cells}</tr>"
+                header = "".join(f"<th style='{_TH_CSS}'>{col_labels.get(c, c)}</th>" for c in cols)
+                _cbg2 = _T["card_bg"]; _cbd2 = _T["card_border"]
+                return (
+                    f"<div style='background:{_cbg2};border:1px solid {_cbd2};border-radius:2px;"
+                    f"overflow:hidden;margin-bottom:4px;'>"
+                    f"<table style='{_TABLE_CSS}'>"
+                    f"<thead><tr>{header}</tr></thead>"
+                    f"<tbody>{rows_html}</tbody>"
+                    f"</table></div>"
+                )
+
+            st.markdown(_ufa_html_table(ufa_disp), unsafe_allow_html=True)
             st.caption(
                 f"Showing {len(top_ufa)} of {len(ufa_filtered)} UFA/unsigned players — "
                 "sorted by predicted market value. These players have no active cap charge."
             )
 
 
+# ── Tab 3: Teams (generic, all 32 teams) ──────────────────────────────────────
+def tab_team(df: pd.DataFrame, team_code: str):
+    tc        = TEAM_COLORS.get(team_code, TEAM_COLORS["LAK"])
+    T_PRIMARY = tc["primary"]
+    T_SECOND  = tc["secondary"]
+    team_name = TEAM_NAMES.get(team_code, team_code)
+    team_logo = team_logo_url(team_code)
+
+    _kbg = _T["card_bg"]; _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
+    st.markdown(
+        f"<div style='display:flex;align-items:center;gap:18px;margin-bottom:12px;"
+        f"padding:18px 22px;background:{_kbg};border-left:4px solid {T_PRIMARY};border:1px solid {_T['card_border']};'>"
+        f"<img src='{team_logo}' width='64' height='64' "
+        f"style='flex-shrink:0;opacity:.95;' onerror=\"this.style.display='none'\">"
+        f"<div>"
+        f"<div style='font-size:1.5rem;font-weight:700;color:{_ktxt};"
+        f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
+        f"{team_name}</div>"
+        f"<div style='color:{_ksub};font-size:.78rem;margin-top:5px;"
+        f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.14em;text-transform:uppercase;'>"
+        f"{_season_str(load_season_context())} Roster Analysis &nbsp;·&nbsp; Comps Model</div>"
+        f"</div></div>",
+        unsafe_allow_html=True,
+    )
+
+    team_all = df[df["team"] == team_code].copy()
+    if team_all.empty:
+        st.warning(f"No {team_name} players found in predictions. Run pipeline.py first.")
+        return
+
+    team_all = add_delta_pct(team_all)
+    team_all["team_signal"] = team_all.apply(kings_resign_signal, axis=1)
+    team = team_all[team_all["cap_hit"].notna()].copy()
+
+    # ── Cap summary ──────────────────────────────────────────────────────────
+    total_committed   = team["cap_hit"].sum()
+    cap_space         = CAP_CEILING - total_committed
+    next_yr_committed = team[team["years_left"].fillna(0) >= 1]["cap_hit"].sum()
+    next_yr_space     = CAP_CEILING - next_yr_committed
+    n_expiring        = int((team["years_left"].fillna(0) <= 1).sum())
+
+    st.markdown(
+        f"<div style='border-top:3px solid {T_PRIMARY};border-bottom:1px solid {_T['card_border']};"
+        f"margin-bottom:16px;'></div>",
+        unsafe_allow_html=True,
+    )
+    cap_cols = st.columns(5)
+    cap_cols[0].metric("Roster Players",      len(team_all))
+    cap_cols[1].metric("Cap Committed",        fmt_m(total_committed))
+    cap_cols[2].metric("Cap Space",            fmt_m(cap_space),
+                        delta="+space" if cap_space > 0 else "over cap",
+                        delta_color="normal" if cap_space > 0 else "inverse")
+    cap_cols[3].metric("Next Season Space",    fmt_m(next_yr_space))
+    cap_cols[4].metric("Expiring Contracts",   f"{n_expiring} players")
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+
+    # ── Cap Hit vs Predicted Value chart ─────────────────────────────────────
+    ufa_key = f"team_{team_code}_show_ufa"
+    if ufa_key not in st.session_state:
+        st.session_state[ufa_key] = False
+
+    chart_data = team.copy()
+    if st.session_state[ufa_key]:
+        ufa_players = team_all[team_all["cap_hit"].isna()].copy()
+        if not ufa_players.empty:
+            ufa_players["cap_hit"] = 0
+            chart_data = pd.concat([team, ufa_players], ignore_index=True)
+
+    sorted_data = chart_data.sort_values("cap_hit", ascending=False)
+    fig = go.Figure()
+    fig.add_bar(
+        name="Cap Hit",
+        x=sorted_data["name"], y=sorted_data["cap_hit"],
+        marker_color=T_SECOND, opacity=0.9,
+        text=sorted_data["cap_hit"].apply(lambda v: fmt_m(v) if v > 0 else "UFA"),
+        textposition="outside", textfont=dict(size=11, color=T_SECOND),
+    )
+    fig.add_bar(
+        name="Predicted Value",
+        x=sorted_data["name"], y=sorted_data["predicted_value"],
+        marker_color=T_PRIMARY, opacity=0.9,
+    )
+    fig.update_layout(
+        barmode="group",
+        paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
+        font=dict(family="'IBM Plex Mono', monospace", color=_T["plot_font"]),
+        xaxis=dict(tickangle=-40, gridcolor=_T["grid_alt"]),
+        yaxis=dict(tickformat="$,.0f", title="", gridcolor=_T["grid_alt"], zeroline=False),
+        title=dict(text="Cap Hit vs. Predicted Market Value",
+                   font=dict(color=T_PRIMARY, size=16)),
+        showlegend=False,
+        height=420,
+        margin=dict(l=10, r=10, t=50, b=10),
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    ufa_count = len(team_all[team_all["cap_hit"].isna()])
+    if ufa_count > 0:
+        ufa_label = "Hide UFA Players" if st.session_state[ufa_key] else f"Show UFA / Unsigned ({ufa_count})"
+        if st.button(ufa_label, key=f"{team_code}_ufa_btn"):
+            st.session_state[ufa_key] = not st.session_state[ufa_key]
+            st.rerun()
+    st.markdown(
+        f"<div style='font-size:.75rem;color:{_T['card_subtext']};font-family:\"IBM Plex Mono\",monospace;"
+        f"letter-spacing:.06em;margin-top:2px;'>"
+        f"<span style='display:inline-block;width:12px;height:12px;background:{T_SECOND};"
+        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Cap Hit"
+        f"&nbsp;&nbsp;"
+        f"<span style='display:inline-block;width:12px;height:12px;background:{T_PRIMARY};"
+        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Predicted Value"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+
+    # ── Cap Outlook expander ──────────────────────────────────────────────────
+    with st.expander("📅 Cap Outlook — Next Season", expanded=False):
+        next_yr_players = team[team["years_left"].fillna(0) >= 2].copy()
+        expiring        = team[team["years_left"].fillna(0) <= 1].copy()
+        ufa_team        = team_all[team_all["cap_hit"].isna()].copy()
+
+        next_committed = next_yr_players["cap_hit"].sum()
+        next_space     = CAP_CEILING - next_committed
+        n_need_deals   = len(expiring) + len(ufa_team)
+
+        oc1, oc2, oc3, oc4 = st.columns(4)
+        oc1.metric("Committed Next Season", fmt_m(next_committed))
+        oc2.metric("Projected Cap Space",   fmt_m(next_space))
+        oc3.metric("Contracts Expiring",    len(expiring))
+        oc4.metric("Deals Needed",          n_need_deals)
+
+        if not expiring.empty:
+            st.markdown(
+                f"<div style='color:{T_PRIMARY};font-weight:600;font-size:.85rem;"
+                "margin:10px 0 6px;'>Expiring Contracts</div>",
+                unsafe_allow_html=True,
+            )
+            exp_disp = expiring[["name", "pos", "age", "cap_hit",
+                                  "predicted_value", "team_signal"]].copy()
+            exp_disp["age"]             = exp_disp["age"].apply(lambda v: f"{v:.0f}" if pd.notna(v) else "?")
+            exp_disp["cap_hit"]         = exp_disp["cap_hit"].apply(fmt_m)
+            exp_disp["predicted_value"] = exp_disp["predicted_value"].apply(fmt_m)
+            exp_disp = exp_disp.rename(columns={
+                "name": "Player", "pos": "Pos", "age": "Age",
+                "cap_hit": "Current Cap Hit", "predicted_value": "Predicted Value",
+                "team_signal": "Re-sign Signal",
+            })
+            st.dataframe(exp_disp, use_container_width=True, hide_index=True)
+
+    # ── Roster breakdown ──────────────────────────────────────────────────────
+    st.markdown(
+        f"<div style='color:{T_PRIMARY};font-size:1.0rem;font-weight:700;"
+        "margin:14px 0 10px;font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;'>"
+        "Player Breakdown</div>",
+        unsafe_allow_html=True,
+    )
+
+    tbl = team_all.sort_values("value_delta", ascending=False, na_position="last").copy()
+
+    def _render_group(group_df, group_label):
+        if group_df.empty:
+            return
+        st.markdown(f"<div class='group-label' style='border-left-color:{T_PRIMARY};'>{group_label}</div>", unsafe_allow_html=True)
+        for _, row in group_df.iterrows():
+            _render_player_row(row)
+
+    def _render_player_row(row):
+        pid       = row.get("player_id")
+        name      = row.get("name", "?")
+        pos       = row.get("pos", "?")
+        age       = row.get("age")
+        age_str   = f"{age:.0f}" if pd.notna(age) else "?"
+        ch        = row.get("cap_hit")
+        pv        = row.get("predicted_value")
+        delta     = row.get("value_delta")
+        delta_pct = row.get("value_delta_pct")
+        exp_yr    = row.get("expiry_year")
+        exp_st    = row.get("expiry_status") or "—"
+        yrs       = row.get("years_left")
+        signal    = row.get("team_signal", "—")
+        is_est    = bool(row.get("is_estimated", False))
+        has_data  = bool(row.get("has_contract_data", False))
+        cluster   = row.get("cluster_label") or "—"
+        perf_raw  = row.get("performance_score")
+        perf_str  = f"{perf_raw:+.1f}" if pd.notna(perf_raw) else "—"
+        perf_clr  = "#1FBFA0" if (pd.notna(perf_raw) and perf_raw >= 0) else "#E84040"
+
+        ch_str = (fmt_m(ch) + ("*" if is_est else "")) if has_data and pd.notna(ch) else "UFA"
+        pv_str = fmt_m(pv) if pd.notna(pv) else "—"
+        sig_color = KINGS_SIGNAL_PALETTE.get(signal, "#2C3A40")
+
+        delta_str = "—"
+        pct_str   = ""
+        if pd.notna(delta):
+            sign = "+" if delta >= 0 else ""
+            clr  = "#1FBFA0" if delta >= 0 else "#E84040"
+            delta_str = f"<span style='color:{clr};font-weight:700;'>{sign}{fmt_m(delta)}</span>"
+            if pd.notna(delta_pct):
+                pct_str = f"<span style='color:{clr};font-size:.8rem;'>({sign}{delta_pct:.1f}%)</span>"
+
+        exp_str = f"{int(exp_yr)}" if pd.notna(exp_yr) else "—"
+        yrs_str = f"{int(yrs)}" if pd.notna(yrs) else "—"
+
+        hs_html = ""
+        if pid and pd.notna(pid):
+            hs_url = headshot_url(pid, team_code)
+            hs_html = (
+                f"<img src='{hs_url}' width='48' height='48' "
+                f"style='border-radius:50%;object-fit:cover;"
+                f"border:2px solid {T_PRIMARY};flex-shrink:0;' "
+                f"onerror=\"this.style.display='none'\">"
+            )
+
+        est_badge = (
+            f"<span style='background:#2C3A40;color:#B8C4C8;padding:1px 5px;"
+            f"border-radius:2px;font-size:.82rem;margin-left:4px;' "
+            f"title='Salary estimated'>est*</span>"
+        ) if is_est else ""
+
+        has_ext = bool(row.get("has_extension", False))
+        ext_note = ""
+        if has_ext:
+            ext_ch_val  = row.get("extension_cap_hit")
+            ext_start_v = row.get("extension_start_year")
+            ext_len_v   = row.get("extension_length")
+            ext_ch_s    = f"${ext_ch_val/1e6:.2f}M" if ext_ch_val else "?"
+            ext_yr_s    = f"{int(ext_start_v)-1}-{str(int(ext_start_v))[-2:]}" if ext_start_v else "?"
+            ext_len_s   = f"{int(ext_len_v)}-yr" if ext_len_v else ""
+            ext_note    = (
+                f"<div style='margin-top:5px;font-size:11px;color:#6BBAD4;'>"
+                f"✅ Extension signed — {ext_len_s} {ext_ch_s}/yr starting {ext_yr_s}</div>"
+            )
+
+        _rtxt = _T["card_text"]; _rsub = _T["card_subtext"]
+        st.markdown(
+            f"<div class='kings-card' style='display:flex;align-items:center;gap:16px;border-left-color:{T_PRIMARY};'>"
+            f"  {hs_html}"
+            f"  <div style='flex:1;min-width:0;'>"
+            f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
+            f"      <span style='font-size:1.0rem;font-weight:700;color:{_rtxt};"
+            f"font-family:\"Manrope\",sans-serif;'>{name}</span>"
+            f"      {est_badge}"
+            f"      <span style='color:{_rsub};font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
+            f"letter-spacing:.04em;'>{pos} · {age_str}</span>"
+            f"    </div>"
+            f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
+            f"      <div><div class='stat-label'>Cap Hit</div>"
+            f"           <div class='stat-value'>{ch_str}</div></div>"
+            f"      <div><div class='stat-label'>Pred. Value</div>"
+            f"           <div class='stat-value'>{pv_str}</div></div>"
+            f"      <div><div class='stat-label'>Value Delta</div>"
+            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"IBM Plex Mono\",monospace;'>"
+            f"             {delta_str} {pct_str}</div></div>"
+            f"      <div><div class='stat-label'>Expiry</div>"
+            f"           <div class='stat-value'>{exp_str} ({exp_st})</div></div>"
+            f"      <div><div class='stat-label'>Yrs Left</div>"
+            f"           <div class='stat-value'>{yrs_str}</div></div>"
+            f"      <div><div class='stat-label'>Role</div>"
+            f"           <div class='stat-value' style='font-size:.78rem;'>{cluster}</div></div>"
+            f"      <div><div class='stat-label'>Perf Score</div>"
+            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"IBM Plex Mono\",monospace;"
+            f"color:{perf_clr};'>{perf_str}</div></div>"
+            f"    </div>"
+            f"    {ext_note}"
+            f"  </div>"
+            f"  <div style='text-align:center;flex-shrink:0;'>"
+            f"    <div class='stat-label'>Signal</div>"
+            f"    <span class='signal-badge' style='background:{sig_color};color:#fff;"
+            f"display:inline-block;margin-top:6px;'>{signal}</span>"
+            f"  </div>"
+            f"</div>",
+            unsafe_allow_html=True,
+        )
+
+    fwds = tbl[tbl["pos"].isin(["C", "L", "R"])]
+    dmen = tbl[tbl["pos"] == "D"]
+    _render_group(fwds, "Forwards")
+    _render_group(dmen, "Defensemen")
+
+    # ── Signal legend ─────────────────────────────────────────────────────────
+    st.markdown("---")
+    badges = "".join(
+        f"<span class='signal-badge' style='background:{clr};color:#fff;"
+        f"white-space:nowrap;margin:3px 4px 3px 0;display:inline-block;'>{lbl}</span>"
+        for lbl, clr in KINGS_SIGNAL_PALETTE.items()
+    )
+    st.markdown(
+        f"<div style='color:{_T['card_subtext']};font-size:.8rem;margin-bottom:6px;'>"
+        f"Re-sign Signal Legend</div>"
+        f"<div style='display:flex;flex-wrap:wrap;gap:4px;'>{badges}</div>",
+        unsafe_allow_html=True,
+    )
+
+    if team_all["is_estimated"].any():
+        st.caption("*Salary estimated from position/TOI medians — contract data pending verification")
+
+
 # ── Tab 3: LA Kings ────────────────────────────────────────────────────────────
 def tab_kings(df: pd.DataFrame):
     # Kings-specific header with logo
     kings_logo = team_logo_url("LAK")
+    _kbg = _T["card_bg"]; _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
     st.markdown(
         f"<div style='display:flex;align-items:center;gap:18px;margin-bottom:12px;"
-        f"padding:18px 22px;background:#1a1a2e;border-left:4px solid {KINGS_GOLD};'>"
+        f"padding:18px 22px;background:{_kbg};border-left:4px solid {KINGS_GOLD};border:1px solid {_T['card_border']};'>"
         f"<img src='{kings_logo}' width='64' height='64' "
         f"style='flex-shrink:0;opacity:.95;' onerror=\"this.style.display='none'\">"
         f"<div>"
-        f"<div style='font-size:1.5rem;font-weight:700;color:{KINGS_WHITE};"
+        f"<div style='font-size:1.5rem;font-weight:700;color:{_ktxt};"
         f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
         f"Los Angeles Kings</div>"
-        f"<div style='color:#A0A0A0;font-size:.78rem;margin-top:5px;"
+        f"<div style='color:{_ksub};font-size:.78rem;margin-top:5px;"
         f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.14em;text-transform:uppercase;'>"
-        f"{_season_str(load_season_context())} Roster Analysis &nbsp;·&nbsp; XGBoost Model</div>"
+        f"{_season_str(load_season_context())} Roster Analysis &nbsp;·&nbsp; Comps Model</div>"
         f"</div></div>",
         unsafe_allow_html=True,
     )
@@ -1323,8 +1803,8 @@ def tab_kings(df: pd.DataFrame):
     n_expiring        = int((kings["years_left"].fillna(0) <= 1).sum())
 
     st.markdown(
-        f"<div style='background:#1a1a2e;border-top:3px solid {KINGS_GOLD};"
-        "border-radius:3px;padding:16px 20px;margin-bottom:16px;'>",
+        f"<div style='border-top:3px solid {KINGS_GOLD};border-bottom:1px solid {_T['card_border']};"
+        f"margin-bottom:16px;'></div>",
         unsafe_allow_html=True,
     )
     cap_cols = st.columns(5)
@@ -1335,16 +1815,25 @@ def tab_kings(df: pd.DataFrame):
                         delta_color="normal" if cap_space > 0 else "inverse")
     cap_cols[3].metric("Next Season Space", fmt_m(next_yr_space))
     cap_cols[4].metric("Expiring Contracts", f"{n_expiring} players")
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
     # ── Cap Hit vs Predicted Value chart ────────────────────────────────────
-    kings_sorted = kings.sort_values("cap_hit", ascending=False)
+    if "kings_show_ufa" not in st.session_state:
+        st.session_state["kings_show_ufa"] = False
+
+    chart_data = kings.copy()
+    if st.session_state["kings_show_ufa"] and not kings_all[kings_all["cap_hit"].isna()].empty:
+        ufa_kings = kings_all[kings_all["cap_hit"].isna()].copy()
+        ufa_kings["cap_hit"] = 0
+        chart_data = pd.concat([kings, ufa_kings], ignore_index=True)
+
+    kings_sorted = chart_data.sort_values("cap_hit", ascending=False)
     fig = go.Figure()
     fig.add_bar(
         name="Cap Hit",
         x=kings_sorted["name"], y=kings_sorted["cap_hit"],
         marker_color=KINGS_SILVER, opacity=0.9,
-        text=kings_sorted["cap_hit"].apply(fmt_m),
+        text=kings_sorted["cap_hit"].apply(lambda v: fmt_m(v) if v > 0 else "UFA"),
         textposition="outside", textfont=dict(size=11, color=KINGS_SILVER),
     )
     fig.add_bar(
@@ -1361,12 +1850,29 @@ def tab_kings(df: pd.DataFrame):
                    gridcolor=_T["grid_alt"], zeroline=False),
         title=dict(text="Cap Hit vs. Predicted Market Value",
                    font=dict(color=KINGS_GOLD, size=16)),
-        legend=dict(bgcolor=_T["legend_bg"], bordercolor=_T["legend_bg"],
-                    orientation="h", y=1.08, x=0.5, xanchor="center"),
+        showlegend=False,
         height=420,
         margin=dict(l=10, r=10, t=50, b=10),
     )
     st.plotly_chart(fig, use_container_width=True)
+
+    ufa_kings_count = len(kings_all[kings_all["cap_hit"].isna()])
+    if ufa_kings_count > 0:
+        ufa_label = "Hide UFA Players" if st.session_state["kings_show_ufa"] else f"Show UFA / Unsigned ({ufa_kings_count})"
+        if st.button(ufa_label, key="kings_ufa_toggle"):
+            st.session_state["kings_show_ufa"] = not st.session_state["kings_show_ufa"]
+            st.rerun()
+    st.markdown(
+        f"<div style='font-size:.75rem;color:{_T['card_subtext']};font-family:\"IBM Plex Mono\",monospace;"
+        f"letter-spacing:.06em;margin-top:2px;'>"
+        f"<span style='display:inline-block;width:12px;height:12px;background:{KINGS_SILVER};"
+        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Cap Hit"
+        f"&nbsp;&nbsp;"
+        f"<span style='display:inline-block;width:12px;height:12px;background:{KINGS_GOLD};"
+        f"border-radius:1px;margin-right:5px;vertical-align:middle;'></span>Predicted Value"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
 
     # ── Cap Outlook: next season ─────────────────────────────────────────────
     with st.expander("📅 Cap Outlook — Next Season", expanded=False):
@@ -1440,6 +1946,10 @@ def tab_kings(df: pd.DataFrame):
         signal    = row.get("kings_signal", "—")
         is_est    = bool(row.get("is_estimated", False))
         has_data  = bool(row.get("has_contract_data", False))
+        cluster   = row.get("cluster_label") or "—"
+        perf_raw  = row.get("performance_score")
+        perf_str  = f"{perf_raw:+.1f}" if pd.notna(perf_raw) else "—"
+        perf_clr  = "#1FBFA0" if (pd.notna(perf_raw) and perf_raw >= 0) else "#E84040"
 
         ch_str = (fmt_m(ch) + ("*" if is_est else "")) if has_data and pd.notna(ch) else "UFA"
         pv_str = fmt_m(pv) if pd.notna(pv) else "—"
@@ -1493,10 +2003,10 @@ def tab_kings(df: pd.DataFrame):
             f"  {hs_html}"
             f"  <div style='flex:1;min-width:0;'>"
             f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
-            f"      <span style='font-size:1.0rem;font-weight:700;color:{KINGS_WHITE};"
+            f"      <span style='font-size:1.0rem;font-weight:700;color:{_T['card_text']};"
             f"font-family:\"Manrope\",sans-serif;'>{name}</span>"
             f"      {est_badge}"
-            f"      <span style='color:#A0A0A0;font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
+            f"      <span style='color:{_T['card_subtext']};font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
             f"letter-spacing:.04em;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
@@ -1511,6 +2021,11 @@ def tab_kings(df: pd.DataFrame):
             f"           <div class='stat-value'>{exp_str} ({exp_st})</div></div>"
             f"      <div><div class='stat-label'>Yrs Left</div>"
             f"           <div class='stat-value'>{yrs_str}</div></div>"
+            f"      <div><div class='stat-label'>Role</div>"
+            f"           <div class='stat-value' style='font-size:.78rem;'>{cluster}</div></div>"
+            f"      <div><div class='stat-label'>Perf Score</div>"
+            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"IBM Plex Mono\",monospace;"
+            f"color:{perf_clr};'>{perf_str}</div></div>"
             f"    </div>"
             f"    {ext_note}"
             f"  </div>"
@@ -1620,16 +2135,17 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
             f"onerror=\"this.style.display='none'\">"
         )
 
+    _pctxt = _T["card_text"]; _pcsub = _T["card_subtext"]
     st.markdown(
         f"<div class='player-card'>"
         f"  <div style='display:flex;gap:18px;align-items:center;'>"
         f"    {hs_html}"
         f"    <div>"
-        f"      <div style='font-size:1.5rem;font-weight:700;color:#E8E4DC;"
+        f"      <div style='font-size:1.5rem;font-weight:700;color:{_pctxt};"
         f"font-family:\"Bebas Neue\",cursive;letter-spacing:0.04em;line-height:1.1;'>"
         f"        {name}{prior_badge}{contract_badge}"
         f"      </div>"
-        f"      <div style='color:#A0A0A0;margin-top:5px;font-size:.87rem;"
+        f"      <div style='color:{_pcsub};margin-top:5px;font-size:.87rem;"
         f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
         f"        {team} &nbsp;·&nbsp; {pos} &nbsp;·&nbsp; Age {age}"
         f"      </div>"
@@ -1690,25 +2206,44 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         ext_yrs_str  = f"{int(ext_len)}-yr" if ext_len else ""
         ext_start_str = f"{int(ext_start)-1}-{str(int(ext_start))[-2:]}" if ext_start else "?"
         ext_exp_str  = f"{int(ext_exp)-1}-{str(int(ext_exp))[-2:]}" if ext_exp else "?"
+        _extbg = _T["card_bg"]; _extbd = _T["card_border"]; _extsub = _T["card_subtext"]
         st.markdown(
-            f"<div style='background:#1a1a2e;border:1px solid #252545;border-radius:3px;"
+            f"<div style='background:{_extbg};border:1px solid {_extbd};border-radius:3px;"
             f"padding:10px 14px;margin:8px 0;font-size:13px;'>"
             f"<span style='color:#6BBAD4;font-weight:700;'>✅ Extension Signed</span>"
-            f"<span style='color:#A0A0A0;margin-left:10px;'>"
+            f"<span style='color:{_extsub};margin-left:10px;'>"
             f"{ext_yrs_str} · {ext_ch_str}/yr · {ext_start_str} → {ext_exp_str}"
             f"{' · ' + ext_stat if ext_stat else ''}"
             f"</span></div>",
             unsafe_allow_html=True,
         )
 
-    # Re-sign signal
+    # Re-sign signal + cluster role + performance score
     signal    = player.get("resign_signal", "—")
     sig_color = RESIGN_PALETTE.get(signal, "#555")
+    cluster   = player.get("cluster_label") or "—"
+    perf_raw  = player.get("performance_score")
+    perf_str  = f"{perf_raw:+.1f}" if pd.notna(perf_raw) else "—"
+    perf_clr  = "#1FBFA0" if (pd.notna(perf_raw) and perf_raw >= 0) else "#E84040"
     st.markdown(
-        f"<div style='margin:10px 0;display:flex;align-items:center;gap:10px;'>"
+        f"<div style='margin:10px 0;display:flex;align-items:center;gap:18px;flex-wrap:wrap;'>"
+        f"<div style='display:flex;align-items:center;gap:10px;'>"
         f"<span style='color:#A0A0A0;font-size:.78rem;letter-spacing:.14em;"
         f"font-family:\"IBM Plex Mono\",monospace;text-transform:uppercase;'>Re-sign Signal</span>"
         f"<span class='signal-badge' style='background:{sig_color};color:#fff;'>{signal}</span>"
+        f"</div>"
+        f"<div style='display:flex;align-items:center;gap:8px;'>"
+        f"<span style='color:#A0A0A0;font-size:.78rem;letter-spacing:.14em;"
+        f"font-family:\"IBM Plex Mono\",monospace;text-transform:uppercase;'>Role</span>"
+        f"<span style='color:{_T['card_text']};font-size:.85rem;font-family:\"IBM Plex Mono\",monospace;"
+        f"font-weight:600;'>{cluster}</span>"
+        f"</div>"
+        f"<div style='display:flex;align-items:center;gap:8px;'>"
+        f"<span style='color:#A0A0A0;font-size:.78rem;letter-spacing:.14em;"
+        f"font-family:\"IBM Plex Mono\",monospace;text-transform:uppercase;'>Perf Score</span>"
+        f"<span style='color:{perf_clr};font-size:.9rem;font-weight:700;"
+        f"font-family:\"IBM Plex Mono\",monospace;'>{perf_str}</span>"
+        f"</div>"
         f"</div>",
         unsafe_allow_html=True,
     )
@@ -1719,7 +2254,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     total    = len(df)
     rank_pct = pct_rank(df["predicted_value"], pv or 0)
     st.markdown(
-        f"<div style='color:#A0A0A0;font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
+        f"<div style='color:{_T['card_subtext']};font-size:.87rem;font-family:\"IBM Plex Mono\",monospace;"
         f"letter-spacing:.04em;'>LEAGUE RANK BY PREDICTED VALUE: "
         f"<span style='color:#C8A84B;font-weight:700;'>#{rank} of {total}</span> "
         f"&nbsp;·&nbsp; TOP <span style='color:#C8A84B;font-weight:700;'>{100-rank_pct}%</span></div>",
@@ -1784,11 +2319,12 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
 
         # Section 1 — league average
+        _vdbg = _T["card_bg"]; _vdbd = _T["card_border"]; _vdsub = _T["card_subtext"]; _vdtxt = _T["card_text"]
         st.markdown(
-            f"<div style='background:#1a1a2e;border-radius:2px;border:1px solid #252545;"
+            f"<div style='background:{_vdbg};border-radius:2px;border:1px solid {_vdbd};"
             f"padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;"
             f"justify-content:space-between;'>"
-            f"<span style='font-size:.82rem;color:#A0A0A0;font-family:\"IBM Plex Mono\",monospace;"
+            f"<span style='font-size:.82rem;color:{_vdsub};font-family:\"IBM Plex Mono\",monospace;"
             f"letter-spacing:.12em;text-transform:uppercase;'>League Average</span>"
             f"<strong style='color:#C8A84B;font-family:\"IBM Plex Mono\",monospace;"
             f"font-size:.95rem;'>${base/1e6:.2f}M</strong></div>",
@@ -1796,13 +2332,13 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
 
         # Section 2 — side-by-side factors with CSS hover tooltips
-        st.markdown("""
+        st.markdown(f"""
 <style>
-.vd-row{position:relative;margin:5px 0;cursor:default;}
-.vd-tip{
+.vd-row{{position:relative;margin:5px 0;cursor:default;}}
+.vd-tip{{
   visibility:hidden;opacity:0;
-  background:#1a1a2e;color:#E8E4DC;
-  border:1px solid #707070;border-radius:2px;
+  background:{_vdbg};color:{_vdtxt};
+  border:1px solid {_vdbd};border-radius:2px;
   padding:8px 12px;font-size:11px;line-height:1.6;
   position:absolute;z-index:9999;
   bottom:115%;left:0;
@@ -1810,8 +2346,8 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
   white-space:normal;pointer-events:none;
   transition:opacity .12s ease;
   font-family:'Manrope',sans-serif;
-}
-.vd-row:hover .vd-tip{visibility:visible;opacity:1;}
+}}
+.vd-row:hover .vd-tip{{visibility:visible;opacity:1;}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -1826,7 +2362,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 f"<div class='vd-tip'><strong>{lbl}</strong><br>{safe_tip}</div>"
                 f"<div style='display:flex;justify-content:space-between;"
                 f"align-items:center;margin-bottom:3px;'>"
-                f"<span style='font-size:12px;color:#E8E4DC;'>{lbl}</span>"
+                f"<span style='font-size:12px;color:{_T['card_text']};'>{lbl}</span>"
                 f"<span style='font-size:12px;color:{color};font-weight:600;'>{sign_str}</span>"
                 f"</div>"
                 f"<div style='height:12px;width:{bar_pct}%;background:{color};"
@@ -1855,7 +2391,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                     for f, v in pos_factors.items()
                 )
                 st.markdown(
-                    f"<div style='background:#1a1a2e;border-radius:2px;border:1px solid #252545;"
+                    f"<div style='background:{_vdbg};border-radius:2px;border:1px solid {_vdbd};"
                     f"padding:10px 12px;'>{rows}</div>",
                     unsafe_allow_html=True,
                 )
@@ -1879,7 +2415,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                     for f, v in neg_factors.items()
                 )
                 st.markdown(
-                    f"<div style='background:#1a1a2e;border-radius:2px;border:1px solid #252545;"
+                    f"<div style='background:{_vdbg};border-radius:2px;border:1px solid {_vdbd};"
                     f"padding:10px 12px;'>{rows}</div>",
                     unsafe_allow_html=True,
                 )
@@ -1892,17 +2428,18 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
             delta_str = f"+${delta/1e6:.2f}M" if delta >= 0 else f"-${abs(delta)/1e6:.2f}M"
         else:
             delta_str = "—"
+        _emvbg = _T["card_bg"]; _emvbd = _T["card_border"]; _emvsub = _T["card_subtext"]
         st.markdown(
-            f"<div style='background:#1a1a2e;border:1px solid #252545;border-radius:2px;"
+            f"<div style='background:{_emvbg};border:1px solid {_emvbd};border-radius:2px;"
             f"border-left:3px solid {pv_color};padding:16px 20px;margin-top:16px;'>"
-            f"<div style='font-size:.78rem;color:#A0A0A0;font-family:\"IBM Plex Mono\",monospace;"
+            f"<div style='font-size:.78rem;color:{_emvsub};font-family:\"IBM Plex Mono\",monospace;"
             f"letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;'>"
             f"Estimated Market Value</div>"
             f"<div style='font-size:1.5rem;font-weight:700;color:{pv_color};"
             f"font-family:\"IBM Plex Mono\",monospace;margin-bottom:8px;'>"
             f"${pv_val/1e6:.2f}M</div>"
-            f"<div style='font-size:.87rem;color:#A0A0A0;font-family:\"IBM Plex Mono\",monospace;'>"
-            f"Current Cap Hit: <span style='color:#5A5A5A;'>{cap_str}</span>"
+            f"<div style='font-size:.87rem;color:{_emvsub};font-family:\"IBM Plex Mono\",monospace;'>"
+            f"Current Cap Hit: <span style='color:{_T['card_text']};'>{cap_str}</span>"
             f"&nbsp;&nbsp;·&nbsp;&nbsp;"
             f"Difference: <span style='color:{pv_color};font-weight:700;'>{delta_str}</span>"
             f"</div></div>",
@@ -1931,25 +2468,27 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 sp_hs = (
                     f"<img src='{sp_hs_url}' width='56' height='56' "
                     f"style='border-radius:50%;object-fit:cover;"
-                    f"border:1px solid #252545;' "
+                    f"border:1px solid {_T['card_border']};' "
                     f"onerror=\"this.style.display='none'\">"
                 )
             clr = "#1FBFA0" if (sp_dlt or 0) >= 0 else "#E84040"
+            _scbg = _T["card_bg"]; _scbd = _T["card_border"]
+            _sctxt = _T["card_text"]; _scsub = _T["card_subtext"]
             sim_cols[col_i].markdown(
-                f"<div style='background:#1a1a2e;border-radius:2px;padding:14px 10px;"
-                f"border:1px solid #252545;border-bottom:2px solid {clr};text-align:center;'>"
+                f"<div style='background:{_scbg};border-radius:2px;padding:14px 10px;"
+                f"border:1px solid {_scbd};border-bottom:2px solid {clr};text-align:center;'>"
                 f"  {sp_hs}"
-                f"  <div style='font-weight:700;color:#E8E4DC;margin-top:7px;"
+                f"  <div style='font-weight:700;color:{_sctxt};margin-top:7px;"
                 f"font-size:.85rem;font-family:\"Manrope\",sans-serif;'>{sp_name}</div>"
-                f"  <div style='color:#A0A0A0;font-size:.78rem;margin:3px 0;"
+                f"  <div style='color:{_scsub};font-size:.78rem;margin:3px 0;"
                 f"font-family:\"IBM Plex Mono\",monospace;letter-spacing:.06em;'>"
                 f"    {sp_team} · {sp_pos}"
                 f"    {f'· {sp_age:.0f}' if pd.notna(sp_age) else ''}"
                 f"  </div>"
                 f"  <div style='margin-top:7px;font-size:.78rem;"
                 f"font-family:\"IBM Plex Mono\",monospace;'>"
-                f"    <span style='color:#A0A0A0;'>PRED </span>"
-                f"    <span style='color:#E8E4DC;'>{fmt_m(sp_pv)}</span>"
+                f"    <span style='color:{_scsub};'>PRED </span>"
+                f"    <span style='color:{_sctxt};'>{fmt_m(sp_pv)}</span>"
                 f"  </div>"
                 f"  <div style='color:{clr};font-size:.88rem;font-weight:700;"
                 f"font-family:\"IBM Plex Mono\",monospace;margin-top:2px;'>"
@@ -1964,21 +2503,20 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     # How is this value calculated?
     with st.expander("How is this value calculated?"):
         st.markdown(f"""
-**Model:** XGBoost trained on {int(df['has_contract_data'].fillna(False).sum())} NHL players
-with known contracts (CV R² = 0.829, RMSE ≈ $1.21M).
+**Model:** 4-step Comps Model trained on {int(df['has_contract_data'].fillna(False).sum())} NHL players
+with known contracts. XGBoost benchmark: CV R² = 0.809, RMSE ≈ $1.24M.
 
-**What goes in:**
-- *Current season stats* — points, TOI/game, power-play points, shooting %, G/60, P/60
-  (projected to 82-game pace from actual games played)
-- *Prior season stats* — same metrics from the previous season, for players with prior data
-- *Contract structure* — years remaining, contract length
-- *Bio* — age, draft position, draft round
-- *Position* — affects TOI benchmarks (D vs F)
+**How it works:**
+1. **K-means clustering** (k=6) groups players by deployment profile (TOI, PP pts, faceoff%, position)
+   → *Top-Line C/F, Top-Six F, PP Specialist, Checking C, Top-Pair D, Bottom-Pair D*
+2. **Performance score** (-100 → +100) ranks each player within their cluster using production stats
+3. **UFA comp finder** identifies the 5 nearest comparable free agents by cluster + score similarity
+4. **Predicted value** = weighted average cap hit of the 5 comps (weight = 1 / score distance)
 
-**What comes out:**
-The model predicts a player's **market-rate cap hit** — what they would command
-on the open free-agent market — expressed as a fraction of the current cap ceiling,
-then scaled back to dollars.
+**What goes into scoring:**
+- *Forwards* — G/60, P/60 (prior season), PP pts, shooting %, shots, plus/minus
+- *Defensemen* — TOI/game, PP pts, plus/minus, GP, shooting %
+- *Clustering* — TOI/game, PP pts, GP, plus/minus, faceoff%, position
 
 **Value Delta = Predicted Value − Actual Cap Hit**
 - **Positive** → player is worth more than paid → team surplus
@@ -1986,7 +2524,7 @@ then scaled back to dollars.
 
 **Important caveats:**
 - Defensive metrics (shot blocking, defensive zone starts) are partially captured
-  through TOI but not explicitly
+  through TOI and clustering but not explicitly
 - Leadership, locker-room value, and injury history are not modelled
 - ELC players (age < 25, cap hit < $1M) will almost always show a large positive delta
   because they are intentionally paid below market
@@ -2041,7 +2579,7 @@ def tab_insights(df: pd.DataFrame):
         return
 
     st.markdown(f"<div style='font-family:\"Bebas Neue\",cursive;font-size:1.5rem;color:{_T['page_text']};letter-spacing:0.04em;margin:0 0 12px;font-weight:400;'>What drives predicted player value?</div>", unsafe_allow_html=True)
-    top_n = st.slider("Features to show", 5, min(30, len(shap_summary)), 15)
+    top_n = int(st.number_input("Features to show", min_value=5, max_value=min(30, len(shap_summary)), value=15, step=1))
     top   = shap_summary.head(top_n).copy()
     top["feature"] = top["feature"].apply(_label)
 
@@ -2169,42 +2707,6 @@ def main():
     _set_theme(_dark)
     _inject_css(_dark)
 
-    # Fix slider thumb gold color + hide duplicate hover tooltip via JS MutationObserver.
-    # CSS cannot reliably target dynamically-rendered baseweb tooltip elements, so we
-    # use an iframe script that patches the parent document on every DOM mutation.
-    _thumb_color = "#5A5A5A" if _dark else "#888888"
-    st.components.v1.html(f"""
-<script>
-(function() {{
-  function fixSliders() {{
-    var doc = window.parent.document;
-    // Override thumb color (config.toml primaryColor bleeds in as gold)
-    doc.querySelectorAll('[data-testid="stSlider"] [role="slider"]').forEach(function(el) {{
-      el.style.setProperty('background', '{_thumb_color}', 'important');
-      el.style.setProperty('box-shadow', 'none', 'important');
-      el.style.setProperty('outline', 'none', 'important');
-      el.style.setProperty('border', 'none', 'important');
-    }});
-    // Hide the floating value tooltip that duplicates tick-bar labels
-    doc.querySelectorAll('[data-testid="stSlider"] [data-testid="stThumbValue"]').forEach(function(el) {{
-      el.style.setProperty('display', 'none', 'important');
-    }});
-    // Also catch baseweb tooltip portals (rendered outside slider container)
-    doc.querySelectorAll('[data-baseweb="tooltip"]').forEach(function(el) {{
-      // Only hide tooltips that contain just a number (slider value, not informational)
-      if (/^\\d+$/.test((el.textContent || '').trim())) {{
-        el.style.setProperty('display', 'none', 'important');
-      }}
-    }});
-  }}
-  fixSliders();
-  new MutationObserver(fixSliders).observe(
-    window.parent.document.body, {{childList: true, subtree: true}}
-  );
-}})();
-</script>
-""", height=0)
-
     # Kick off background data refresh on every cold start (non-blocking)
     start_background_refresh(PROCESSED_DIR)
 
@@ -2219,7 +2721,7 @@ def main():
         f"color:#707070;letter-spacing:0.35em;text-transform:uppercase;margin-bottom:14px;'>"
         f"{_season_str(load_season_context())} &nbsp;·&nbsp; XGBOOST + SHAP &nbsp;·&nbsp; LIVE DATA"
         f"</div>"
-        f"<div style='font-family:\"Bebas Neue\",cursive;font-size:3.8rem;color:#E8E4DC;"
+        f"<div style='font-family:\"Bebas Neue\",cursive;font-size:3.8rem;color:{_T['page_text']};"
         f"line-height:0.88;letter-spacing:0.04em;'>"
         f"NHL Player Value<br>"
         f"<span style='color:#C8A84B;'>Model</span>"
@@ -2254,17 +2756,60 @@ def main():
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "🌐 League Overview",
         "📊 Leaderboards",
-        "👑 LA Kings",
+        "🏒 Teams",
         "🔍 Player Search",
         "🧠 Model Insights",
     ])
+
+    # Persist active tab across reruns (theme toggle, UFA toggle, etc.) via
+    # sessionStorage in the parent window — survives st.rerun() without full navigation.
+    st.markdown("""
+<script>
+(function() {
+  var _KEY = '_st_active_tab';
+  function restoreTab() {
+    var idx = parseInt(sessionStorage.getItem(_KEY) || '0');
+    if (idx <= 0) return;
+    var tabs = window.parent.document.querySelectorAll('[data-baseweb="tab"]');
+    if (tabs.length > idx) {
+      tabs[idx].click();
+    } else {
+      setTimeout(restoreTab, 80);
+    }
+  }
+  function attachListeners() {
+    var tabs = window.parent.document.querySelectorAll('[data-baseweb="tab"]');
+    tabs.forEach(function(tab, i) {
+      if (!tab.dataset._stTabBound) {
+        tab.dataset._stTabBound = '1';
+        tab.addEventListener('click', function() {
+          sessionStorage.setItem(_KEY, String(i));
+        });
+      }
+    });
+  }
+  setTimeout(function() { restoreTab(); attachListeners(); }, 250);
+  var _obs = new MutationObserver(function() { attachListeners(); });
+  _obs.observe(window.parent.document.body, { childList: true, subtree: true });
+})();
+</script>
+""", unsafe_allow_html=True)
 
     with tab1:
         tab_overview(filtered, df)
     with tab2:
         tab_leaderboards(filtered)
     with tab3:
-        tab_kings(df)
+        _all_team_codes = sorted([t for t in df["team"].dropna().unique() if t in TEAM_NAMES])
+        _team_labels    = [f"{TEAM_NAMES.get(t, t)} ({t})" for t in _all_team_codes]
+        # Initialise session state once; omit index= to avoid fighting Streamlit's
+        # own key↔value tracking — session state persists across st.rerun() calls.
+        _default_label = f"{TEAM_NAMES.get('LAK','Los Angeles Kings')} (LAK)"
+        if "team_tab_sel" not in st.session_state:
+            st.session_state["team_tab_sel"] = _default_label if _default_label in _team_labels else _team_labels[0]
+        _sel_label = st.selectbox("Select Team", _team_labels, key="team_tab_sel")
+        _sel_code  = _all_team_codes[_team_labels.index(_sel_label)] if _sel_label in _team_labels else "LAK"
+        tab_team(df, _sel_code)
     with tab4:
         tab_player_search(df, shap_vals)
     with tab5:

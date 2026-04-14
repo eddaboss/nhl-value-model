@@ -5,12 +5,6 @@
     "position": "C",
     "display_name": "Leo Carlsson"
   },
-  "nathan gaucher": {
-    "player_id": 8483444,
-    "team": "ANA",
-    "position": "C",
-    "display_name": "Nathan Gaucher"
-  },
   "cutter gauthier": {
     "player_id": 8483445,
     "team": "ANA",
@@ -107,6 +101,12 @@
     "position": "D",
     "display_name": "Drew Helleson"
   },
+  "tyson hinds": {
+    "player_id": 8482731,
+    "team": "ANA",
+    "position": "D",
+    "display_name": "Tyson Hinds"
+  },
   "jackson lacombe": {
     "player_id": 8481605,
     "team": "ANA",
@@ -172,6 +172,12 @@
     "team": "BOS",
     "position": "C",
     "display_name": "Morgan Geekie"
+  },
+  "james hagens": {
+    "player_id": 8485395,
+    "team": "BOS",
+    "position": "C",
+    "display_name": "James Hagens"
   },
   "tanner jeannot": {
     "player_id": 8479661,
@@ -491,6 +497,12 @@
     "position": "R",
     "display_name": "Jackson Blake"
   },
+  "skyler brindamour": {
+    "player_id": 8480291,
+    "team": "CAR",
+    "position": "C",
+    "display_name": "Skyler Brind'Amour"
+  },
   "william carrier": {
     "player_id": 8477478,
     "team": "CAR",
@@ -539,6 +551,12 @@
     "position": "L",
     "display_name": "Jordan Martinook"
   },
+  "bradly nadeau": {
+    "player_id": 8484203,
+    "team": "CAR",
+    "position": "L",
+    "display_name": "Bradly Nadeau"
+  },
   "eric robinson": {
     "player_id": 8480762,
     "team": "CAR",
@@ -574,6 +592,12 @@
     "team": "CAR",
     "position": "D",
     "display_name": "Shayne Gostisbehere"
+  },
+  "charles alexis legault": {
+    "player_id": 8484428,
+    "team": "CAR",
+    "position": "D",
+    "display_name": "Charles Alexis Legault"
   },
   "kandre miller": {
     "player_id": 8480817,
@@ -623,11 +647,23 @@
     "position": "G",
     "display_name": "Pyotr Kochetkov"
   },
+  "zachary astonreese": {
+    "player_id": 8479944,
+    "team": "CBJ",
+    "position": "L",
+    "display_name": "Zachary Aston-Reese"
+  },
   "charlie coyle": {
     "player_id": 8475745,
     "team": "CBJ",
     "position": "C",
     "display_name": "Charlie Coyle"
+  },
+  "luca del bel belluz": {
+    "player_id": 8483432,
+    "team": "CBJ",
+    "position": "C",
+    "display_name": "Luca Del Bel Belluz"
   },
   "adam fantilli": {
     "player_id": 8484166,
@@ -869,6 +905,12 @@
     "position": "C",
     "display_name": "Ryan Strome"
   },
+  "aydar suniev": {
+    "player_id": 8484234,
+    "team": "CGY",
+    "position": "L",
+    "display_name": "Aydar Suniev"
+  },
   "connor zary": {
     "player_id": 8482074,
     "team": "CGY",
@@ -928,6 +970,12 @@
     "team": "CGY",
     "position": "D",
     "display_name": "Zach Whitecloud"
+  },
+  "abram wiebe": {
+    "player_id": 8483709,
+    "team": "CGY",
+    "position": "D",
+    "display_name": "Abram Wiebe"
   },
   "devin cooley": {
     "player_id": 8482445,
@@ -1061,6 +1109,12 @@
     "position": "D",
     "display_name": "Wyatt Kaiser"
   },
+  "kevin korchinski": {
+    "player_id": 8483466,
+    "team": "CHI",
+    "position": "D",
+    "display_name": "Kevin Korchinski"
+  },
   "artyom levshunov": {
     "player_id": 8484783,
     "team": "CHI",
@@ -1174,6 +1228,12 @@
     "team": "COL",
     "position": "C",
     "display_name": "Nicolas Roy"
+  },
+  "jack ahcan": {
+    "player_id": 8482072,
+    "team": "COL",
+    "position": "D",
+    "display_name": "Jack Ahcan"
   },
   "nick blankenburg": {
     "player_id": 8483565,
@@ -1403,6 +1463,12 @@
     "position": "C",
     "display_name": "Mason Appleton"
   },
+  "michael brandseggnygard": {
+    "player_id": 8484794,
+    "team": "DET",
+    "position": "R",
+    "display_name": "Michael Brandsegg-Nyg\u00e5rd"
+  },
   "jt compher": {
     "player_id": 8477456,
     "team": "DET",
@@ -1444,6 +1510,12 @@
     "team": "DET",
     "position": "C",
     "display_name": "Dylan Larkin"
+  },
+  "carter mazur": {
+    "player_id": 8482802,
+    "team": "DET",
+    "position": "L",
+    "display_name": "Carter Mazur"
   },
   "david perron": {
     "player_id": 8474102,
@@ -1511,6 +1583,12 @@
     "position": "D",
     "display_name": "Albert Johansson"
   },
+  "axel sandinpellikka": {
+    "player_id": 8484223,
+    "team": "DET",
+    "position": "D",
+    "display_name": "Axel Sandin-Pellikka"
+  },
   "moritz seider": {
     "player_id": 8481542,
     "team": "DET",
@@ -1522,12 +1600,6 @@
     "team": "DET",
     "position": "G",
     "display_name": "John Gibson"
-  },
-  "michal postava": {
-    "player_id": 8485545,
-    "team": "DET",
-    "position": "G",
-    "display_name": "Michal Postava"
   },
   "cam talbot": {
     "player_id": 8475660,
@@ -1565,6 +1637,12 @@
     "position": "C",
     "display_name": "Adam Henrique"
   },
+  "isaac howard": {
+    "player_id": 8483455,
+    "team": "EDM",
+    "position": "L",
+    "display_name": "Isaac Howard"
+  },
   "zach hyman": {
     "player_id": 8475786,
     "team": "EDM",
@@ -1576,12 +1654,6 @@
     "team": "EDM",
     "position": "C",
     "display_name": "Mattias Janmark"
-  },
-  "roby jarventie": {
-    "player_id": 8482162,
-    "team": "EDM",
-    "position": "L",
-    "display_name": "Roby Jarventie"
   },
   "max jones": {
     "player_id": 8479368,
@@ -1606,6 +1678,12 @@
     "team": "EDM",
     "position": "C",
     "display_name": "Connor McDavid"
+  },
+  "owen michaels": {
+    "player_id": 8486161,
+    "team": "EDM",
+    "position": "R",
+    "display_name": "Owen Michaels"
   },
   "ryan nugenthopkins": {
     "player_id": 8476454,
@@ -1799,6 +1877,12 @@
     "position": "C",
     "display_name": "Cole Schwindt"
   },
+  "wilmer skoog": {
+    "player_id": 8484380,
+    "team": "FLA",
+    "position": "C",
+    "display_name": "Wilmer Skoog"
+  },
   "matthew tkachuk": {
     "player_id": 8479314,
     "team": "FLA",
@@ -1810,6 +1894,12 @@
     "team": "FLA",
     "position": "C",
     "display_name": "Carter Verhaeghe"
+  },
+  "marek alscher": {
+    "player_id": 8483687,
+    "team": "FLA",
+    "position": "D",
+    "display_name": "Marek Alscher"
   },
   "uvis balinskis": {
     "player_id": 8484304,
@@ -1823,12 +1913,6 @@
     "position": "D",
     "display_name": "Mike Benning"
   },
-  "tobias bjornfot": {
-    "player_id": 8481600,
-    "team": "FLA",
-    "position": "D",
-    "display_name": "Tobias Bjornfot"
-  },
   "aaron ekblad": {
     "player_id": 8477932,
     "team": "FLA",
@@ -1840,6 +1924,12 @@
     "team": "FLA",
     "position": "D",
     "display_name": "Gustav Forsling"
+  },
+  "ludvig jansson": {
+    "player_id": 8483712,
+    "team": "FLA",
+    "position": "D",
+    "display_name": "Ludvig Jansson"
   },
   "seth jones": {
     "player_id": 8477495,
@@ -1937,12 +2027,6 @@
     "position": "C",
     "display_name": "Scott Laughton"
   },
-  "andre lee": {
-    "player_id": 8481732,
-    "team": "LAK",
-    "position": "L",
-    "display_name": "Andre Lee"
-  },
   "jeff malott": {
     "player_id": 8482408,
     "team": "LAK",
@@ -2033,6 +2117,12 @@
     "position": "G",
     "display_name": "Darcy Kuemper"
   },
+  "nicolas aubekubel": {
+    "player_id": 8477979,
+    "team": "MIN",
+    "position": "R",
+    "display_name": "Nicolas Aube-Kubel"
+  },
   "matt boldy": {
     "player_id": 8481557,
     "team": "MIN",
@@ -2069,6 +2159,12 @@
     "position": "L",
     "display_name": "Nick Foligno"
   },
+  "hunter haight": {
+    "player_id": 8483452,
+    "team": "MIN",
+    "position": "C",
+    "display_name": "Hunter Haight"
+  },
   "ryan hartman": {
     "player_id": 8477451,
     "team": "MIN",
@@ -2080,6 +2176,12 @@
     "team": "MIN",
     "position": "L",
     "display_name": "Marcus Johansson"
+  },
+  "ben jones": {
+    "player_id": 8480259,
+    "team": "MIN",
+    "position": "C",
+    "display_name": "Ben Jones"
   },
   "kirill kaprizov": {
     "player_id": 8478864,
@@ -2141,6 +2243,12 @@
     "position": "D",
     "display_name": "Brock Faber"
   },
+  "viking gustafssonnyberg": {
+    "player_id": 8486166,
+    "team": "MIN",
+    "position": "D",
+    "display_name": "Viking Gustafsson-Nyberg"
+  },
   "quinn hughes": {
     "player_id": 8480800,
     "team": "MIN",
@@ -2152,6 +2260,12 @@
     "team": "MIN",
     "position": "D",
     "display_name": "Daemon Hunt"
+  },
+  "matt kiersted": {
+    "player_id": 8482641,
+    "team": "MIN",
+    "position": "D",
+    "display_name": "Matt Kiersted"
   },
   "jake middleton": {
     "player_id": 8478136,
@@ -2285,6 +2399,12 @@
     "position": "D",
     "display_name": "Noah Dobson"
   },
+  "adam engstrom": {
+    "player_id": 8483686,
+    "team": "MTL",
+    "position": "D",
+    "display_name": "Adam Engstrom"
+  },
   "kaiden guhle": {
     "player_id": 8482087,
     "team": "MTL",
@@ -2302,6 +2422,12 @@
     "team": "MTL",
     "position": "D",
     "display_name": "Mike Matheson"
+  },
+  "david reinbacher": {
+    "player_id": 8484220,
+    "team": "MTL",
+    "position": "D",
+    "display_name": "David Reinbacher"
   },
   "jayden struble": {
     "player_id": 8481593,
@@ -2375,11 +2501,11 @@
     "position": "R",
     "display_name": "Arseny Gritsyuk"
   },
-  "lenni hameenaho": {
-    "player_id": 8484177,
+  "brian halonen": {
+    "player_id": 8483531,
     "team": "NJD",
-    "position": "R",
-    "display_name": "Lenni Hameenaho"
+    "position": "L",
+    "display_name": "Brian Halonen"
   },
   "nico hischier": {
     "player_id": 8480002,
@@ -2398,6 +2524,12 @@
     "team": "NJD",
     "position": "R",
     "display_name": "Zack MacEwen"
+  },
+  "marc mclaughlin": {
+    "player_id": 8483397,
+    "team": "NJD",
+    "position": "C",
+    "display_name": "Marc McLaughlin"
   },
   "timo meier": {
     "player_id": 8478414,
@@ -2471,11 +2603,23 @@
     "position": "D",
     "display_name": "Jonas Siegenthaler"
   },
+  "topias vilen": {
+    "player_id": 8482873,
+    "team": "NJD",
+    "position": "D",
+    "display_name": "Topias Vilen"
+  },
   "jake allen": {
     "player_id": 8474596,
     "team": "NJD",
     "position": "G",
     "display_name": "Jake Allen"
+  },
+  "nico daws": {
+    "player_id": 8482076,
+    "team": "NJD",
+    "position": "G",
+    "display_name": "Nico Daws"
   },
   "jacob markstrom": {
     "player_id": 8474593,
@@ -2566,6 +2710,12 @@
     "team": "NSH",
     "position": "D",
     "display_name": "Justin Barron"
+  },
+  "kevin gravel": {
+    "player_id": 8475857,
+    "team": "NSH",
+    "position": "D",
+    "display_name": "Kevin Gravel"
   },
   "nicolas hague": {
     "player_id": 8479980,
@@ -2825,12 +2975,6 @@
     "position": "C",
     "display_name": "J.T. Miller"
   },
-  "juuso parssinen": {
-    "player_id": 8481704,
-    "team": "NYR",
-    "position": "C",
-    "display_name": "Juuso Parssinen"
-  },
   "gabe perreault": {
     "player_id": 8484210,
     "team": "NYR",
@@ -2993,6 +3137,12 @@
     "position": "C",
     "display_name": "Stephen Halliday"
   },
+  "hayden hodgson": {
+    "player_id": 8478173,
+    "team": "OTT",
+    "position": "R",
+    "display_name": "Hayden Hodgson"
+  },
   "kurtis macdermid": {
     "player_id": 8477073,
     "team": "OTT",
@@ -3029,11 +3179,11 @@
     "position": "D",
     "display_name": "Thomas Chabot"
   },
-  "jorian donovan": {
-    "player_id": 8483435,
+  "cameron crotty": {
+    "player_id": 8480075,
     "team": "OTT",
     "position": "D",
-    "display_name": "Jorian Donovan"
+    "display_name": "Cameron Crotty"
   },
   "dennis gilbert": {
     "player_id": 8478502,
@@ -3076,12 +3226,6 @@
     "team": "OTT",
     "position": "D",
     "display_name": "Lassi Thomson"
-  },
-  "carter yakemchuk": {
-    "player_id": 8484759,
-    "team": "OTT",
-    "position": "D",
-    "display_name": "Carter Yakemchuk"
   },
   "artem zub": {
     "player_id": 8482245,
@@ -3173,6 +3317,12 @@
     "position": "R",
     "display_name": "Travis Konecny"
   },
+  "porter martone": {
+    "player_id": 8485406,
+    "team": "PHI",
+    "position": "R",
+    "display_name": "Porter Martone"
+  },
   "matvei michkov": {
     "player_id": 8484387,
     "team": "PHI",
@@ -3208,6 +3358,12 @@
     "team": "PHI",
     "position": "D",
     "display_name": "Jamie Drysdale"
+  },
+  "david jiricek": {
+    "player_id": 8483460,
+    "team": "PHI",
+    "position": "D",
+    "display_name": "David Jiricek"
   },
   "noah juulsen": {
     "player_id": 8478454,
@@ -3335,6 +3491,12 @@
     "position": "R",
     "display_name": "Anthony Mantha"
   },
+  "rutger mcgroarty": {
+    "player_id": 8483487,
+    "team": "PIT",
+    "position": "R",
+    "display_name": "Rutger McGroarty"
+  },
   "tommy novak": {
     "player_id": 8478438,
     "team": "PIT",
@@ -3388,6 +3550,12 @@
     "team": "PIT",
     "position": "D",
     "display_name": "Kris Letang"
+  },
+  "jake livanavage": {
+    "player_id": 8486169,
+    "team": "PIT",
+    "position": "D",
+    "display_name": "Jake Livanavage"
   },
   "ryan shea": {
     "player_id": 8478854,
@@ -3485,12 +3653,6 @@
     "position": "C",
     "display_name": "Ben Meyers"
   },
-  "logan morrison": {
-    "player_id": 8483012,
-    "team": "SEA",
-    "position": "C",
-    "display_name": "Logan Morrison"
-  },
   "jaden schwartz": {
     "player_id": 8475768,
     "team": "SEA",
@@ -3581,11 +3743,23 @@
     "position": "G",
     "display_name": "Philipp Grubauer"
   },
+  "nikke kokko": {
+    "player_id": 8483668,
+    "team": "SEA",
+    "position": "G",
+    "display_name": "Nikke Kokko"
+  },
   "matt murray": {
     "player_id": 8476899,
     "team": "SEA",
     "position": "G",
     "display_name": "Matt Murray"
+  },
+  "victor ostman": {
+    "player_id": 8484910,
+    "team": "SEA",
+    "position": "G",
+    "display_name": "Victor Ostman"
   },
   "macklin celebrini": {
     "player_id": 8484801,
@@ -3683,6 +3857,12 @@
     "position": "C",
     "display_name": "Alexander Wennberg"
   },
+  "luca cagnoni": {
+    "player_id": 8484152,
+    "team": "SJS",
+    "position": "D",
+    "display_name": "Luca Cagnoni"
+  },
   "vincent desharnais": {
     "player_id": 8479576,
     "team": "SJS",
@@ -3730,12 +3910,6 @@
     "team": "SJS",
     "position": "G",
     "display_name": "Yaroslav Askarov"
-  },
-  "laurent brossoit": {
-    "player_id": 8476316,
-    "team": "SJS",
-    "position": "G",
-    "display_name": "Laurent Brossoit"
   },
   "alex nedeljkovic": {
     "player_id": 8477968,
@@ -3905,6 +4079,12 @@
     "position": "C",
     "display_name": "Anthony Cirelli"
   },
+  "conor geekie": {
+    "player_id": 8483447,
+    "team": "TBL",
+    "position": "C",
+    "display_name": "Conor Geekie"
+  },
   "zemgus girgensons": {
     "player_id": 8476878,
     "team": "TBL",
@@ -4043,6 +4223,12 @@
     "position": "G",
     "display_name": "Jonas Johansson"
   },
+  "kyle konin": {
+    "player_id": 8483182,
+    "team": "TBL",
+    "position": "G",
+    "display_name": "Kyle Konin"
+  },
   "andrei vasilevskiy": {
     "player_id": 8476883,
     "team": "TBL",
@@ -4066,6 +4252,12 @@
     "team": "TOR",
     "position": "C",
     "display_name": "Bo Groulx"
+  },
+  "luke haymes": {
+    "player_id": 8485467,
+    "team": "TOR",
+    "position": "C",
+    "display_name": "Luke Haymes"
   },
   "calle jarnkrok": {
     "player_id": 8475714,
@@ -4133,6 +4325,12 @@
     "position": "C",
     "display_name": "John Tavares"
   },
+  "ryan tverberg": {
+    "player_id": 8482525,
+    "team": "TOR",
+    "position": "C",
+    "display_name": "Ryan Tverberg"
+  },
   "simon benoit": {
     "player_id": 8481122,
     "team": "TOR",
@@ -4181,6 +4379,18 @@
     "position": "D",
     "display_name": "Chris Tanev"
   },
+  "william villeneuve": {
+    "player_id": 8482174,
+    "team": "TOR",
+    "position": "D",
+    "display_name": "William Villeneuve"
+  },
+  "artur akhtyamov": {
+    "player_id": 8482515,
+    "team": "TOR",
+    "position": "G",
+    "display_name": "Artur Akhtyamov"
+  },
   "anthony stolarz": {
     "player_id": 8476932,
     "team": "TOR",
@@ -4192,12 +4402,6 @@
     "team": "TOR",
     "position": "G",
     "display_name": "Joseph Woll"
-  },
-  "daniil but": {
-    "player_id": 8484388,
-    "team": "UTA",
-    "position": "L",
-    "display_name": "Daniil But"
   },
   "michael carcone": {
     "player_id": 8479619,
@@ -4259,6 +4463,12 @@
     "position": "R",
     "display_name": "JJ Peterka"
   },
+  "kevin rooney": {
+    "player_id": 8479291,
+    "team": "UTA",
+    "position": "C",
+    "display_name": "Kevin Rooney"
+  },
   "nick schmaltz": {
     "player_id": 8477951,
     "team": "UTA",
@@ -4318,6 +4528,12 @@
     "team": "UTA",
     "position": "D",
     "display_name": "Mikhail Sergachev"
+  },
+  "dmitri simashev": {
+    "player_id": 8484386,
+    "team": "UTA",
+    "position": "D",
+    "display_name": "Dmitri Simashev"
   },
   "mackenzie weegar": {
     "player_id": 8477346,
@@ -4391,6 +4607,12 @@
     "position": "C",
     "display_name": "Linus Karlsson"
   },
+  "ty mueller": {
+    "player_id": 8484406,
+    "team": "VAN",
+    "position": "C",
+    "display_name": "Ty Mueller"
+  },
   "drew oconnor": {
     "player_id": 8482055,
     "team": "VAN",
@@ -4445,6 +4667,12 @@
     "position": "D",
     "display_name": "Pierre-Olivier Joseph"
   },
+  "kirill kudryavtsev": {
+    "player_id": 8483467,
+    "team": "VAN",
+    "position": "D",
+    "display_name": "Kirill Kudryavtsev"
+  },
   "victor mancini": {
     "player_id": 8483768,
     "team": "VAN",
@@ -4498,12 +4726,6 @@
     "team": "VGK",
     "position": "L",
     "display_name": "Ivan Barbashev"
-  },
-  "braeden bowman": {
-    "player_id": 8483890,
-    "team": "VGK",
-    "position": "R",
-    "display_name": "Braeden Bowman"
   },
   "pavel dorofeyev": {
     "player_id": 8481604,
@@ -4655,17 +4877,17 @@
     "position": "C",
     "display_name": "Morgan Barron"
   },
+  "nikita chibrikov": {
+    "player_id": 8482787,
+    "team": "WPG",
+    "position": "R",
+    "display_name": "Nikita Chibrikov"
+  },
   "kyle connor": {
     "player_id": 8478398,
     "team": "WPG",
     "position": "L",
     "display_name": "Kyle Connor"
-  },
-  "parker ford": {
-    "player_id": 8484135,
-    "team": "WPG",
-    "position": "C",
-    "display_name": "Parker Ford"
   },
   "alex iafallo": {
     "player_id": 8480113,
@@ -4739,11 +4961,11 @@
     "position": "C",
     "display_name": "Gabriel Vilardi"
   },
-  "danil zhilkin": {
-    "player_id": 8483526,
+  "brayden yager": {
+    "player_id": 8484242,
     "team": "WPG",
     "position": "C",
-    "display_name": "Danil Zhilkin"
+    "display_name": "Brayden Yager"
   },
   "jacob bryson": {
     "player_id": 8480196,
@@ -4859,6 +5081,12 @@
     "position": "L",
     "display_name": "Connor McMichael"
   },
+  "ivan miroshnichenko": {
+    "player_id": 8483491,
+    "team": "WSH",
+    "position": "L",
+    "display_name": "Ivan Miroshnichenko"
+  },
   "alex ovechkin": {
     "player_id": 8471214,
     "team": "WSH",
@@ -4870,6 +5098,12 @@
     "team": "WSH",
     "position": "L",
     "display_name": "Aliaksei Protas"
+  },
+  "ilya protas": {
+    "player_id": 8484999,
+    "team": "WSH",
+    "position": "L",
+    "display_name": "Ilya Protas"
   },
   "justin sourdif": {
     "player_id": 8482088,
@@ -4948,6 +5182,12 @@
     "team": "WSH",
     "position": "G",
     "display_name": "Charlie Lindgren"
+  },
+  "clay stevenson": {
+    "player_id": 8483532,
+    "team": "WSH",
+    "position": "G",
+    "display_name": "Clay Stevenson"
   },
   "logan thompson": {
     "player_id": 8480313,

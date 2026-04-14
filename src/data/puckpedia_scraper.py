@@ -1,27 +1,24 @@
 """
-PuckPedia contract data scraper.
+PuckPedia contract data scraper — team-page architecture.
 
-Fetches current cap hit, contract length, expiry year, and expiry status
-for every active NHL player by scraping individual player pages on puckpedia.com.
+Scrapes one page per team (32 total) instead of one page per player (700+).
+Each team page yields cap hit, expiry year, expiry status, and approximate
+contract length for every player on that roster.
+
+Concurrency : ThreadPoolExecutor, max 8 workers
+Cache       : data/raw/contracts_cache.json, 24-hour TTL
+Matching    : difflib fuzzy-match on normalized names (handles "Last, First"
+              vs "First Last" difference between PuckPedia and NHL API)
 
 robots.txt compliance
-─────────────────────
-PuckPedia's robots.txt restricts *AI training* crawlers (ClaudeBot, GPTBot, etc.)
-by name.  For general user-agents it only disallows admin, auth, and certain
-edit pages — not public player profile pages.  This scraper uses a standard
-browser User-Agent, adds delays between requests, and caches for 24 hours
-to minimise server load.
-
-Architecture
-────────────
-- Cloudflare protection is handled by the `cloudscraper` library.
-- Contract data is parsed from the server-side-rendered summary paragraph
-  that PuckPedia embeds on every player page.
-- Results are cached to data/raw/contracts_cache.json (24-hour TTL).
-- Up to 10 concurrent requests via ThreadPoolExecutor (thread-local scrapers).
-- If a player's page cannot be fetched or parsed, they are flagged as
-  'Contract data unavailable' rather than being dropped.
+---------------------
+PuckPedia's robots.txt restricts AI-training crawlers by name (ClaudeBot,
+GPTBot, etc.). For general user-agents it only disallows admin/auth/edit paths.
+This scraper uses a standard browser User-Agent, caches for 24 h, and scrapes
+32 pages total — far below any reasonable rate limit.
 """
+
+import difflib
 import json
 import re
 import threading
@@ -32,340 +29,266 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
+from bs4 import BeautifulSoup
+
 try:
     import cloudscraper as _cs
     _HAS_CLOUDSCRAPER = True
 except ImportError:
     _HAS_CLOUDSCRAPER = False
 
-RAW_DIR = Path(__file__).parents[2] / "data" / "raw"
+RAW_DIR         = Path(__file__).parents[2] / "data" / "raw"
 CONTRACTS_CACHE = RAW_DIR / "contracts_cache.json"
 CACHE_TTL_HOURS = 24
-BASE_URL = "https://puckpedia.com/player"
-MAX_WORKERS   = 10    # concurrent requests
-REQUEST_DELAY = 0.1   # seconds per request (polite, not blocking)
+BASE_URL        = "https://puckpedia.com/team"
+MAX_WORKERS     = 8
+
+TEAM_SLUGS: dict[str, str] = {
+    "ANA": "anaheim-ducks",
+    "UTA": "utah-hc",
+    "BOS": "boston-bruins",
+    "BUF": "buffalo-sabres",
+    "CAR": "carolina-hurricanes",
+    "CBJ": "columbus-blue-jackets",
+    "CGY": "calgary-flames",
+    "CHI": "chicago-blackhawks",
+    "COL": "colorado-avalanche",
+    "DAL": "dallas-stars",
+    "DET": "detroit-red-wings",
+    "EDM": "edmonton-oilers",
+    "FLA": "florida-panthers",
+    "LAK": "los-angeles-kings",
+    "MIN": "minnesota-wild",
+    "MTL": "montreal-canadiens",
+    "NJD": "new-jersey-devils",
+    "NSH": "nashville-predators",
+    "NYI": "new-york-islanders",
+    "NYR": "new-york-rangers",
+    "OTT": "ottawa-senators",
+    "PHI": "philadelphia-flyers",
+    "PIT": "pittsburgh-penguins",
+    "SEA": "seattle-kraken",
+    "SJS": "san-jose-sharks",
+    "STL": "st-louis-blues",
+    "TBL": "tampa-bay-lightning",
+    "TOR": "toronto-maple-leafs",
+    "VAN": "vancouver-canucks",
+    "VGK": "vegas-golden-knights",
+    "WPG": "winnipeg-jets",
+    "WSH": "washington-capitals",
+}
 
 
 # ── Thread-local scraper ───────────────────────────────────────────────────────
+
 _local = threading.local()
 
 
 def _get_scraper():
-    """Return a thread-local cloudscraper instance (required for thread safety)."""
-    if not hasattr(_local, 'scraper'):
-        _local.scraper = _cs.create_scraper(
-            browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
-        )
+    if not hasattr(_local, "scraper"):
+        if _HAS_CLOUDSCRAPER:
+            _local.scraper = _cs.create_scraper(
+                browser={"browser": "chrome", "platform": "windows", "mobile": False}
+            )
+        else:
+            import requests
+            s = requests.Session()
+            s.headers["User-Agent"] = (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/124.0.0.0 Safari/537.36"
+            )
+            _local.scraper = s
     return _local.scraper
 
 
-# ── Helpers ────────────────────────────────────────────────────────────────────
-def _display_to_slug(display_name: str) -> str:
+# ── Name normalisation ─────────────────────────────────────────────────────────
+
+def _normalize(name: str) -> str:
     """
-    Convert 'FirstName LastName' → 'firstname-lastname' PuckPedia slug.
-    Strips accents, punctuation, and title suffixes (Jr., Sr., etc.).
+    Lowercase, strip accents, remove non-alpha chars.
+    Converts "Last, First" → "first last" (PuckPedia format → standard).
     """
-    name = re.sub(r'\b(Jr\.?|Sr\.?|III?|IV)\b', '', display_name, flags=re.IGNORECASE)
-    nfkd = unicodedata.normalize('NFKD', name)
-    ascii_name = nfkd.encode('ascii', 'ignore').decode('ascii')
-    slug = re.sub(r'[^a-z0-9]+', '-', ascii_name.lower()).strip('-')
-    return slug
+    if "," in name:
+        parts = name.split(",", 1)
+        name = f"{parts[1].strip()} {parts[0].strip()}"
+    nfkd = unicodedata.normalize("NFKD", name)
+    ascii_str = nfkd.encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"[^a-z ]", "", ascii_str.lower()).strip()
 
 
-def _extract_birth_year(html: str) -> Optional[int]:
-    """Extract birth year from PuckPedia's JSON-LD structured data block."""
-    m = re.search(r'"birthDate"\s*:\s*"(\d{4})-\d{2}-\d{2}"', html)
-    return int(m.group(1)) if m else None
-
-
-def _parse_contract(html: str, season_end_year: int) -> Optional[dict]:
-    """
-    Parse contract data from a PuckPedia player page.
-
-    Parses ALL contract entries on the page and selects only the one active
-    in the current season (start_year <= season_start_year AND
-    expiry_year >= season_end_year).  When multiple match, the most recently
-    started contract wins (handles pages where old contract text still appears).
-
-    Two known page formats:
-      (A) Prose: "is signed to N year ... contract [extension] with a cap hit
-          of $X per season ... expires at the end of YYYY-YY season"
-      (B) Tabular: year-range headers followed by "Cap Hit $X" rows (fallback)
-
-    Pitfalls handled:
-      1. Future extensions: "His next contract begins for the YYYY-YY season"
-         is stripped before searching to avoid matching next-contract cap hits.
-      2. Expiry status is extracted from the expiry sentence only, NOT the
-         full page (sidebar widgets contain class="pp-ufa" for UFA eligibility
-         which is unrelated to the current contract status).
-    """
-    season_start_year = season_end_year - 1   # e.g. 2025 for 2025-26
-
-    # ── Capture future-extension block BEFORE stripping it ─────────────────────
-    extension: Optional[dict] = None
-    ext_header = re.search(
-        r'[Hh]is next contract begins for the (\d{4})-\d{2} season',
-        html, re.DOTALL
-    )
-    if ext_header:
-        ext_start_year = int(ext_header.group(1)) + 1   # "2026-27" → 2027 end year
-        # Search window: 600 chars before "His next contract begins" + 600 chars after.
-        # PuckPedia sometimes puts the contract prose BEFORE the "His next contract
-        # begins" clause (all in one sentence), so we look backwards too.
-        ext_window_start = max(0, ext_header.start() - 600)
-        ext_window = html[ext_window_start: ext_header.end() + 600]
-        ext_prose = re.search(
-            r'is signed to (?:a )?(\d+) year[^$]+'
-            r'\$[\d,]+ contract(?:\s+extension)?\s+with a cap hit of \$([\d,]+) per season',
-            ext_window, re.IGNORECASE
-        )
-        if ext_prose:
-            ext_length  = int(ext_prose.group(1))
-            ext_cap_hit = int(ext_prose.group(2).replace(',', ''))
-            ext_expiry_year = ext_start_year + ext_length - 1
-            # Expiry status: check the full extension window
-            ext_status_m = re.search(
-                r'(Unrestricted|Restricted)\s+Free Agent', ext_window, re.IGNORECASE
-            )
-            ext_status = None
-            if ext_status_m:
-                ext_status = ('UFA' if ext_status_m.group(1).lower() == 'unrestricted'
-                              else 'RFA')
-            extension = {
-                'extension_cap_hit':       ext_cap_hit,
-                'extension_start_year':    ext_start_year,
-                'extension_expiry_year':   ext_expiry_year,
-                'extension_length':        ext_length,
-                'extension_expiry_status': ext_status,
-            }
-
-    # ── Strip future-extension block ───────────────────────────────────────────
-    # Cut everything from "His next contract begins" onwards so that extension
-    # prose (cap hit, expiry year) can't leak into the candidates loop.
-    if ext_header:
-        html_work = html[:ext_header.start()]
-    else:
-        html_work = html
-
-    # ── Collect all prose-format contract candidates ───────────────────────────
-    # Anchor on each "expires at the end of YYYY-YY season" sentence, then look
-    # backwards (≤800 chars) for the cap hit + length prose block.
-    candidates = []
-
-    for exp_m in re.finditer(
-        r'expires at the end of the (\d{4})-\d{2} season',
-        html_work, re.IGNORECASE
-    ):
-        expiry_year = int(exp_m.group(1)) + 1   # "2025-26" → 2026
-
-        if expiry_year < season_end_year:
-            continue   # already expired, skip
-
-        window = html_work[max(0, exp_m.start() - 800):exp_m.end() + 200]
-
-        prose_m = re.search(
-            r'is signed to (?:a )?(\d+) year[^$]+'
-            r'\$[\d,]+ contract(?:\s+extension)?\s+with a cap hit of \$([\d,]+) per season',
-            window, re.IGNORECASE
-        )
-        if not prose_m:
-            continue
-
-        contract_years = int(prose_m.group(1))
-        cap_hit        = int(prose_m.group(2).replace(',', ''))
-
-        # First season this contract was active (as end-year, e.g. 2026 = "2025-26")
-        start_end_year = expiry_year - contract_years + 1
-        if start_end_year > season_end_year:
-            continue   # future contract not yet started
-
-        # Extract expiry status from the sentence immediately after expiry anchor
-        exp_context = html_work[exp_m.start(): min(len(html_work), exp_m.end() + 200)]
-        status_m = re.search(r'(Unrestricted|Restricted)\s+Free Agent', exp_context, re.IGNORECASE)
-        expiry_status = (
-            ('UFA' if status_m.group(1).lower() == 'unrestricted' else 'RFA')
-            if status_m else None
-        )
-
-        candidates.append({
-            'cap_hit':        cap_hit,
-            'contract_years': contract_years,
-            'expiry_year':    expiry_year,
-            'expiry_status':  expiry_status,
-            'start_end_year': start_end_year,
-        })
-
-    if candidates:
-        # Most recently started contract covering current season = active contract
-        candidates.sort(key=lambda c: c['start_end_year'], reverse=True)
-        best           = candidates[0]
-        cap_hit        = best['cap_hit']
-        contract_years = best['contract_years']
-        expiry_year    = best['expiry_year']
-        expiry_status  = best['expiry_status']
-    else:
-        # ── Fallback: tabular format ──────────────────────────────────────────
-        cur_season_str = f"{season_end_year - 1}-{str(season_end_year)[-2:]}"
-        tab_m = re.search(
-            rf'{re.escape(cur_season_str)}.{{0,600}}?Cap Hit \$([\d,]+)',
-            html_work, re.IGNORECASE | re.DOTALL
-        )
-        if tab_m:
-            cap_hit        = int(tab_m.group(1).replace(',', ''))
-            contract_years = None
-            exp_m2 = re.search(
-                r'expires at the end of the (\d{4})-\d{2} season', html_work, re.IGNORECASE
-            )
-            expiry_year   = int(exp_m2.group(1)) + 1 if exp_m2 else season_end_year
-            # If the only expiry found is for a future contract, the cap hit in the table
-            # belongs to the current deal which expires this season.
-            if expiry_year > season_end_year:
-                expiry_year = season_end_year
-            expiry_status = None
-        else:
-            # ── Fallback: sidebar "Cap Hit" widget ────────────────────────────
-            # For players who signed an extension: PuckPedia shows only the future
-            # contract in prose, but the sidebar still shows the CURRENT cap hit
-            # under the label "Cap Hit" (distinct from "Next Cap Hit").
-            # The pattern "</i>Cap Hit" uniquely matches the current-deal label.
-            sidebar_m = re.search(
-                r'</i>Cap Hit[\s\S]{0,350}?<span[^>]*val-lg[^>]*>\$([\d,]+)',
-                html_work, re.IGNORECASE
-            )
-            if not sidebar_m:
-                return None
-            cap_hit        = int(sidebar_m.group(1).replace(',', ''))
-            contract_years = None
-            # These players' current contracts expire at the end of this season
-            # (they signed an extension beginning next season).
-            expiry_year   = season_end_year
-            # Use extension's UFA/RFA status; both expiry points share the same status.
-            # Fall back to UFA: players who sign multi-year extensions are typically UFA.
-            expiry_status = (extension.get('extension_expiry_status') or 'UFA'
-                             if extension else 'UFA')
-
-    # ── Resolve expiry status if not yet determined ────────────────────────────
-    if expiry_status is None:
-        status_m = re.search(
-            r'expires at the end of[^.]*?(Unrestricted|Restricted)\s+Free Agent',
-            html_work, re.IGNORECASE
-        )
-        if status_m:
-            expiry_status = 'UFA' if status_m.group(1).lower() == 'unrestricted' else 'RFA'
-        elif re.search(r'Restricted Free Agent', html_work, re.IGNORECASE):
-            expiry_status = 'RFA'
-        elif re.search(r'Unrestricted Free Agent', html_work, re.IGNORECASE):
-            expiry_status = 'UFA'
-        else:
-            expiry_status = 'UFA'
-
-    # UDFA override (always wins)
-    if re.search(r'making \w+ (?:a |an )?UDFA', html_work, re.IGNORECASE):
-        expiry_status = 'UDFA'
-
-    # ── Derived fields ─────────────────────────────────────────────────────────
-    years_left = max(0, expiry_year - season_end_year)
-    year_of_contract = max(1, contract_years - years_left) if contract_years else None
-
-    result = {
-        'cap_hit':            cap_hit,
-        'length_of_contract': contract_years,
-        'expiry_year':        expiry_year,
-        'expiry_status':      expiry_status,
-        'years_left':         years_left,
-        'year_of_contract':   year_of_contract,
-        'has_extension':      extension is not None,
-    }
-    if extension:
-        result.update(extension)
+def _build_name_lookup(roster_lookup: dict) -> dict[str, int]:
+    """normalized display_name → player_id (from NHL API roster)."""
+    result: dict[str, int] = {}
+    for info in roster_lookup.values():
+        pid  = info.get("player_id")
+        name = info.get("display_name", "")
+        if pid and name:
+            result[_normalize(name)] = int(pid)
     return result
 
 
+def _match(scraped_name: str, name_lookup: dict) -> Optional[int]:
+    """Return player_id for scraped_name using exact then fuzzy match."""
+    norm = _normalize(scraped_name)
+    if norm in name_lookup:
+        return name_lookup[norm]
+    hits = difflib.get_close_matches(norm, name_lookup.keys(), n=1, cutoff=0.85)
+    return name_lookup[hits[0]] if hits else None
+
+
+# ── Page parser ────────────────────────────────────────────────────────────────
+
+def _parse_team_page(html: str, season_end_year: int) -> list[dict]:
+    """
+    Parse a PuckPedia team page and return a list of player contract dicts.
+
+    HTML structure (confirmed via inspection):
+      <tr class="group">
+        <td> <a href="/player/slug" translate="no">Last, First</a> … </td>
+        <td data-js="capcol" data-extract_ch="7,000,000" …>  ← current-year cap
+        <td data-js="capcol" data-extract_ch="7,000,000" …>  ← next-year cap
+        …  (up to 7 season columns total)
+        <td data-js="capcol" data-extract_ch="0">
+          <span class="pp-ufa …">UFA</span>   ← first zero column carries status
+        </td>
+      </tr>
+
+    Each non-zero column = one season of the contract, starting from season_end_year.
+    Column index 0 → season_end_year, index 1 → season_end_year + 1, etc.
+    """
+    soup  = BeautifulSoup(html, "lxml")
+    seen  = set()
+    results: list[dict] = []
+
+    for a_tag in soup.find_all("a", href=re.compile(r"^/player/[^/]+$"), translate="no"):
+        name = a_tag.get_text(strip=True)
+        if not name or name in seen:
+            continue
+
+        row = a_tag.find_parent("tr", class_="group")
+        if row is None:
+            continue
+
+        cap_cells = row.find_all("td", attrs={"data-js": "capcol"})
+        if not cap_cells:
+            continue
+
+        # ── Cap hit: first cell's data-extract_ch ─────────────────────────────
+        first_cell = cap_cells[0]
+        raw_ch = first_cell.get("data-extract_ch", "0").replace(",", "")
+        try:
+            cap_hit = int(raw_ch)
+        except ValueError:
+            continue
+        if cap_hit <= 0:
+            continue  # no contract data for this player
+
+        # ── Contract columns: count consecutive non-zero cells ─────────────────
+        nonzero_count = sum(
+            1 for td in cap_cells
+            if td.get("data-extract_ch", "0").replace(",", "").strip() not in ("0", "")
+        )
+
+        # expiry_year: the last season with cap data (end-year format)
+        # e.g. 2 non-zero cols with season_end_year=2026 → 2026, 2027 → expires after 2026-27 → 2027
+        expiry_year = season_end_year + nonzero_count - 1
+
+        # length_of_contract: years remaining (best we can extract from team pages)
+        length_of_contract = nonzero_count
+
+        # ── Expiry status: pp-ufa / pp-rfa span (in the first zero cell) ────────
+        ufa_span = row.find("span", class_="pp-ufa")
+        rfa_span = row.find("span", class_="pp-rfa")
+        if ufa_span:
+            expiry_status = "UFA"
+        elif rfa_span:
+            expiry_status = "RFA"
+        else:
+            # Fallback: check text of the zero cells
+            row_text = row.get_text(" ", strip=True)
+            if re.search(r"\bRFA\b", row_text):
+                expiry_status = "RFA"
+            else:
+                expiry_status = "UFA"  # default to UFA if unknown
+
+        seen.add(name)
+        results.append({
+            "name":               name,
+            "cap_hit":            cap_hit,
+            "length_of_contract": length_of_contract,
+            "expiry_year":        expiry_year,
+            "expiry_status":      expiry_status,
+        })
+
+    return results
+
+
+# ── Team fetcher ───────────────────────────────────────────────────────────────
+
+def _fetch_team(
+    team_abbr: str,
+    slug: str,
+    season_end_year: int,
+) -> tuple[str, list[dict], bool]:
+    """Fetch and parse one team page. Returns (team_abbr, players, had_error)."""
+    url     = f"{BASE_URL}/{slug}"
+    scraper = _get_scraper()
+
+    for attempt in range(2):
+        try:
+            resp = scraper.get(url, timeout=25)
+            if resp.status_code == 200:
+                return team_abbr, _parse_team_page(resp.text, season_end_year), False
+            if attempt == 0:
+                time.sleep(2.0)
+        except Exception:
+            if attempt == 0:
+                time.sleep(2.0)
+
+    return team_abbr, [], True
+
+
 # ── Cache ──────────────────────────────────────────────────────────────────────
+
 def _cache_valid() -> bool:
     if not CONTRACTS_CACHE.exists():
         return False
-    data = json.loads(CONTRACTS_CACHE.read_text(encoding='utf-8'))
-    fetched_at = datetime.fromisoformat(data.get('fetched_at', '2000-01-01'))
-    if fetched_at.tzinfo is None:
-        fetched_at = fetched_at.replace(tzinfo=timezone.utc)
-    age_h = (datetime.now(timezone.utc) - fetched_at).total_seconds() / 3600
-    return age_h < CACHE_TTL_HOURS
+    try:
+        data = json.loads(CONTRACTS_CACHE.read_text(encoding="utf-8"))
+        fetched_at = datetime.fromisoformat(data.get("fetched_at", "2000-01-01"))
+        if fetched_at.tzinfo is None:
+            fetched_at = fetched_at.replace(tzinfo=timezone.utc)
+        age_h = (datetime.now(timezone.utc) - fetched_at).total_seconds() / 3600
+        return age_h < CACHE_TTL_HOURS
+    except Exception:
+        return False
 
 
 def _load_cache() -> dict:
-    data = json.loads(CONTRACTS_CACHE.read_text(encoding='utf-8'))
-    return {int(k): v for k, v in data.get('contracts', {}).items()}
+    data = json.loads(CONTRACTS_CACHE.read_text(encoding="utf-8"))
+    return {int(k): v for k, v in data.get("contracts", {}).items()}
 
 
 def _save_cache(contracts: dict) -> None:
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     payload = {
-        'fetched_at': datetime.now(timezone.utc).isoformat(),
-        'contracts':  {str(k): v for k, v in contracts.items()},
+        "fetched_at": datetime.now(timezone.utc).isoformat(),
+        "contracts":  {str(k): v for k, v in contracts.items()},
     }
-    CONTRACTS_CACHE.write_text(json.dumps(payload, indent=2), encoding='utf-8')
+    CONTRACTS_CACHE.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
-# ── Per-player fetch (runs in thread pool) ─────────────────────────────────────
-def _fetch_one(player: dict, season_end_year: int) -> tuple[int, Optional[dict], bool]:
-    """
-    Fetch and parse one player's contract page.
+# ── Public API ─────────────────────────────────────────────────────────────────
 
-    Disambiguation: PuckPedia appends -2, -3, ... to slugs for players who
-    share a name (e.g. two active NHLers named Elias Pettersson).  When the
-    player dict contains a 'birth_year' key we verify the page's JSON-LD
-    birthDate field; if it doesn't match we try slug-2, slug-3, slug-4 before
-    giving up.  Without birth_year we accept the first successful parse.
-
-    Retries once per URL on transient errors.
-    Returns (player_id, contract_or_None, had_error).
-    """
-    pid        = player['player_id']
-    base_slug  = _display_to_slug(player['display_name'])
-    birth_year = player.get('birth_year')   # int or None
-    scraper    = _get_scraper()
-
-    # Suffixes to try: '' (base), '-2', '-3', '-4'
-    suffixes = [''] + [f'-{i}' for i in range(2, 5)]
-
-    time.sleep(REQUEST_DELAY)
-
-    for suffix in suffixes:
-        slug = base_slug + suffix
-        url  = f"{BASE_URL}/{slug}"
-
-        for attempt in range(2):
-            try:
-                resp = scraper.get(url, timeout=15)
-                if resp.status_code == 404:
-                    break   # this suffix doesn't exist — stop trying it
-                if resp.status_code == 200:
-                    # If we know the expected birth year, verify we have the right page
-                    if birth_year is not None:
-                        page_year = _extract_birth_year(resp.text)
-                        if page_year is not None and page_year != birth_year:
-                            break   # wrong player — try next suffix
-                    return pid, _parse_contract(resp.text, season_end_year), False
-                # Other HTTP error — retry once
-                if attempt == 0:
-                    time.sleep(1.0)
-            except Exception:
-                if attempt == 0:
-                    time.sleep(1.0)
-
-    return pid, None, True   # all suffixes exhausted or all attempts failed
-
-
-# ── Main scrape function ───────────────────────────────────────────────────────
 def scrape_contracts(
     roster_lookup: dict,
     season_end_year: int,
     force_refresh: bool = False,
-    birth_years: Optional[dict] = None,
+    birth_years: dict | None = None,    # kept for signature compat; unused
 ) -> dict:
     """
-    Scrape PuckPedia for contract data for all players in roster_lookup.
+    Scrape PuckPedia contract data by fetching one page per team (32 pages).
 
     Parameters
     ----------
@@ -373,14 +296,14 @@ def scrape_contracts(
                       (from nhl_api.build_roster_lookup)
     season_end_year : e.g. 2026 for the 2025-26 season
     force_refresh   : ignore the 24-hour cache
-    birth_years     : optional player_id (int) → birth_year (int) mapping.
-                      When provided, used to verify each PuckPedia page and
-                      try slug-2 / slug-3 suffixes for name-collision players.
+    birth_years     : unused (kept for backwards-compatibility)
 
     Returns
     -------
     dict : player_id (int) → contract_dict | None
-           None means the player has no current contract on PuckPedia.
+           contract_dict has keys: cap_hit, length_of_contract,
+                                   expiry_year, expiry_status
+           None means the player was not found on any team page.
     """
     if not force_refresh and _cache_valid():
         cached = _load_cache()
@@ -389,60 +312,82 @@ def scrape_contracts(
         return cached
 
     if not _HAS_CLOUDSCRAPER:
-        print("  WARNING: cloudscraper not installed — cannot scrape PuckPedia. "
-              "Run: pip install cloudscraper")
-        return {}
+        try:
+            import requests as _r  # noqa: F401 — requests is a fallback
+        except ImportError:
+            print("  WARNING: neither cloudscraper nor requests installed. "
+                  "Run: pip install cloudscraper")
+            return {}
 
-    # Build unique player list from roster lookup, optionally enriched with birth_year
-    players_seen: dict[int, str] = {}
-    for info in roster_lookup.values():
-        pid  = info.get('player_id')
-        name = info.get('display_name', '')
-        if pid and name:
-            players_seen[int(pid)] = name
+    name_lookup = _build_name_lookup(roster_lookup)
 
-    _birth_years = birth_years or {}
-    players = [
-        {'player_id': pid, 'display_name': name,
-         **({"birth_year": _birth_years[pid]} if pid in _birth_years else {})}
-        for pid, name in players_seen.items()
-    ]
-
-    print(f"Scraping {len(players)} player contracts from PuckPedia "
-          f"({MAX_WORKERS} workers, cached 24 h)...")
-
-    contracts: dict[int, Optional[dict]] = {}
-    errors    = 0
-    done      = 0
-    lock      = threading.Lock()
-
+    print(f"  Scraping 32 PuckPedia team pages ({MAX_WORKERS} workers)…")
     t0 = time.perf_counter()
+
+    all_scraped: list[dict] = []   # {name, cap_hit, …, team_abbr}
+    failed_teams: list[str] = []
+    lock = threading.Lock()
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
         futures = {
-            pool.submit(_fetch_one, p, season_end_year): p
-            for p in players
+            pool.submit(_fetch_team, abbr, slug, season_end_year): abbr
+            for abbr, slug in TEAM_SLUGS.items()
         }
-
         for fut in as_completed(futures):
-            pid, contract, had_error = fut.result()
-
+            abbr, players, had_error = fut.result()
             with lock:
-                contracts[pid] = contract
                 if had_error:
-                    errors += 1
-                done += 1
-                if done % 50 == 0:
-                    have = sum(1 for v in contracts.values() if v)
-                    elapsed = time.perf_counter() - t0
-                    print(f"  {done}/{len(players)} done  "
-                          f"({have} contracts found, {elapsed:.0f}s elapsed)")
+                    failed_teams.append(abbr)
+                else:
+                    for p in players:
+                        all_scraped.append({**p, "_team": abbr})
 
     elapsed = time.perf_counter() - t0
-    have    = sum(1 for v in contracts.values() if v)
-    print(f"  Done. {have}/{len(players)} contracts scraped "
-          f"({errors} fetch errors) in {elapsed:.1f}s  "
-          f"({elapsed/60:.1f} min).")
+    n_teams_ok = len(TEAM_SLUGS) - len(failed_teams)
+    print(f"  {len(all_scraped)} players scraped from {n_teams_ok}/32 teams "
+          f"in {elapsed:.1f}s")
+    if failed_teams:
+        print(f"  !! Failed teams: {', '.join(failed_teams)}")
+
+    # ── Match names → player_ids ───────────────────────────────────────────────
+    contracts: dict[int, Optional[dict]] = {}
+    no_match:  list[str] = []
+
+    for p in all_scraped:
+        pid = _match(p["name"], name_lookup)
+        if pid is None:
+            no_match.append(f"{p['name']} ({p['_team']})")
+            continue
+        # Traded players appear on two rosters; keep the entry with higher cap hit
+        # (the current team's prorated value is lower than the full-season AAV
+        # stored by the other team's page for an extension scenario)
+        if pid in contracts and contracts[pid] is not None:
+            existing_ch = contracts[pid].get("cap_hit", 0)
+            if p["cap_hit"] <= existing_ch:
+                continue  # keep the existing (higher) entry
+
+        contracts[pid] = {
+            "cap_hit":            p["cap_hit"],
+            "length_of_contract": p["length_of_contract"],
+            "expiry_year":        p["expiry_year"],
+            "expiry_status":      p["expiry_status"],
+        }
+
+    # Ensure every roster player has an entry (None = not found on any team page)
+    for info in roster_lookup.values():
+        pid = info.get("player_id")
+        if pid and int(pid) not in contracts:
+            contracts[int(pid)] = None
+
+    matched = sum(1 for v in contracts.values() if v is not None)
+    print(f"  Matched {matched}/{len(all_scraped)} scraped players to player_ids")
+
+    if no_match:
+        print(f"  {len(no_match)} unmatched players (logged below):")
+        for nm in sorted(no_match)[:50]:   # cap at 50 to keep output readable
+            print(f"    - {nm}")
+        if len(no_match) > 50:
+            print(f"    … and {len(no_match) - 50} more")
 
     _save_cache(contracts)
     return contracts

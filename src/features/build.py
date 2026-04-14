@@ -9,41 +9,48 @@ Column sources after load_and_merge():
     expiry_year, expiry_status, years_left
 
   From NHL API stats — current season (blend-projected):
-    gp, g, a, p, ppg, toi_per_g, plus_minus, pim,
-    pp_pts, shots, shooting_pct, faceoff_pct, g60, p60
+    gp, g, a, toi_per_g, plus_minus, pim,
+    pp_pts, shots, shooting_pct, faceoff_pct, g60
 
   From NHL API stats — prior season (actual):
-    gp_24, ppg_24, toi_per_g_24, plus_minus_24,
-    g60_24, p60_24, pp_pts_24, shots_24, shooting_pct_24
+    gp_24, toi_per_g_24, plus_minus_24,
+    p60_24, pp_pts_24, shots_24, shooting_pct_24
 
   From NHL API landing (draft / bio):
-    draft_year, draft_position, birth_date
+    draft_position, birth_date
+
+Dropped (multicollinearity):
+  p       (= g + a)
+  ppg     (= p / gp)
+  ppg_24  (= prior-season p / gp)
+  ppg_2yr_avg (derived from two dropped columns)
+  p60     (= p scaled by TOI)
+  p60_24  (= prior-season p scaled by TOI)
+  g60_24  (prior-year rate; raw counting stats already cover this)
+  draft_year (near-collinear with age; draft_position/draft_tier capture pedigree)
 """
 import numpy as np
 import pandas as pd
+from src.features.cluster import fit_and_apply
 
 # ── Feature lists ──────────────────────────────────────────────────────────────
 NUMERIC_FEATURES = [
-    # Contract
+    # Bio / contract
     "age",
     "draft_position",           # sentinel 999 = undrafted
-    "draft_year",               # sentinel 9999 = unknown
     "length_of_contract",
     "year_of_contract",
     # Current-season (blend-projected) on-ice
-    "gp", "g", "a", "p", "ppg",
+    "gp", "a",
     "toi_per_g",
     "plus_minus", "pim",
     "pp_pts", "shots", "shooting_pct", "faceoff_pct",
-    "g60", "p60",
+    "g60",
     # Prior-season (NHL API actual)
-    "gp_24", "ppg_24",
-    "toi_per_g_24", "plus_minus_24",
-    "g60_24", "p60_24",
-    "pp_pts_24", "shooting_pct_24",
-    # Engineered
-    "years_left",
-    "ppg_2yr_avg",
+    "gp_24",
+    "plus_minus_24",
+    "p60_24",
+    "shooting_pct_24",
 ]
 
 CATEGORICAL_FEATURES = [
@@ -67,7 +74,6 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 
     # ── Draft sentinels ────────────────────────────────────────────────────────
     df["draft_position"] = pd.to_numeric(df["draft_position"], errors="coerce").fillna(999)
-    df["draft_year"]     = pd.to_numeric(df["draft_year"],     errors="coerce").fillna(9999)
 
     def _draft_tier(pos):
         if pos >= 999: return "undrafted"
@@ -81,15 +87,11 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     if "years_left" not in df.columns:
         df["years_left"] = np.nan
 
-    # ── 2-year PPG average ─────────────────────────────────────────────────────
-    df["ppg_24"]      = pd.to_numeric(df.get("ppg_24",  np.nan), errors="coerce")
-    df["ppg_2yr_avg"] = df[["ppg", "ppg_24"]].mean(axis=1, skipna=True)
-
     # ── Flags ──────────────────────────────────────────────────────────────────
     if "has_contract_data" not in df.columns:
         df["has_contract_data"] = df["cap_hit"].notna()
     if "has_prior_market_data" not in df.columns:
-        df["has_prior_market_data"] = df["ppg_24"].notna()
+        df["has_prior_market_data"] = df.get("p60_24", pd.Series(dtype=float)).notna()
 
     # ── Faceoff% — null out for non-centers (wings/D take almost no faceoffs) ──
     # Leaving 0.0 for non-centers pollutes the feature; NaN → imputed to median.
@@ -111,6 +113,9 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
             # Convert to str first so fillna works regardless of current dtype
             df[col] = df[col].astype(str).replace({"None": "UFA", "nan": "UFA"})
             df[col] = df[col].astype("category")
+
+    # ── Role clustering + performance scoring ──────────────────────────────────
+    df, _, _ = fit_and_apply(df)
 
     return df
 
