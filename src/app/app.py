@@ -761,6 +761,42 @@ _DARK_CSS  = """<style>
 
   /* ── Theme toggle button: moon icon (dark mode active) ── */
   [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234FD1C5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
+
+  /* ══════════ Responsive ══════════ */
+  @media (max-width: 900px) {
+    .block-container { padding-top: 1.25rem !important; padding-bottom: 1.5rem !important; padding-left: 14px !important; padding-right: 14px !important; }
+    .rink-brand { flex-wrap: wrap; row-gap: 4px; }
+    .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; }
+    .rink-footer { flex-direction: column; gap: 6px; }
+    /* Tab icons off, tighter tabs, allow horizontal scroll */
+    [data-baseweb="tab-list"] { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    [data-baseweb="tab-list"]::-webkit-scrollbar { display: none; }
+    [data-baseweb="tab"] { padding: 0 12px !important; font-size: 0.85rem !important; height: 42px !important; flex-shrink: 0 !important; }
+    [data-baseweb="tab"]::before { display: none !important; margin-right: 0 !important; }
+    [data-testid="stMetric"] { padding: 12px 14px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.5rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.64rem !important; }
+    .player-hero { padding: 20px 22px; border-radius: 12px; }
+    .player-hero .name { font-size: 1.9rem; }
+    .rink-card { padding: 14px 16px; }
+    .rink-card .value { font-size: 1.25rem; }
+    .player-card, .kings-card { padding: 14px 16px; border-radius: 10px; }
+    h1 { font-size: 1.9rem !important; }
+    h2 { font-size: 1.35rem !important; }
+    h3 { font-size: 1.1rem !important; }
+  }
+  @media (max-width: 600px) {
+    .rink-brand .logo { font-size: 1.15rem; }
+    .rink-brand .tag { font-size: 0.66rem; }
+    [data-testid="stMetric"] { padding: 10px 12px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.25rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.6rem !important; letter-spacing: 0.1em !important; }
+    [data-testid="stMetricDelta"] { font-size: 0.7rem !important; }
+    .player-hero { padding: 16px 18px; }
+    .player-hero .name { font-size: 1.55rem; }
+    .player-hero .meta { font-size: 0.72rem; }
+    .signal-badge, .verdict-pill { font-size: 0.62rem; padding: 2px 7px; }
+  }
 </style>"""
 _LIGHT_CSS = """<style>
   :root {
@@ -926,6 +962,41 @@ _LIGHT_CSS = """<style>
 
   /* ── Theme toggle button: sun icon (light mode active) ── */
   [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230B0D10' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='5'/><line x1='12' y1='1' x2='12' y2='3'/><line x1='12' y1='21' x2='12' y2='23'/><line x1='4.22' y1='4.22' x2='5.64' y2='5.64'/><line x1='18.36' y1='18.36' x2='19.78' y2='19.78'/><line x1='1' y1='12' x2='3' y2='12'/><line x1='21' y1='12' x2='23' y2='12'/><line x1='4.22' y1='19.78' x2='5.64' y2='18.36'/><line x1='18.36' y1='5.64' x2='19.78' y2='4.22'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
+
+  /* ══════════ Responsive ══════════ */
+  @media (max-width: 900px) {
+    .block-container { padding-top: 1.25rem !important; padding-bottom: 1.5rem !important; padding-left: 14px !important; padding-right: 14px !important; }
+    .rink-brand { flex-wrap: wrap; row-gap: 4px; }
+    .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; }
+    .rink-footer { flex-direction: column; gap: 6px; }
+    [data-baseweb="tab-list"] { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    [data-baseweb="tab-list"]::-webkit-scrollbar { display: none; }
+    [data-baseweb="tab"] { padding: 0 12px !important; font-size: 0.85rem !important; height: 42px !important; flex-shrink: 0 !important; }
+    [data-baseweb="tab"]::before { display: none !important; margin-right: 0 !important; }
+    [data-testid="stMetric"] { padding: 12px 14px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.5rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.64rem !important; }
+    .player-hero { padding: 20px 22px; border-radius: 12px; }
+    .player-hero .name { font-size: 1.9rem; }
+    .rink-card { padding: 14px 16px; }
+    .rink-card .value { font-size: 1.25rem; }
+    .player-card, .kings-card { padding: 14px 16px; border-radius: 10px; }
+    h1 { font-size: 1.9rem !important; }
+    h2 { font-size: 1.35rem !important; }
+    h3 { font-size: 1.1rem !important; }
+  }
+  @media (max-width: 600px) {
+    .rink-brand .logo { font-size: 1.15rem; }
+    .rink-brand .tag { font-size: 0.66rem; }
+    [data-testid="stMetric"] { padding: 10px 12px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.25rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.6rem !important; letter-spacing: 0.1em !important; }
+    [data-testid="stMetricDelta"] { font-size: 0.7rem !important; }
+    .player-hero { padding: 16px 18px; }
+    .player-hero .name { font-size: 1.55rem; }
+    .player-hero .meta { font-size: 0.72rem; }
+    .signal-badge, .verdict-pill { font-size: 0.62rem; padding: 2px 7px; }
+  }
 </style>"""
 
 
