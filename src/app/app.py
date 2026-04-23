@@ -821,39 +821,93 @@ _DARK_CSS  = """<style>
     [data-baseweb="tab"]::before { display: none !important; margin-right: 0 !important; }
   }
 
-  /* @720px in RINK-1: container padding 18px, page-hero 32/24, lb-row 3-col,
-     player-hero 120px portrait + 2-col valueblock, comps-grid 1-col */
+  /* @720px: phone. Reposition st.tabs as a fixed bottom nav. */
   @media (max-width: 720px) {
-    /* RINK-1 line 95: .container { padding: 0 18px; } */
-    .block-container { padding-top: 1rem !important; padding-bottom: 1.25rem !important; padding-left: 18px !important; padding-right: 18px !important; }
-    /* RINK-1 line 221: .page-hero { padding: 32px 0 24px; } */
+    /* RINK-1 line 95: .container { padding: 0 18px; } + bottom-nav clearance */
+    .block-container { padding-top: 1rem !important; padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; padding-left: 18px !important; padding-right: 18px !important; }
     .rink-brand { padding: 0 0 10px; margin-bottom: 18px; }
-    /* Force single-column for st.columns when we're in phone territory.
-       RINK-1 sets comps-grid, split, and the player-hero's valueblock
-       to 1-col at this breakpoint. Rather than try to detect which block
-       is which, collapse all 3+ col rows to the stricter 160px basis —
-       2 cards per row on a typical phone (390px - 36px padding = 354px). */
+
+    /* ── Bottom tab nav (replaces st.tabs top strip) ── */
+    [data-baseweb="tab-list"] {
+      position: fixed !important;
+      bottom: 0 !important; left: 0 !important; right: 0 !important;
+      z-index: 100 !important;
+      background: #0E1013 !important;
+      border-top: 1px solid #262B33 !important;
+      border-bottom: none !important;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.4) !important;
+      height: calc(62px + env(safe-area-inset-bottom)) !important;
+      padding: 0 4px env(safe-area-inset-bottom) !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      justify-content: space-around !important;
+      align-items: stretch !important;
+      gap: 0 !important;
+      overflow: visible !important;
+    }
+    [data-baseweb="tab"] {
+      flex: 1 1 0 !important;
+      min-width: 0 !important;
+      height: 62px !important;
+      padding: 6px 2px 4px !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 0.62rem !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: uppercase !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 5px !important;
+      color: #8A8F99 !important;
+      border-bottom: none !important;
+      border-top: 2px solid transparent !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      text-overflow: ellipsis !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+    }
+    /* Restore tab icons — stacked above label, enlarged */
+    [data-baseweb="tab"]::before {
+      display: block !important;
+      margin: 0 !important;
+      transform: scale(1.3) !important;
+      vertical-align: baseline !important;
+      line-height: 0 !important;
+    }
+    [aria-selected="true"][data-baseweb="tab"] {
+      color: #4FD1C5 !important;
+      border-top: 2px solid #4FD1C5 !important;
+      border-bottom: none !important;
+      background: rgba(79,209,197,0.07) !important;
+      font-family: 'Inter', sans-serif !important;
+      font-style: normal !important;
+    }
+
+    /* Column reflow — 2 per row at phone width */
     [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 160px !important; }
-    /* Metrics: RINK-1 kpi-value 34px -> 26px at 480, so at 720 a middle size */
     [data-testid="stMetric"] { padding: 14px 16px !important; }
     [data-testid="stMetricValue"] { font-size: 1.6rem !important; }
     [data-testid="stMetricLabel"] { font-size: 0.66rem !important; letter-spacing: 0.1em !important; }
     [data-testid="stMetricDelta"] { font-size: 0.72rem !important; }
-    /* RINK-1 line 522: player-hero gets 120px portrait + tight padding */
     .player-hero { padding: 22px 20px; border-radius: 12px; }
     .player-hero .name { font-size: 1.9rem; line-height: 1.1; }
     .player-hero .meta { font-size: 0.74rem; }
-    /* RINK-1 line 571: valueblock grid-template-columns: 1fr 1fr; value font 22px */
     .rink-card { padding: 14px 16px; }
     .rink-card .value { font-size: 1.25rem; }
     .player-card, .kings-card { padding: 14px 16px; border-radius: 10px; }
-    /* RINK-1 lb-row collapses to rank+name+value only (no bar, no pct) */
     .lb-bar-wrap, .lb-pct { display: none !important; }
     h1 { font-size: 1.8rem !important; }
     h2 { font-size: 1.3rem !important; }
     h3 { font-size: 1.05rem !important; }
-    /* Fit Plotly charts to the narrow width so they don't horizontal-scroll */
     .js-plotly-plot, .plot-container { width: 100% !important; }
+    /* Sidebar collapse nudge on mobile — Streamlit's default is open. Hide the
+       toggle-arrow shadow that lingers over content. */
+    section[data-testid="stSidebar"] { z-index: 99 !important; }
   }
 
   /* @480px in RINK-1: kpi-value 26px. Phone-portrait small screens. */
@@ -1070,8 +1124,69 @@ _LIGHT_CSS = """<style>
     [data-baseweb="tab"]::before { display: none !important; margin-right: 0 !important; }
   }
   @media (max-width: 720px) {
-    .block-container { padding-top: 1rem !important; padding-bottom: 1.25rem !important; padding-left: 18px !important; padding-right: 18px !important; }
+    .block-container { padding-top: 1rem !important; padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; padding-left: 18px !important; padding-right: 18px !important; }
     .rink-brand { padding: 0 0 10px; margin-bottom: 18px; }
+
+    /* Bottom tab nav (light) */
+    [data-baseweb="tab-list"] {
+      position: fixed !important;
+      bottom: 0 !important; left: 0 !important; right: 0 !important;
+      z-index: 100 !important;
+      background: #F5F2EC !important;
+      border-top: 1px solid #E4DFD5 !important;
+      border-bottom: none !important;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.08) !important;
+      height: calc(62px + env(safe-area-inset-bottom)) !important;
+      padding: 0 4px env(safe-area-inset-bottom) !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      justify-content: space-around !important;
+      align-items: stretch !important;
+      gap: 0 !important;
+      overflow: visible !important;
+    }
+    [data-baseweb="tab"] {
+      flex: 1 1 0 !important;
+      min-width: 0 !important;
+      height: 62px !important;
+      padding: 6px 2px 4px !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 0.62rem !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: uppercase !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 5px !important;
+      color: #6A6F78 !important;
+      border-bottom: none !important;
+      border-top: 2px solid transparent !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      text-overflow: ellipsis !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+    }
+    [data-baseweb="tab"]::before {
+      display: block !important;
+      margin: 0 !important;
+      transform: scale(1.3) !important;
+      vertical-align: baseline !important;
+      line-height: 0 !important;
+    }
+    [aria-selected="true"][data-baseweb="tab"] {
+      color: #2E6FA8 !important;
+      border-top: 2px solid #2E6FA8 !important;
+      border-bottom: none !important;
+      background: rgba(46,111,168,0.07) !important;
+      font-family: 'Inter', sans-serif !important;
+      font-style: normal !important;
+    }
+
     [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 160px !important; }
     [data-testid="stMetric"] { padding: 14px 16px !important; }
     [data-testid="stMetricValue"] { font-size: 1.6rem !important; }
@@ -1088,6 +1203,7 @@ _LIGHT_CSS = """<style>
     h2 { font-size: 1.3rem !important; }
     h3 { font-size: 1.05rem !important; }
     .js-plotly-plot, .plot-container { width: 100% !important; }
+    section[data-testid="stSidebar"] { z-index: 99 !important; }
   }
   @media (max-width: 480px) {
     .block-container { padding-left: 14px !important; padding-right: 14px !important; }
