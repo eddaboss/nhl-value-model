@@ -400,23 +400,26 @@ def _set_theme(dark: bool) -> None:
     global _T
     if dark:
         _T.update({
-            "page_text":     "#E8E6E1",
-            "plot_paper":    "#0B0D10",
-            "plot_bg":       "#0B0D10",
-            "plot_font":     "#7A8089",
-            "grid":          "#262A31",
-            "grid_alt":      "#262A31",
-            "zero":          "#343944",
-            "legend_bg":     "#14171C",
-            "card_bg":       "#14171C",
-            "card_border":   "#262A31",
-            "card_text":     "#E8E6E1",
-            "card_subtext":  "#7A8089",
-            "card_header":   "#1B1F26",
-            "row_divider":   "#262A31",
-            "accent":        "#E8E6E1",
-            "positive":      "#7ECBA0",
-            "negative":      "#E3725C",
+            "page_text":     "#F2EEE5",
+            "plot_paper":    "#0E1013",
+            "plot_bg":       "#0E1013",
+            "plot_font":     "#8A8F99",
+            "grid":          "#262B33",
+            "grid_alt":      "#262B33",
+            "zero":          "#343A44",
+            "legend_bg":     "#1A1E24",
+            "card_bg":       "#1A1E24",
+            "card_border":   "#262B33",
+            "card_text":     "#F2EEE5",
+            "card_subtext":  "#8A8F99",
+            "card_header":   "#14171C",
+            "row_divider":   "#262B33",
+            "accent":        "#F2EEE5",
+            "accent_ice":    "#4FD1C5",
+            "accent_purple": "#A78BFA",
+            "gold":          "#E5B664",
+            "positive":      "#7DD87A",
+            "negative":      "#F07A7A",
         })
     else:
         _T.update({
@@ -542,7 +545,7 @@ CAP_CEILING = 95_500_000
 _FONT_LINK = """
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 """
 
 # ── Inline SVG icons (currentColor — use in st.markdown with unsafe_allow_html) ─
@@ -562,150 +565,154 @@ _ICONS = {
 _DARK_CSS  = """<style>
   :root {
     --font: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
-    --ink:#0B0D10; --panel:#14171C; --panel-2:#1B1F26;
-    --line:#262A31; --line-2:#343944;
-    --text:#E8E6E1; --text-2:#B3B6BD; --muted:#7A8089; --muted-2:#555963;
-    --green:#7ECBA0; --red:#E3725C;
+    --ink:#0E1013; --panel:#1A1E24; --panel-2:#14171C;
+    --line:#262B33; --line-2:#343A44;
+    --text:#F2EEE5; --text-2:#B8BDC5; --muted:#8A8F99; --muted-2:#5A5F69;
+    --accent:#4FD1C5; --accent-2:#A78BFA; --gold:#E5B664;
+    --green:#7DD87A; --red:#F07A7A;
   }
   footer { visibility: hidden; }
   .block-container { padding-top: 2.5rem !important; padding-bottom: 2rem !important; }
 
   /* ── Page surfaces ── */
-  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #0B0D10 !important; }
+  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #0E1013 !important; }
 
   /* ── Base typography ── */
   html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
   p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'Inter', sans-serif !important; }
   h1, h2, h3,
   [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
-      font-family: 'Fraunces', serif !important; font-weight: 500 !important;
-      font-variation-settings: "opsz" 144 !important;
-      line-height: 1.06 !important; letter-spacing: -0.02em !important; color: #E8E6E1 !important;
+      font-family: 'Space Grotesk', sans-serif !important; font-weight: 600 !important;
+      line-height: 1.15 !important; letter-spacing: -0.01em !important; color: #F2EEE5 !important;
   }
 
   /* ── Metric tiles ── */
   [data-testid="stMetric"] {
-      background: transparent !important; border: none !important;
-      border-radius: 0 !important; padding: 16px 2px 12px !important; box-shadow: none !important;
+      background: #1A1E24 !important; border: 1px solid #262B33 !important;
+      border-radius: 10px !important; padding: 18px 20px !important; box-shadow: none !important;
   }
   [data-testid="stMetricLabel"] {
-      font-family: 'JetBrains Mono', monospace !important; font-size: 0.66rem !important;
-      letter-spacing: 0.14em !important; text-transform: uppercase !important; color: #7A8089 !important;
+      font-family: 'JetBrains Mono', monospace !important; font-size: 0.72rem !important;
+      letter-spacing: 0.08em !important; text-transform: uppercase !important; color: #8A8F99 !important;
   }
   [data-testid="stMetricValue"] {
-      font-family: 'Fraunces', serif !important; font-size: 2.5rem !important;
-      font-variation-settings: "opsz" 144 !important;
-      line-height: 1.0 !important; letter-spacing: -0.02em !important; font-weight: 500 !important; color: #E8E6E1 !important;
+      font-family: 'Space Grotesk', sans-serif !important; font-size: 1.9rem !important;
+      line-height: 1.0 !important; letter-spacing: -0.01em !important; font-weight: 500 !important; color: #F2EEE5 !important;
   }
   [data-testid="stMetricDelta"] { font-family: 'JetBrains Mono', monospace !important; font-size: 0.78rem !important; }
 
   /* ── Tabs ── */
   [data-baseweb="tab-list"] {
-      gap: 0 !important; background: transparent !important; padding-bottom: 0 !important;
-      margin-bottom: 24px !important; border-bottom: 1px solid #262A31 !important;
+      gap: 4px !important; background: transparent !important; padding-bottom: 0 !important;
+      margin-bottom: 24px !important; border-bottom: 1px solid #262B33 !important;
   }
   [data-baseweb="tab"] {
-      font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important;
-      letter-spacing: 0.1em !important; text-transform: uppercase !important;
-      padding: 12px 22px !important; border-radius: 0 !important;
+      font-family: 'Space Grotesk', sans-serif !important; font-size: 0.95rem !important;
+      letter-spacing: 0.01em !important; text-transform: none !important; font-weight: 500 !important;
+      padding: 0 18px !important; height: 46px !important; border-radius: 0 !important;
       background: transparent !important; border-bottom: 2px solid transparent !important;
-      margin-bottom: -1px !important; color: #7A8089 !important;
+      margin-bottom: -1px !important; color: #8A8F99 !important;
   }
-  [data-baseweb="tab"]:hover { color: #B3B6BD !important; }
+  [data-baseweb="tab"]:hover { color: #F2EEE5 !important; }
   [aria-selected="true"][data-baseweb="tab"] {
-      color: #E8E6E1 !important; border-bottom: 2px solid #E8E6E1 !important;
-      font-style: italic !important; font-family: 'Fraunces', serif !important;
-      font-variation-settings: "opsz" 14 !important;
+      color: #F2EEE5 !important; border-bottom: 2px solid #4FD1C5 !important;
+      background: transparent !important;
+      font-style: normal !important; font-family: 'Space Grotesk', sans-serif !important;
   }
 
   /* ── Cards ── */
-  .player-card { border-radius: 8px; padding: 20px 24px; margin-bottom: 14px; background: #14171C; border: 1px solid #262A31; }
-  .kings-card  { border-radius: 4px; padding: 18px 22px; margin-bottom: 6px; background: #14171C; border: 1px solid #262A31; transition: border-color 140ms, background 140ms; }
-  .kings-card:hover { background: #1B1F26; border-color: #343944; }
+  .player-card { border-radius: 12px; padding: 20px 22px; margin-bottom: 12px; background: #1A1E24; border: 1px solid #262B33; }
+  .kings-card  { border-radius: 10px; padding: 18px 22px; margin-bottom: 8px; background: #1A1E24; border: 1px solid #262B33; transition: border-color 140ms, background 140ms; }
+  .kings-card:hover { background: #14171C; border-color: #4FD1C5; }
 
   /* ── Typography classes ── */
-  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #7A8089; }
-  .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #E8E6E1; font-feature-settings: "tnum" 1; }
-  .delta-pos  { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: #7ECBA0; font-feature-settings: "tnum" 1; }
-  .delta-neg  { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: #E3725C; font-feature-settings: "tnum" 1; }
-  .pct-pos    { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #7ECBA0; }
-  .pct-neg    { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #E3725C; }
-  .section-header { font-family: 'Fraunces', serif; font-variation-settings: "opsz" 144; font-size: 1.8rem; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; margin-bottom: 8px; color: #E8E6E1; }
-  .group-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; margin: 24px 0 12px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; color: #7A8089; }
-  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #fff !important; }
-  .kings-gold { color: #E8E6E1; font-weight: 600; }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8A8F99; }
+  .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #F2EEE5; font-feature-settings: "tnum" 1; }
+  .delta-pos  { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: #7DD87A; font-feature-settings: "tnum" 1; }
+  .delta-neg  { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: #F07A7A; font-feature-settings: "tnum" 1; }
+  .pct-pos    { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #7DD87A; }
+  .pct-neg    { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #F07A7A; }
+  .section-header { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 500; letter-spacing: -0.01em; line-height: 1.15; margin-bottom: 8px; color: #F2EEE5; }
+  .group-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; margin: 24px 0 12px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; color: #8A8F99; }
+  .signal-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #fff !important; }
+  .kings-gold { color: #E5B664; font-weight: 600; }
 
   /* ── Sidebar ── */
-  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #0B0D10 !important; border-right: 1px solid #262A31 !important; }
+  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #0E1013 !important; border-right: 1px solid #262B33 !important; }
   [data-testid="stSidebar"] label, [data-testid="stSidebar"] p,
   [data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
-  [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #E8E6E1 !important; }
-  [data-testid="stSidebar"] .stCaptionContainer p { color: #7A8089 !important; }
+  [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #F2EEE5 !important; }
+  [data-testid="stSidebar"] .stCaptionContainer p { color: #8A8F99 !important; }
 
   /* ── Expanders ── */
   [data-testid="stExpander"],
   [data-testid="stExpander"] > *,
   [data-testid="stExpander"] details,
   [data-testid="stExpander"] details > div { border: none !important; outline: none !important; box-shadow: none !important; }
-  [data-testid="stExpander"] { background-color: #14171C !important; border-radius: 8px !important; }
-  [data-testid="stExpander"] details { background-color: #14171C !important; }
-  [data-testid="stExpander"] details summary { background-color: #1B1F26 !important; color: #E8E6E1 !important; border: none !important; }
-  [data-testid="stExpander"] details > div { background-color: #14171C !important; }
+  [data-testid="stExpander"] { background-color: #1A1E24 !important; border-radius: 10px !important; }
+  [data-testid="stExpander"] details { background-color: #1A1E24 !important; }
+  [data-testid="stExpander"] details summary { background-color: #14171C !important; color: #F2EEE5 !important; border: none !important; }
+  [data-testid="stExpander"] details > div { background-color: #1A1E24 !important; }
   details summary p { font-family: 'Inter', sans-serif !important; font-size: 0.85rem !important; letter-spacing: 0.04em !important; }
 
   /* ── Captions & text ── */
-  [data-testid="stCaptionContainer"] p { font-family: 'JetBrains Mono', monospace !important; font-size: 0.78rem !important; color: #7A8089 !important; letter-spacing: 0.04em !important; }
-  [data-testid="stMarkdownContainer"] p { color: #E8E6E1 !important; }
-  [data-testid="stMainBlockContainer"] p, [data-testid="stMainBlockContainer"] li { color: #E8E6E1 !important; }
-  .stCaptionContainer p { color: #7A8089 !important; }
-  [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #7A8089 !important; font-family: 'JetBrains Mono', monospace !important; font-size: 0.72rem !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
+  [data-testid="stCaptionContainer"] p { font-family: 'JetBrains Mono', monospace !important; font-size: 0.78rem !important; color: #8A8F99 !important; letter-spacing: 0.04em !important; }
+  [data-testid="stMarkdownContainer"] p { color: #F2EEE5 !important; }
+  [data-testid="stMainBlockContainer"] p, [data-testid="stMainBlockContainer"] li { color: #F2EEE5 !important; }
+  .stCaptionContainer p { color: #8A8F99 !important; }
+  [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #8A8F99 !important; font-family: 'JetBrains Mono', monospace !important; font-size: 0.72rem !important; letter-spacing: 0.08em !important; text-transform: uppercase !important; }
 
   /* ── Inputs ── */
   input, [data-baseweb="input"] input {
-      border-radius: 4px !important; font-family: 'Inter', sans-serif !important;
-      background: #14171C !important; border-color: #262A31 !important; color: #E8E6E1 !important;
+      border-radius: 8px !important; font-family: 'Inter', sans-serif !important;
+      background: #1A1E24 !important; border-color: #262B33 !important; color: #F2EEE5 !important;
   }
-  input:focus, [data-baseweb="input"] input:focus { border-color: #343944 !important; }
+  input:focus, [data-baseweb="input"] input:focus { border-color: #4FD1C5 !important; box-shadow: none !important; }
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { border-radius: 10px; background: #262A31; }
-  ::-webkit-scrollbar-thumb:hover { background: #343944; }
-  hr { margin: 24px 0 !important; border-color: #262A31 !important; }
+  ::-webkit-scrollbar-thumb { border-radius: 10px; background: #262B33; }
+  ::-webkit-scrollbar-thumb:hover { background: #343A44; }
+  hr { margin: 24px 0 !important; border-color: #262B33 !important; }
 
   /* ── Buttons ── */
   [data-testid="stButton"] button {
-      background: #14171C !important; color: #E8E6E1 !important;
-      border: 1px solid #262A31 !important; border-radius: 4px !important;
-      font-family: 'Inter', sans-serif !important; font-weight: 500 !important;
-      transition: border-color 140ms, background 140ms !important;
+      background: #1A1E24 !important; color: #F2EEE5 !important;
+      border: 1px solid #262B33 !important; border-radius: 8px !important;
+      font-family: 'Space Grotesk', sans-serif !important; font-weight: 500 !important;
+      padding: 6px 16px !important;
+      transition: border-color 140ms, color 140ms !important;
   }
-  [data-testid="stButton"] button:hover { background: #1B1F26 !important; border-color: #343944 !important; }
+  [data-testid="stButton"] button:hover { border-color: #4FD1C5 !important; color: #4FD1C5 !important; }
 
   /* ── Selectbox ── */
-  [data-baseweb="select"] > div { background: #14171C !important; border-color: #262A31 !important; border-radius: 4px !important; }
-  [data-baseweb="select"] span, [data-baseweb="select"] div { color: #E8E6E1 !important; }
-  [data-baseweb="select"] svg { fill: #7A8089 !important; }
-  [data-baseweb="popover"] { background: #14171C !important; }
-  [data-baseweb="menu"] { background: #14171C !important; border: 1px solid #262A31 !important; border-radius: 4px !important; }
-  [data-baseweb="menu-item"], [role="option"] { color: #E8E6E1 !important; background: #14171C !important; }
-  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #1B1F26 !important; }
+  [data-baseweb="select"] > div { background: #1A1E24 !important; border-color: #262B33 !important; border-radius: 8px !important; }
+  [data-baseweb="select"] span, [data-baseweb="select"] div { color: #F2EEE5 !important; }
+  [data-baseweb="select"] svg { fill: #8A8F99 !important; }
+  [data-baseweb="popover"] { background: #1A1E24 !important; }
+  [data-baseweb="menu"] { background: #1A1E24 !important; border: 1px solid #262B33 !important; border-radius: 8px !important; }
+  [data-baseweb="menu-item"], [role="option"] { color: #F2EEE5 !important; background: #1A1E24 !important; }
+  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #14171C !important; }
 
   /* ── Slider ── */
-  [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #262A31 !important; }
+  [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #262B33 !important; }
+  [data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] { background: #4FD1C5 !important; border-color: #4FD1C5 !important; }
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
-  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #7A8089 !important; }
+  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #8A8F99 !important; }
 
   /* ── Number input ── */
   [data-testid="stNumberInput"] input {
-      background: #14171C !important; color: #E8E6E1 !important;
-      border-color: #262A31 !important; border-radius: 4px !important;
+      background: #1A1E24 !important; color: #F2EEE5 !important;
+      border-color: #262B33 !important; border-radius: 8px !important;
       font-family: 'JetBrains Mono', monospace !important;
   }
-  [data-testid="stNumberInput"] input:focus { border-color: #343944 !important; box-shadow: none !important; }
-  [data-testid="stNumberInput"] button { background: #14171C !important; border-color: #262A31 !important; color: #7A8089 !important; }
-  [data-testid="stNumberInput"] button svg { fill: #7A8089 !important; }
-  [data-testid="stNumberInput"] button:hover { border-color: #343944 !important; color: #E8E6E1 !important; }
-  [data-testid="stNumberInput"] button:hover svg { fill: #E8E6E1 !important; }
+  [data-testid="stNumberInput"] input:focus { border-color: #4FD1C5 !important; box-shadow: none !important; }
+  [data-testid="stNumberInput"] button { background: #1A1E24 !important; border-color: #262B33 !important; color: #8A8F99 !important; }
+  [data-testid="stNumberInput"] button svg { fill: #8A8F99 !important; }
+  [data-testid="stNumberInput"] button:hover { border-color: #4FD1C5 !important; color: #4FD1C5 !important; }
+  [data-testid="stNumberInput"] button:hover svg { fill: #4FD1C5 !important; }
+
+  /* ── Verdict/signal pills (design system add) ── */
+  .verdict-pill { display:inline-block; padding:3px 10px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; }
 
   /* ── Dataframe ── */
   [data-testid="stDataFrameContainer"], [data-testid="stDataFrame"],
@@ -715,19 +722,19 @@ _DARK_CSS  = """<style>
   .vd-tip { font-family: 'Inter', sans-serif !important; }
 
   /* ── Tab icons (inactive gray / active light) ── */
-  [data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); }
+  [data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238A8F99' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238A8F99' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238A8F99' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238A8F99' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238A8F99' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234FD1C5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234FD1C5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234FD1C5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234FD1C5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234FD1C5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); }
 
   /* ── Theme toggle button: moon icon (dark mode active) ── */
-  [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
+  [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234FD1C5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
 </style>"""
 _LIGHT_CSS = """<style>
   :root {
@@ -748,7 +755,7 @@ _LIGHT_CSS = """<style>
   p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'Inter', sans-serif !important; }
   h1, h2, h3,
   [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
-      font-family: 'Fraunces', serif !important; font-weight: 500 !important;
+      font-family: 'Space Grotesk', sans-serif !important; font-weight: 500 !important;
       font-variation-settings: "opsz" 144 !important;
       line-height: 1.06 !important; letter-spacing: -0.02em !important; color: #0B0D10 !important;
   }
@@ -763,7 +770,7 @@ _LIGHT_CSS = """<style>
       letter-spacing: 0.14em !important; text-transform: uppercase !important; color: #6A6F78 !important;
   }
   [data-testid="stMetricValue"] {
-      font-family: 'Fraunces', serif !important; font-size: 2.5rem !important;
+      font-family: 'Space Grotesk', sans-serif !important; font-size: 2.5rem !important;
       font-variation-settings: "opsz" 144 !important;
       line-height: 1.0 !important; letter-spacing: -0.02em !important; font-weight: 500 !important; color: #0B0D10 !important;
   }
@@ -784,7 +791,7 @@ _LIGHT_CSS = """<style>
   [data-baseweb="tab"]:hover { color: #2A2D33 !important; }
   [aria-selected="true"][data-baseweb="tab"] {
       color: #0B0D10 !important; border-bottom: 2px solid #0B0D10 !important;
-      font-style: italic !important; font-family: 'Fraunces', serif !important;
+      font-style: italic !important; font-family: 'Space Grotesk', sans-serif !important;
       font-variation-settings: "opsz" 14 !important;
   }
 
@@ -800,7 +807,7 @@ _LIGHT_CSS = """<style>
   .delta-neg  { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: #C64525; font-feature-settings: "tnum" 1; }
   .pct-pos    { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #338C5B; }
   .pct-neg    { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #C64525; }
-  .section-header { font-family: 'Fraunces', serif; font-variation-settings: "opsz" 144; font-size: 1.8rem; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; margin-bottom: 8px; color: #0B0D10; }
+  .section-header { font-family: 'Space Grotesk', sans-serif; font-variation-settings: "opsz" 144; font-size: 1.8rem; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; margin-bottom: 8px; color: #0B0D10; }
   .group-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; margin: 24px 0 12px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; color: #6A6F78; }
   .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #fff !important; }
   .kings-gold { color: #2E6FA8; font-weight: 600; }
@@ -817,11 +824,11 @@ _LIGHT_CSS = """<style>
   details summary p { font-family: 'Inter', sans-serif !important; font-size: 0.85rem !important; letter-spacing: 0.04em !important; color: #0B0D10 !important; }
 
   /* ── Flip inline dark backgrounds to light (legacy fallbacks) ── */
-  [style*="background:#14171C"] { background: #FFFFFF !important; }
-  [style*="background: #14171C"] { background: #FFFFFF !important; }
-  [style*="background:#0B0D10"] { background: #F5F2EC !important; }
-  [style*="border:1px solid #262A31"] { border-color: #E4DFD5 !important; }
-  [style*="border: 1px solid #262A31"] { border-color: #E4DFD5 !important; }
+  [style*="background:#1A1E24"] { background: #FFFFFF !important; }
+  [style*="background: #1A1E24"] { background: #FFFFFF !important; }
+  [style*="background:#0E1013"] { background: #F5F2EC !important; }
+  [style*="border:1px solid #262B33"] { border-color: #E4DFD5 !important; }
+  [style*="border: 1px solid #262B33"] { border-color: #E4DFD5 !important; }
 
   /* ── Captions & text ── */
   [data-testid="stCaptionContainer"] p { font-family: 'JetBrains Mono', monospace !important; font-size: 0.78rem !important; color: #6A6F78 !important; letter-spacing: 0.04em !important; }
@@ -1057,7 +1064,7 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
             f"<div style='background:{_card_bg};padding:14px 8px;"
             f"text-align:center;border:1px solid {_card_bd};border-top:3px solid {clr};'>"
             f"  {hs_html}"
-            f"  <div style='font-family:\"Fraunces\",serif;font-weight:400;color:{_card_txt};font-size:.95rem;"
+            f"  <div style='font-family:\"Space Grotesk\",sans-serif;font-weight:400;color:{_card_txt};font-size:.95rem;"
             f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
             f"    max-width:100%;'>{name}</div>"
             f"  <div style='color:{_card_sub};font-size:.72rem;margin:3px 0;"
@@ -1252,7 +1259,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
     # ── A. Hero Section ──────────────────────────────────────────────────────
     st.markdown(
         f"<div style='padding:0 0 24px;'>"
-        f"<div style='font-family:\"Fraunces\",serif;font-size:3rem;"
+        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:3rem;"
         f"font-weight:400;color:{_txt};line-height:1.05;margin-bottom:10px;'>"
         f"Predicting NHL Player<br>Market Value</div>"
         f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.7rem;"
@@ -1401,7 +1408,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
     if not df_c.empty:
         lo = min(df_c["predicted_value"].min(), df_c["cap_hit"].min()) * 0.95
         hi = max(df_c["predicted_value"].max(), df_c["cap_hit"].max()) * 1.02
-        _fvline_color = "#E8E6E1" if st.session_state.get("dark_mode", True) else "#0B0D10"
+        _fvline_color = "#4FD1C5" if st.session_state.get("dark_mode", True) else "#0B0D10"
         fig.add_shape(type="line", x0=lo, y0=lo, x1=hi, y1=hi,
                       line=dict(dash="dot", color=_fvline_color, width=2))
         fig.add_annotation(x=hi * 0.72, y=hi * 0.78, text="Fair value",
@@ -1466,7 +1473,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
         with _tbl_left:
             st.markdown(
-                f"<div style='font-family:\"Fraunces\",serif;font-size:1.5rem;"
+                f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.5rem;"
                 f"color:{_txt};margin-bottom:14px;font-weight:400;'>Cluster Economics</div>",
                 unsafe_allow_html=True,
             )
@@ -1539,7 +1546,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
 # ── Tab 2: Leaderboards ────────────────────────────────────────────────────────
 def tab_leaderboards(df: pd.DataFrame):
-    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Value Leaderboards</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Value Leaderboards</div>", unsafe_allow_html=True)
 
     df_c   = df[df["cap_hit"].notna() & df["value_delta"].notna()].copy()
     df_c   = add_delta_pct(df_c)
@@ -1731,7 +1738,7 @@ def tab_leaderboards(df: pd.DataFrame):
             _ufa_txt = _T["page_text"]; _ufa_sub = _T["card_subtext"]
             st.markdown(
                 f"<div style='margin-bottom:12px;'>"
-                f"<span style='font-family:\"Fraunces\",serif;font-size:1.5rem;"
+                f"<span style='font-family:\"Space Grotesk\",sans-serif;font-size:1.5rem;"
                 f"font-weight:400;color:{_ufa_txt};'>UFA / Unsigned Players</span>"
                 f"<span style='font-family:\"JetBrains Mono\",monospace;font-size:.72rem;"
                 f"color:{_ufa_sub};margin-left:12px;letter-spacing:.06em;'>"
@@ -1789,7 +1796,7 @@ def tab_leaderboards(df: pd.DataFrame):
     if not _vlr_df.empty and "cluster_label" in _vlr_df.columns:
         st.markdown("---")
         st.markdown(
-            f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;"
+            f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.7rem;"
             f"color:{_T['page_text']};margin-bottom:14px;font-weight:400;'>"
             f"Value Leaders by Role</div>",
             unsafe_allow_html=True,
@@ -1847,7 +1854,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
     _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
     st.markdown(
         f"<div style='padding:0 0 16px 0;'>"
-        f"<div style='font-family:\"Fraunces\",serif;font-size:3.5rem;"
+        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:3.5rem;"
         f"font-weight:400;color:{_ktxt};line-height:1;margin-bottom:8px;'>"
         f"{team_name}</div>"
         f"<div style='color:{_ksub};font-size:.72rem;"
@@ -1891,7 +1898,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
     # ── Team Cluster Composition ─────────────────────────────────────────────
     if "cluster_label" in team.columns:
         st.markdown(
-            f"<div style='font-family:\"Fraunces\",serif;font-size:1.8rem;"
+            f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.8rem;"
             f"font-weight:400;color:{_T['page_text']};margin:16px 0 12px;'>Role Composition</div>"
             f"<div style='color:{_T['card_subtext']};font-size:.72rem;"
             f"font-family:\"JetBrains Mono\",monospace;letter-spacing:.06em;margin-bottom:12px;'>"
@@ -1935,7 +1942,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
 
         if not cluster_spend.empty:
             st.markdown(
-                f"<div style='font-family:\"Fraunces\",serif;font-size:1.8rem;"
+                f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.8rem;"
                 f"font-weight:400;color:{_T['page_text']};margin:20px 0 12px;'>Cluster Spending</div>"
                 f"<div style='color:{_T['card_subtext']};font-size:.72rem;"
                 f"font-family:\"JetBrains Mono\",monospace;letter-spacing:.06em;margin-bottom:12px;'>"
@@ -2073,7 +2080,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
 
     # ── Roster breakdown ──────────────────────────────────────────────────────
     st.markdown(
-        f"<div style='font-family:\"Fraunces\",serif;font-size:1.8rem;"
+        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.8rem;"
         f"font-weight:400;color:{_T['page_text']};margin:24px 0 16px;'>Player Breakdown</div>",
         unsafe_allow_html=True,
     )
@@ -2166,7 +2173,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
             f"  <div style='flex:1;min-width:0;'>"
             f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
             f"      <span style='font-size:1.05rem;font-weight:400;color:{_rtxt};"
-            f"font-family:\"Fraunces\",serif;'>{name}</span>"
+            f"font-family:\"Space Grotesk\",sans-serif;'>{name}</span>"
             f"      {est_badge}"
             f"      <span style='color:{_rsub};font-size:.72rem;font-family:\"Inter\",sans-serif;"
             f"letter-spacing:.06em;text-transform:uppercase;'>{pos} · {age_str}</span>"
@@ -2231,7 +2238,7 @@ def tab_kings(df: pd.DataFrame):
     _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
     st.markdown(
         f"<div style='padding:0 0 16px 0;'>"
-        f"<div style='font-family:\"Fraunces\",serif;font-size:3.5rem;"
+        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:3.5rem;"
         f"font-weight:400;color:{_ktxt};line-height:1;margin-bottom:8px;'>"
         f"Los Angeles Kings</div>"
         f"<div style='color:{_ksub};font-size:.72rem;"
@@ -2368,7 +2375,7 @@ def tab_kings(df: pd.DataFrame):
 
     # ── Roster grouped by F / D ──────────────────────────────────────────────
     st.markdown(
-        f"<div style='font-family:\"Fraunces\",serif;font-size:1.8rem;"
+        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.8rem;"
         f"font-weight:400;color:{_T['page_text']};margin:24px 0 16px;'>Player Breakdown</div>",
         unsafe_allow_html=True,
     )
@@ -2467,7 +2474,7 @@ def tab_kings(df: pd.DataFrame):
             f"  <div style='flex:1;min-width:0;'>"
             f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
             f"      <span style='font-size:1.05rem;font-weight:400;color:{_T['card_text']};"
-            f"font-family:\"Fraunces\",serif;'>{name}</span>"
+            f"font-family:\"Space Grotesk\",sans-serif;'>{name}</span>"
             f"      {est_badge}"
             f"      <span style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
             f"letter-spacing:.06em;text-transform:uppercase;'>{pos} · {age_str}</span>"
@@ -2595,7 +2602,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         f"    {hs_html}"
         f"    <div>"
         f"      <div style='font-size:1.4rem;font-weight:400;color:{_pctxt};"
-        f"font-family:\"Fraunces\",serif;line-height:1.1;'>"
+        f"font-family:\"Space Grotesk\",sans-serif;line-height:1.1;'>"
         f"        {name}{prior_badge}{contract_badge}"
         f"      </div>"
         f"      <div style='color:{_pcsub};margin-top:5px;font-size:.75rem;"
@@ -2763,7 +2770,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
     # ── A. Cluster Placement ──────────────────────────────────────────────────
     st.markdown(
-        f"<div style='margin:32px 0 4px 0;font-family:\"Fraunces\",serif;"
+        f"<div style='margin:32px 0 4px 0;font-family:\"Space Grotesk\",sans-serif;"
         f"font-size:2rem;font-weight:400;color:{_T['page_text']};'>"
         f"How {name}'s value is calculated</div>"
         f"<div style='color:{_T['card_subtext']};font-size:.72rem;margin-bottom:20px;"
@@ -2776,7 +2783,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     _cl_color = "#888"
 
     st.markdown(
-        f"<div style='font-family:\"Fraunces\",serif;font-weight:400;font-size:1.5rem;"
+        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-weight:400;font-size:1.5rem;"
         f"color:{_cl_color};margin-bottom:10px;"
         f"border-left:3px solid {_cl_color};padding-left:10px;'>"
         f"Step 1 — Cluster: {cluster}</div>",
@@ -2819,7 +2826,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
     # ── B. Performance Within Cluster ─────────────────────────────────────────
     st.markdown(
-        f"<div style='font-family:\"Fraunces\",serif;font-weight:400;font-size:1.5rem;"
+        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-weight:400;font-size:1.5rem;"
         f"color:{_cl_color};margin-bottom:10px;margin-top:20px;"
         f"border-left:3px solid {_cl_color};padding-left:10px;'>"
         f"Step 2 — Performance Score: {perf_str}</div>",
@@ -2871,7 +2878,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
     # ── C. 5 Closest Comps ────────────────────────────────────────────────────
     st.markdown(
-        f"<div style='font-family:\"Fraunces\",serif;font-weight:400;font-size:1.5rem;"
+        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-weight:400;font-size:1.5rem;"
         f"color:{_cl_color};margin-bottom:10px;margin-top:24px;"
         f"border-left:3px solid {_cl_color};padding-left:10px;'>"
         f"Step 3 — 5 Closest Comps</div>",
@@ -2920,7 +2927,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 f"border-left:3px solid {_cbd};'>"
                 f"  {c_hs}"
                 f"  <div style='font-weight:400;color:{_ctxt2};margin-top:6px;"
-                f"font-size:.85rem;font-family:\"Fraunces\",serif;"
+                f"font-size:.85rem;font-family:\"Space Grotesk\",sans-serif;"
                 f"white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{c_name}</div>"
                 f"  <div style='color:{_csub2};font-size:.65rem;margin:2px 0;"
                 f"font-family:\"Inter\",sans-serif;letter-spacing:.06em;'>"
@@ -2985,7 +2992,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         f"Estimated Market Value</div>"
         f"<div style='font-size:2.2rem;font-weight:500;color:{_mv_txt};"
         f"font-variation-settings:\"opsz\" 144;letter-spacing:-0.02em;"
-        f"font-family:\"Fraunces\",serif;margin-bottom:10px;'>"
+        f"font-family:\"Space Grotesk\",sans-serif;margin-bottom:10px;'>"
         f"${pv_val/1e6:.2f}M</div>"
         f"<div style='font-size:.8rem;color:{_mv_sub};font-family:\"JetBrains Mono\",monospace;'>"
         f"Cap Hit: <span style='color:{_mv_txt};'>{cap_str}</span>"
@@ -3027,7 +3034,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
 
 def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame, full_df: pd.DataFrame):
-    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Player Search</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Player Search</div>", unsafe_allow_html=True)
 
     # Build comp pool from full (unfiltered) data
     comp_pool = _build_comp_pool(full_df)
@@ -3066,7 +3073,7 @@ def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame, full_df: pd.Dat
 # ── Tab 5: Model Insights ──────────────────────────────────────────────────────
 def tab_insights(df: pd.DataFrame):
     st.markdown(
-        f"<div style='font-family:\"Fraunces\",serif;font-size:2.2rem;"
+        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:2.2rem;"
         f"color:{_T['page_text']};letter-spacing:0;margin:0 0 8px;font-weight:400;'>"
         f"Model Deep-Dive</div>",
         unsafe_allow_html=True,
@@ -3081,7 +3088,7 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 1: Cluster Distribution ───────────────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Distribution</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Distribution</div>", unsafe_allow_html=True)
     st.markdown(
         f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:16px;'>K-means groups every skater into one of 7 role clusters. "
@@ -3114,7 +3121,7 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 3: Performance Score Distribution ─────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Performance Score Distribution</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Performance Score Distribution</div>", unsafe_allow_html=True)
     st.markdown(
         f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:16px;'>Each player is scored −100 to +100 within their cluster. "
@@ -3153,7 +3160,7 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 4: Comps Engine — Distance Weights ────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Comps Engine — Distance Weights</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Comps Engine — Distance Weights</div>", unsafe_allow_html=True)
     st.markdown(
         f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:16px;'>The comps engine finds the 5 most similar players using a weighted distance "
@@ -3189,7 +3196,7 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 5: Cross-Cluster Value Map ───────────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cross-Cluster Value Map</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cross-Cluster Value Map</div>", unsafe_allow_html=True)
     st.markdown(
         f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:16px;'>Every player plotted by performance score vs cap hit, colored by cluster. "
@@ -3220,7 +3227,7 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 6: Cluster Comparison Table ───────────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Comparison</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Comparison</div>", unsafe_allow_html=True)
 
     if "cluster_label" in df.columns:
         _cl_rows = []
@@ -3282,7 +3289,7 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 7: Cluster Deep-Dive ──────────────────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Deep-Dive</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Deep-Dive</div>", unsafe_allow_html=True)
 
     _dive_opts = [c for c in CLUSTER_ORDER if c in df["cluster_label"].unique()]
     if _dive_opts:
@@ -3353,7 +3360,7 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 8: SHAP Feature Importance (XGBoost benchmark) ────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>XGBoost Benchmark — SHAP Feature Importance</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>XGBoost Benchmark — SHAP Feature Importance</div>", unsafe_allow_html=True)
     st.markdown(
         f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:16px;'>SHAP values from the XGBoost validation model show which features "
@@ -3397,7 +3404,7 @@ def tab_insights(df: pd.DataFrame):
 
     if not shap_vals.empty and "name" in shap_vals.columns:
         st.markdown("---")
-        st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Player-Level SHAP Breakdown</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Player-Level SHAP Breakdown</div>", unsafe_allow_html=True)
         chosen = st.selectbox("Select a player",
                                sorted(df["name"].dropna().tolist()),
                                key="insights_player")
@@ -3507,7 +3514,7 @@ def main():
     _divider_color = _T["card_border"]
     st.markdown(
         f"<div style='padding:16px 0 0;'>"
-        f"<div style='font-family:\"Fraunces\",serif;font-size:3.2rem;"
+        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:3.2rem;"
         f"font-weight:400;color:{_T['page_text']};line-height:1.05;letter-spacing:0;'>"
         f"NHL Player Value Model"
         f"</div>"
