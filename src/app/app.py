@@ -699,6 +699,23 @@ _DARK_CSS  = """<style>
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #8A8F99 !important; }
 
+  /* ── Checkbox ── */
+  [data-testid="stCheckbox"] label,
+  [data-testid="stCheckbox"] label p,
+  [data-testid="stCheckbox"] label span { color: #F2EEE5 !important; font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; letter-spacing: 0 !important; text-transform: none !important; }
+  [data-testid="stCheckbox"] label > span:first-child { border-color: #343A44 !important; background: #14171C !important; }
+  [data-testid="stCheckbox"] label input:checked + span:first-child,
+  [data-testid="stCheckbox"] label [aria-checked="true"] { background: #4FD1C5 !important; border-color: #4FD1C5 !important; }
+
+  /* ── Radio ── */
+  [data-testid="stRadio"] label,
+  [data-testid="stRadio"] label p,
+  [data-testid="stRadio"] label span { color: #F2EEE5 !important; }
+
+  /* ── Multiselect chips (fallback — we now use checkboxes for Role Cluster) ── */
+  [data-baseweb="tag"] { background: #1B1F26 !important; border: 1px solid #343A44 !important; color: #F2EEE5 !important; }
+  [data-baseweb="tag"] span, [data-baseweb="tag"] svg { color: #F2EEE5 !important; fill: #F2EEE5 !important; }
+
   /* ── Number input ── */
   [data-testid="stNumberInput"] input {
       background: #1A1E24 !important; color: #F2EEE5 !important;
@@ -1058,6 +1075,23 @@ _LIGHT_CSS = """<style>
   [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #E4DFD5 !important; }
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #6A6F78 !important; }
+
+  /* ── Checkbox ── */
+  [data-testid="stCheckbox"] label,
+  [data-testid="stCheckbox"] label p,
+  [data-testid="stCheckbox"] label span { color: #0B0D10 !important; font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; letter-spacing: 0 !important; text-transform: none !important; }
+  [data-testid="stCheckbox"] label > span:first-child { border-color: #CFC9BD !important; background: #FFFFFF !important; }
+  [data-testid="stCheckbox"] label input:checked + span:first-child,
+  [data-testid="stCheckbox"] label [aria-checked="true"] { background: #2E6FA8 !important; border-color: #2E6FA8 !important; }
+
+  /* ── Radio ── */
+  [data-testid="stRadio"] label,
+  [data-testid="stRadio"] label p,
+  [data-testid="stRadio"] label span { color: #0B0D10 !important; }
+
+  /* ── Multiselect chips ── */
+  [data-baseweb="tag"] { background: #F9F6F0 !important; border: 1px solid #E4DFD5 !important; color: #0B0D10 !important; }
+  [data-baseweb="tag"] span, [data-baseweb="tag"] svg { color: #0B0D10 !important; fill: #0B0D10 !important; }
 
   /* ── Number input ── */
   [data-testid="stNumberInput"] input {
@@ -1506,13 +1540,36 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         pos_sel  = st.selectbox("Position", positions, key="sb_pos")
         teams_list = ["All"] + sorted(df["team"].dropna().unique().tolist())
         team_sel = st.selectbox("Team", teams_list, key="sb_team")
-        # Cluster filter — clear stale session state if cluster names changed
+        # Cluster filter — checkbox list instead of cramped multiselect chips.
         cluster_opts = [c for c in CLUSTER_ORDER if c in df["cluster_label"].unique()]
-        if "sb_cluster" in st.session_state:
-            stale = [c for c in st.session_state["sb_cluster"] if c not in cluster_opts]
-            if stale:
-                del st.session_state["sb_cluster"]
-        cluster_sel = st.multiselect("Role Cluster", cluster_opts, default=cluster_opts, key="sb_cluster")
+        # Clear stale session-state keys if cluster labels changed
+        for _cl in list(st.session_state.keys()):
+            if _cl.startswith("sb_cl_") and _cl[6:] not in cluster_opts:
+                del st.session_state[_cl]
+
+        st.markdown(
+            f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.72rem;"
+            f"color:{_sb_sub};letter-spacing:.08em;text-transform:uppercase;"
+            f"margin:8px 0 6px;'>Role Cluster</div>",
+            unsafe_allow_html=True,
+        )
+        _cl_cols = st.columns(2)
+        cluster_sel = []
+        for _i, _cl in enumerate(cluster_opts):
+            _key = f"sb_cl_{_cl}"
+            _default = st.session_state.get(_key, True)
+            if _cl_cols[_i % 2].checkbox(_cl, value=_default, key=_key):
+                cluster_sel.append(_cl)
+        # Quick toggle
+        _c1, _c2 = st.columns(2)
+        if _c1.button("All", key="sb_cl_all", use_container_width=True):
+            for _cl in cluster_opts:
+                st.session_state[f"sb_cl_{_cl}"] = True
+            st.rerun()
+        if _c2.button("None", key="sb_cl_none", use_container_width=True):
+            for _cl in cluster_opts:
+                st.session_state[f"sb_cl_{_cl}"] = False
+            st.rerun()
 
         import math
         age_min = math.floor(df["age"].dropna().min())
