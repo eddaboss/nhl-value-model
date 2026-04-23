@@ -711,8 +711,34 @@ _DARK_CSS  = """<style>
   [data-testid="stNumberInput"] button:hover { border-color: #4FD1C5 !important; color: #4FD1C5 !important; }
   [data-testid="stNumberInput"] button:hover svg { fill: #4FD1C5 !important; }
 
-  /* ── Verdict/signal pills (design system add) ── */
+  /* ── Verdict/signal pills (design system) ── */
   .verdict-pill { display:inline-block; padding:3px 10px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; }
+  .verdict-pill.underpaid { background:rgba(125,216,122,0.13); color:#7DD87A; border:1px solid rgba(125,216,122,0.35); }
+  .verdict-pill.overpaid  { background:rgba(240,122,122,0.13); color:#F07A7A; border:1px solid rgba(240,122,122,0.35); }
+  .verdict-pill.fair      { background:rgba(138,143,153,0.13); color:#8A8F99; border:1px solid rgba(138,143,153,0.35); }
+  .verdict-pill.ice       { background:rgba(79,209,197,0.13);  color:#4FD1C5; border:1px solid rgba(79,209,197,0.35); }
+
+  /* ── Brand header ── */
+  .rink-brand { display:flex; align-items:baseline; gap:14px; padding:0 0 12px; border-bottom:1px solid #262B33; margin-bottom:24px; }
+  .rink-brand .logo { font-family:'Space Grotesk',sans-serif; font-size:1.5rem; font-weight:700; letter-spacing:0.08em; color:#F2EEE5; }
+  .rink-brand .logo .dot { color:#4FD1C5; }
+  .rink-brand .tag { font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:#8A8F99; text-transform:uppercase; letter-spacing:0.1em; }
+  .rink-brand .season { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:#8A8F99; letter-spacing:0.08em; }
+
+  /* ── Footer ── */
+  .rink-footer { margin-top:3rem; padding-top:1.25rem; border-top:1px solid #262B33; color:#8A8F99; font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.06em; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .rink-footer .dot { color:#4FD1C5; }
+
+  /* ── Stat card (generic content tile) ── */
+  .rink-card { background:#1A1E24; border:1px solid #262B33; border-radius:12px; padding:18px 20px; margin-bottom:10px; }
+  .rink-card .label { font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:#8A8F99; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; }
+  .rink-card .value { font-family:'Space Grotesk',sans-serif; font-size:1.45rem; color:#F2EEE5; font-weight:500; }
+  .rink-card .sub   { font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:#8A8F99; margin-top:8px; letter-spacing:0.04em; }
+
+  /* ── Player hero ── */
+  .player-hero { background:linear-gradient(135deg,#1A1E24 0%,#14171C 100%); border:1px solid #262B33; border-radius:14px; padding:28px 32px; margin-bottom:20px; }
+  .player-hero .name { font-family:'Space Grotesk',sans-serif; font-size:2.6rem; font-weight:600; color:#F2EEE5; line-height:1.05; margin-bottom:8px; letter-spacing:-0.015em; }
+  .player-hero .meta { font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:#8A8F99; letter-spacing:0.06em; text-transform:uppercase; }
 
   /* ── Dataframe ── */
   [data-testid="stDataFrameContainer"], [data-testid="stDataFrame"],
@@ -3476,19 +3502,15 @@ def render_footer(df: pd.DataFrame):
     n_real = int(df["has_contract_data"].fillna(False).sum())
     n_est  = int(df["is_estimated"].sum()) if "is_estimated" in df.columns else 0
 
+    _last_updated = f" · {last_ts}" if last_ts else ""
     st.markdown(
-        f"<div style='height:1px;background:{_T['card_border']};margin:32px 0 12px;'></div>",
-        unsafe_allow_html=True,
-    )
-    _last_updated = (f" &nbsp;·&nbsp; {last_ts}" if last_ts else "")
-    _season_info = f" &nbsp;·&nbsp; {_season_str(load_season_context())} &nbsp;·&nbsp; Cap: ${CAP_CEILING/1e6:.0f}M"
-    st.markdown(
-        f"<div style='color:{_T['card_subtext']};font-size:.72rem;padding:4px 0 8px;"
-        f"font-family:\"JetBrains Mono\",monospace;letter-spacing:.06em;'>"
-        f"NHL API &nbsp;·&nbsp; PuckPedia &nbsp;·&nbsp; "
-        f"{n_real} contracts &nbsp;·&nbsp; {n_est} estimated"
-        f"{_last_updated}{_season_info}"
-        f"</div>",
+        f"""
+        <div class="rink-footer">
+          <div>RINK<span class="dot">.</span> &nbsp;NHL Value Model</div>
+          <div>NHL API · PuckPedia · {n_real} contracts · {n_est} estimated{_last_updated}</div>
+          <div>{_season_str(load_season_context())} · Cap ${CAP_CEILING/1e6:.0f}M</div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -3511,19 +3533,17 @@ def main():
     #     _refresh_status["done"] = False
     #     st.rerun()
 
-    _divider_color = _T["card_border"]
+    _ctx = load_season_context()
+    _n_teams = int(_ctx.get("n_teams", 32)) if isinstance(_ctx, dict) else 32
+    _cap_m = CAP_CEILING / 1e6
     st.markdown(
-        f"<div style='padding:16px 0 0;'>"
-        f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:3.2rem;"
-        f"font-weight:400;color:{_T['page_text']};line-height:1.05;letter-spacing:0;'>"
-        f"NHL Player Value Model"
-        f"</div>"
-        f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:0.72rem;"
-        f"color:{_T['card_subtext']};letter-spacing:0.08em;margin-top:8px;'>"
-        f"{_season_str(load_season_context())} &nbsp;·&nbsp; Comps Model + K-Means Clustering &nbsp;·&nbsp; Live Data"
-        f"</div>"
-        f"<div style='height:1px;background:{_divider_color};margin:18px 0 8px;'></div>"
-        f"</div>",
+        f"""
+        <div class="rink-brand">
+          <div class="logo">RINK<span class="dot">.</span></div>
+          <div class="tag">NHL Player Value Model</div>
+          <div class="season">{_season_str(_ctx)} &nbsp;·&nbsp; {_n_teams} teams &nbsp;·&nbsp; cap ${_cap_m:.1f}M</div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
