@@ -1096,10 +1096,12 @@ def add_delta_pct(df: pd.DataFrame) -> pd.DataFrame:
 
 # ── Kings-specific resign signal ───────────────────────────────────────────────
 def kings_resign_signal(row) -> str:
-    age      = row.get("age") or 30
-    delta    = row.get("value_delta") or 0
-    yrs_left = int(row.get("years_left") or 0)
-    cap_hit  = float(row.get("cap_hit") or 0)
+    age      = row.get("age") if pd.notna(row.get("age")) else 30
+    delta    = row.get("value_delta") if pd.notna(row.get("value_delta")) else 0
+    _yl      = row.get("years_left")
+    yrs_left = int(_yl) if pd.notna(_yl) else 0
+    _ch      = row.get("cap_hit")
+    cap_hit  = float(_ch) if pd.notna(_ch) else 0.0
     has_data = bool(row.get("has_contract_data"))
 
     # Extension already signed — highest priority override
