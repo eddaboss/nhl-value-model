@@ -1349,9 +1349,17 @@ def team_logo_url(team_abbrev: str) -> str:
 
 def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
                        show_pred: bool = False) -> None:
-    """Horizontal row of mini headshot cards — used in top-5 lists."""
-    cols = st.columns(len(players_df))
-    for i, (_, row) in enumerate(players_df.iterrows()):
+    """Responsive grid of mini headshot cards — auto-wraps when container narrows.
+    Uses CSS grid (minmax 140px) instead of st.columns() so the cards reflow based
+    on available width regardless of sidebar state or viewport — prevents the
+    one-character-per-line collapse when space is tight."""
+    _card_bg  = _T["card_bg"]
+    _card_bd  = _T["card_border"]
+    _card_txt = _T["card_text"]
+    _card_sub = _T["card_subtext"]
+
+    cards_html = ""
+    for _, row in players_df.iterrows():
         pid   = row.get("player_id")
         name  = row.get("name", "?")
         team  = row.get("team", "?")
@@ -1362,36 +1370,38 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
 
         clr     = _T.get("positive", "#2A7A4B") if (delta or 0) >= 0 else _T.get("negative", "#C0392B")
         val_str = fmt_delta(delta) if not show_pred else fmt_m(pv)
-        age_str = f"Age {age:.0f}" if pd.notna(age) else ""
 
         hs_html = ""
         if pid and pd.notna(pid):
             hs_url  = headshot_url(pid, team)
             hs_html = (
                 f"<img src='{hs_url}' width='56' height='56' "
-                f"style='object-fit:cover;display:block;margin:0 auto 8px;' "
+                f"style='object-fit:cover;display:block;margin:0 auto 8px;border-radius:4px;' "
                 f"onerror=\"this.style.display='none'\">"
             )
 
-        _card_bg  = _T["card_bg"]
-        _card_bd  = _T["card_border"]
-        _card_txt = _T["card_text"]
-        _card_sub = _T["card_subtext"]
-        cols[i].markdown(
-            f"<div style='background:{_card_bg};padding:14px 8px;"
-            f"text-align:center;border:1px solid {_card_bd};border-top:3px solid {clr};'>"
+        cards_html += (
+            f"<div style='background:{_card_bg};padding:14px 10px;"
+            f"text-align:center;border:1px solid {_card_bd};border-top:3px solid {clr};"
+            f"border-radius:8px;min-width:0;'>"
             f"  {hs_html}"
-            f"  <div style='font-family:\"Space Grotesk\",sans-serif;font-weight:400;color:{_card_txt};font-size:.95rem;"
-            f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
-            f"    max-width:100%;'>{name}</div>"
-            f"  <div style='color:{_card_sub};font-size:.72rem;margin:3px 0;"
-            f"    font-family:\"Inter\",sans-serif;letter-spacing:.06em;text-transform:uppercase;'>"
+            f"  <div style='font-family:\"Space Grotesk\",sans-serif;font-weight:500;color:{_card_txt};font-size:.95rem;"
+            f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{name}</div>"
+            f"  <div style='color:{_card_sub};font-size:.7rem;margin:4px 0;"
+            f"    font-family:\"Inter\",sans-serif;letter-spacing:.06em;text-transform:uppercase;"
+            f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"
             f"    {team} · {pos}</div>"
-            f"  <div style='color:{clr};font-size:.85rem;font-weight:400;"
-            f"    margin-top:6px;font-family:\"JetBrains Mono\",monospace;'>{val_str}</div>"
-            f"</div>",
-            unsafe_allow_html=True,
+            f"  <div style='color:{clr};font-size:.85rem;font-weight:500;"
+            f"    margin-top:6px;font-family:\"JetBrains Mono\",monospace;"
+            f"    white-space:nowrap;'>{val_str}</div>"
+            f"</div>"
         )
+
+    st.markdown(
+        f"<div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));"
+        f"gap:10px;margin-bottom:12px;'>{cards_html}</div>",
+        unsafe_allow_html=True,
+    )
 
 
 def signal_badge(signal: str, palette: dict) -> str:
@@ -1800,7 +1810,8 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
             _cell_s = (f"font-family:'JetBrains Mono',monospace;font-size:.75rem;color:{_txt};"
                        f"padding:7px 8px;border-bottom:1px solid {_cbd};text-align:right;")
             _name_s = (f"font-family:'Inter',sans-serif;font-size:.75rem;font-weight:600;"
-                       f"padding:7px 8px;border-bottom:1px solid {_cbd};text-align:left;")
+                       f"padding:7px 8px;border-bottom:1px solid {_cbd};text-align:left;"
+                       f"white-space:nowrap;")
 
             _rows_html = ""
             for cl in CLUSTER_ORDER:
