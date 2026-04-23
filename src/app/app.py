@@ -699,13 +699,9 @@ _DARK_CSS  = """<style>
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #8A8F99 !important; }
 
-  /* ── Checkbox ── */
-  [data-testid="stCheckbox"] label,
+  /* ── Checkbox ── text only; let Streamlit handle the box visual ── */
   [data-testid="stCheckbox"] label p,
-  [data-testid="stCheckbox"] label span { color: #F2EEE5 !important; font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; letter-spacing: 0 !important; text-transform: none !important; }
-  [data-testid="stCheckbox"] label > span:first-child { border-color: #343A44 !important; background: #14171C !important; }
-  [data-testid="stCheckbox"] label input:checked + span:first-child,
-  [data-testid="stCheckbox"] label [aria-checked="true"] { background: #4FD1C5 !important; border-color: #4FD1C5 !important; }
+  [data-testid="stCheckbox"] label > div { color: #F2EEE5 !important; font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; letter-spacing: 0 !important; text-transform: none !important; }
 
   /* ── Radio ── */
   [data-testid="stRadio"] label,
@@ -906,7 +902,7 @@ _DARK_CSS  = """<style>
     }
 
     /* Column reflow — 2 per row at phone width */
-    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 160px !important; }
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 160px !important; }
     [data-testid="stMetric"] { padding: 14px 16px !important; }
     [data-testid="stMetricValue"] { font-size: 1.6rem !important; }
     [data-testid="stMetricLabel"] { font-size: 0.66rem !important; letter-spacing: 0.1em !important; }
@@ -932,7 +928,7 @@ _DARK_CSS  = """<style>
     .block-container { padding-left: 14px !important; padding-right: 14px !important; }
     .rink-brand .logo { font-size: 1.15rem; }
     .rink-brand .tag { font-size: 0.64rem; }
-    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 100% !important; }
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 100% !important; }
     [data-testid="stMetric"] { padding: 12px 14px !important; }
     [data-testid="stMetricValue"] { font-size: 1.4rem !important; }  /* RINK-1: 26px ≈ 1.4rem */
     [data-testid="stMetricLabel"] { font-size: 0.62rem !important; }
@@ -1076,13 +1072,9 @@ _LIGHT_CSS = """<style>
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #6A6F78 !important; }
 
-  /* ── Checkbox ── */
-  [data-testid="stCheckbox"] label,
+  /* ── Checkbox ── text only; let Streamlit handle the box visual ── */
   [data-testid="stCheckbox"] label p,
-  [data-testid="stCheckbox"] label span { color: #0B0D10 !important; font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; letter-spacing: 0 !important; text-transform: none !important; }
-  [data-testid="stCheckbox"] label > span:first-child { border-color: #CFC9BD !important; background: #FFFFFF !important; }
-  [data-testid="stCheckbox"] label input:checked + span:first-child,
-  [data-testid="stCheckbox"] label [aria-checked="true"] { background: #2E6FA8 !important; border-color: #2E6FA8 !important; }
+  [data-testid="stCheckbox"] label > div { color: #0B0D10 !important; font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; letter-spacing: 0 !important; text-transform: none !important; }
 
   /* ── Radio ── */
   [data-testid="stRadio"] label,
@@ -1147,8 +1139,8 @@ _LIGHT_CSS = """<style>
 
   /* ══════════ Responsive (port of RINK-1 styles.css @media rules) ══════════ */
   @media (max-width: 900px) {
-    [data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; gap: 12px !important; row-gap: 12px !important; }
-    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 220px !important; min-width: 0 !important; width: auto !important; }
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; gap: 12px !important; row-gap: 12px !important; }
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 220px !important; min-width: 0 !important; width: auto !important; }
     .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; opacity: 0.8; }
     .rink-brand { flex-wrap: wrap; row-gap: 4px; }
     .rink-footer { flex-direction: column; gap: 6px; }
@@ -1221,7 +1213,7 @@ _LIGHT_CSS = """<style>
       font-style: normal !important;
     }
 
-    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 160px !important; }
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 160px !important; }
     [data-testid="stMetric"] { padding: 14px 16px !important; }
     [data-testid="stMetricValue"] { font-size: 1.6rem !important; }
     [data-testid="stMetricLabel"] { font-size: 0.66rem !important; letter-spacing: 0.1em !important; }
@@ -1243,7 +1235,7 @@ _LIGHT_CSS = """<style>
     .block-container { padding-left: 14px !important; padding-right: 14px !important; }
     .rink-brand .logo { font-size: 1.15rem; }
     .rink-brand .tag { font-size: 0.64rem; }
-    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 100% !important; }
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 100% !important; }
     [data-testid="stMetric"] { padding: 12px 14px !important; }
     [data-testid="stMetricValue"] { font-size: 1.4rem !important; }
     [data-testid="stMetricLabel"] { font-size: 0.62rem !important; }
@@ -1875,16 +1867,16 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                 cl_sub = df_c[df_c["cluster_label"] == cl]
                 if cl_sub.empty:
                     continue
-                cl_clr = "#888"
+                cl_dot = _T.get("accent_ice", _T.get("card_subtext", "#8A8F99"))
                 avg_d = cl_sub["value_delta"].mean()
                 _d_clr = _pos if avg_d >= 0 else _neg
                 avg_ps = cl_sub["performance_score"].dropna().mean()
                 _rows_html += (
                     f"<tr>"
                     f"<td style='{_name_s}'>"
-                    f"<span style='display:inline-block;width:8px;height:8px;background:{cl_clr};"
-                    f"vertical-align:middle;margin-right:6px;'></span>"
-                    f"<span style='color:{cl_clr};'>{cl}</span></td>"
+                    f"<span style='display:inline-block;width:8px;height:8px;background:{cl_dot};"
+                    f"vertical-align:middle;margin-right:6px;border-radius:2px;'></span>"
+                    f"<span style='color:{_txt};font-weight:500;'>{cl}</span></td>"
                     f"<td style='{_cell_s}'>{len(cl_sub)}</td>"
                     f"<td style='{_cell_s}'>{cl_sub['age'].mean():.1f}</td>"
                     f"<td style='{_cell_s}'>{fmt_m(cl_sub['cap_hit'].mean())}</td>"
