@@ -400,43 +400,43 @@ def _set_theme(dark: bool) -> None:
     global _T
     if dark:
         _T.update({
-            "page_text":     "#F5F5F2",
-            "plot_paper":    "#111111",
-            "plot_bg":       "#111111",
-            "plot_font":     "#888888",
-            "grid":          "#252525",
-            "grid_alt":      "#252525",
-            "zero":          "#252525",
-            "legend_bg":     "#1C1C1C",
-            "card_bg":       "#1C1C1C",
-            "card_border":   "#2A2A2A",
-            "card_text":     "#F5F5F2",
-            "card_subtext":  "#888888",
-            "card_header":   "#161616",
-            "row_divider":   "#2A2A2A",
-            "accent":        "#F5F5F2",
-            "positive":      "#2ECC71",
-            "negative":      "#E74C3C",
+            "page_text":     "#E8E6E1",
+            "plot_paper":    "#0B0D10",
+            "plot_bg":       "#0B0D10",
+            "plot_font":     "#7A8089",
+            "grid":          "#262A31",
+            "grid_alt":      "#262A31",
+            "zero":          "#343944",
+            "legend_bg":     "#14171C",
+            "card_bg":       "#14171C",
+            "card_border":   "#262A31",
+            "card_text":     "#E8E6E1",
+            "card_subtext":  "#7A8089",
+            "card_header":   "#1B1F26",
+            "row_divider":   "#262A31",
+            "accent":        "#E8E6E1",
+            "positive":      "#7ECBA0",
+            "negative":      "#E3725C",
         })
     else:
         _T.update({
-            "page_text":     "#111111",
+            "page_text":     "#0B0D10",
             "plot_paper":    "rgba(0,0,0,0)",
-            "plot_bg":       "#FAFAF8",
-            "plot_font":     "#777777",
-            "grid":          "#EBEBEB",
-            "grid_alt":      "#EBEBEB",
-            "zero":          "#AAAAAA",
+            "plot_bg":       "#F5F2EC",
+            "plot_font":     "#6A6F78",
+            "grid":          "#E4DFD5",
+            "grid_alt":      "#E4DFD5",
+            "zero":          "#CFC9BD",
             "legend_bg":     "#FFFFFF",
             "card_bg":       "#FFFFFF",
-            "card_border":   "#E8E8E4",
-            "card_text":     "#111111",
-            "card_subtext":  "#777777",
-            "card_header":   "#FAFAF8",
-            "row_divider":   "#E8E8E4",
-            "accent":        "#1A1A2E",
-            "positive":      "#2A7A4B",
-            "negative":      "#C0392B",
+            "card_border":   "#E4DFD5",
+            "card_text":     "#0B0D10",
+            "card_subtext":  "#6A6F78",
+            "card_header":   "#F9F6F0",
+            "row_divider":   "#E4DFD5",
+            "accent":        "#2E6FA8",
+            "positive":      "#338C5B",
+            "negative":      "#C64525",
         })
 
 # ── Resign signal palettes ─────────────────────────────────────────────────────
@@ -542,7 +542,7 @@ CAP_CEILING = 95_500_000
 _FONT_LINK = """
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 """
 
 # ── Inline SVG icons (currentColor — use in st.markdown with unsafe_allow_html) ─
@@ -560,20 +560,27 @@ _ICONS = {
 }
 
 _DARK_CSS  = """<style>
-  :root { --font: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; }
+  :root {
+    --font: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+    --ink:#0B0D10; --panel:#14171C; --panel-2:#1B1F26;
+    --line:#262A31; --line-2:#343944;
+    --text:#E8E6E1; --text-2:#B3B6BD; --muted:#7A8089; --muted-2:#555963;
+    --green:#7ECBA0; --red:#E3725C;
+  }
   footer { visibility: hidden; }
   .block-container { padding-top: 2.5rem !important; padding-bottom: 2rem !important; }
 
   /* ── Page surfaces ── */
-  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #111111 !important; }
+  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #0B0D10 !important; }
 
   /* ── Base typography ── */
   html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
-  p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'DM Sans', sans-serif !important; }
+  p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'Inter', sans-serif !important; }
   h1, h2, h3,
   [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
-      font-family: 'Instrument Serif', serif !important; font-weight: 400 !important;
-      line-height: 1.1 !important; letter-spacing: 0 !important; color: #F5F5F2 !important;
+      font-family: 'Fraunces', serif !important; font-weight: 500 !important;
+      font-variation-settings: "opsz" 144 !important;
+      line-height: 1.06 !important; letter-spacing: -0.02em !important; color: #E8E6E1 !important;
   }
 
   /* ── Metric tiles ── */
@@ -582,155 +589,168 @@ _DARK_CSS  = """<style>
       border-radius: 0 !important; padding: 16px 2px 12px !important; box-shadow: none !important;
   }
   [data-testid="stMetricLabel"] {
-      font-family: 'DM Sans', sans-serif !important; font-size: 0.65rem !important;
-      letter-spacing: 0.15em !important; text-transform: uppercase !important; color: #888888 !important;
+      font-family: 'JetBrains Mono', monospace !important; font-size: 0.66rem !important;
+      letter-spacing: 0.14em !important; text-transform: uppercase !important; color: #7A8089 !important;
   }
   [data-testid="stMetricValue"] {
-      font-family: 'Instrument Serif', serif !important; font-size: 2.5rem !important;
-      line-height: 1.0 !important; letter-spacing: 0 !important; font-weight: 400 !important; color: #F5F5F2 !important;
+      font-family: 'Fraunces', serif !important; font-size: 2.5rem !important;
+      font-variation-settings: "opsz" 144 !important;
+      line-height: 1.0 !important; letter-spacing: -0.02em !important; font-weight: 500 !important; color: #E8E6E1 !important;
   }
-  [data-testid="stMetricDelta"] { font-family: 'DM Mono', monospace !important; font-size: 0.78rem !important; }
+  [data-testid="stMetricDelta"] { font-family: 'JetBrains Mono', monospace !important; font-size: 0.78rem !important; }
 
   /* ── Tabs ── */
   [data-baseweb="tab-list"] {
       gap: 0 !important; background: transparent !important; padding-bottom: 0 !important;
-      margin-bottom: 24px !important; border-bottom: 1px solid #2A2A2A !important;
+      margin-bottom: 24px !important; border-bottom: 1px solid #262A31 !important;
   }
   [data-baseweb="tab"] {
-      font-family: 'DM Sans', sans-serif !important; font-size: 0.8rem !important;
+      font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important;
       letter-spacing: 0.1em !important; text-transform: uppercase !important;
-      padding: 12px 24px !important; border-radius: 0 !important;
+      padding: 12px 22px !important; border-radius: 0 !important;
       background: transparent !important; border-bottom: 2px solid transparent !important;
-      margin-bottom: -1px !important; color: #888888 !important;
+      margin-bottom: -1px !important; color: #7A8089 !important;
   }
+  [data-baseweb="tab"]:hover { color: #B3B6BD !important; }
   [aria-selected="true"][data-baseweb="tab"] {
-      color: #F5F5F2 !important; border-bottom: 2px solid #F5F5F2 !important;
-      font-style: italic !important; font-family: 'Instrument Serif', serif !important;
+      color: #E8E6E1 !important; border-bottom: 2px solid #E8E6E1 !important;
+      font-style: italic !important; font-family: 'Fraunces', serif !important;
+      font-variation-settings: "opsz" 14 !important;
   }
 
   /* ── Cards ── */
-  .player-card { border-radius: 0; padding: 20px 24px; margin-bottom: 14px; background: #1C1C1C; border: 1px solid #2A2A2A; }
-  .kings-card  { border-radius: 0; padding: 18px 22px; margin-bottom: 6px; background: #1C1C1C; border: 1px solid #2A2A2A; transition: background 0.1s; }
-  .kings-card:hover { background: #222222; }
+  .player-card { border-radius: 8px; padding: 20px 24px; margin-bottom: 14px; background: #14171C; border: 1px solid #262A31; }
+  .kings-card  { border-radius: 4px; padding: 18px 22px; margin-bottom: 6px; background: #14171C; border: 1px solid #262A31; transition: border-color 140ms, background 140ms; }
+  .kings-card:hover { background: #1B1F26; border-color: #343944; }
 
   /* ── Typography classes ── */
-  .stat-label { font-family: 'DM Sans', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: #888888; }
-  .stat-value { font-family: 'DM Mono', monospace; font-size: 0.9rem; color: #F5F5F2; }
-  .delta-pos  { font-family: 'DM Mono', monospace; font-size: 1.3rem; color: #2ECC71; }
-  .delta-neg  { font-family: 'DM Mono', monospace; font-size: 1.3rem; color: #E74C3C; }
-  .pct-pos    { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #2ECC71; }
-  .pct-neg    { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #E74C3C; }
-  .section-header { font-family: 'Instrument Serif', serif; font-size: 1.8rem; font-weight: 400; line-height: 1.1; margin-bottom: 8px; color: #F5F5F2; }
-  .group-label { font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin: 24px 0 12px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; color: #888888; }
-  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 0; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #fff !important; }
-  .kings-gold { color: #F5F5F2; font-weight: 600; }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #7A8089; }
+  .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #E8E6E1; font-feature-settings: "tnum" 1; }
+  .delta-pos  { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: #7ECBA0; font-feature-settings: "tnum" 1; }
+  .delta-neg  { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: #E3725C; font-feature-settings: "tnum" 1; }
+  .pct-pos    { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #7ECBA0; }
+  .pct-neg    { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #E3725C; }
+  .section-header { font-family: 'Fraunces', serif; font-variation-settings: "opsz" 144; font-size: 1.8rem; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; margin-bottom: 8px; color: #E8E6E1; }
+  .group-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; margin: 24px 0 12px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; color: #7A8089; }
+  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #fff !important; }
+  .kings-gold { color: #E8E6E1; font-weight: 600; }
 
   /* ── Sidebar ── */
-  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #111111 !important; border-right: 1px solid #2A2A2A !important; }
+  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #0B0D10 !important; border-right: 1px solid #262A31 !important; }
   [data-testid="stSidebar"] label, [data-testid="stSidebar"] p,
   [data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
-  [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #F5F5F2 !important; }
-  [data-testid="stSidebar"] .stCaptionContainer p { color: #888888 !important; }
+  [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #E8E6E1 !important; }
+  [data-testid="stSidebar"] .stCaptionContainer p { color: #7A8089 !important; }
 
   /* ── Expanders ── */
   [data-testid="stExpander"],
   [data-testid="stExpander"] > *,
   [data-testid="stExpander"] details,
   [data-testid="stExpander"] details > div { border: none !important; outline: none !important; box-shadow: none !important; }
-  [data-testid="stExpander"] { background-color: #1C1C1C !important; }
-  [data-testid="stExpander"] details { background-color: #1C1C1C !important; }
-  [data-testid="stExpander"] details summary { background-color: #161616 !important; color: #F5F5F2 !important; border: none !important; }
-  [data-testid="stExpander"] details > div { background-color: #1C1C1C !important; }
-  details summary p { font-family: 'DM Sans', sans-serif !important; font-size: 0.85rem !important; letter-spacing: 0.05em !important; }
+  [data-testid="stExpander"] { background-color: #14171C !important; border-radius: 8px !important; }
+  [data-testid="stExpander"] details { background-color: #14171C !important; }
+  [data-testid="stExpander"] details summary { background-color: #1B1F26 !important; color: #E8E6E1 !important; border: none !important; }
+  [data-testid="stExpander"] details > div { background-color: #14171C !important; }
+  details summary p { font-family: 'Inter', sans-serif !important; font-size: 0.85rem !important; letter-spacing: 0.04em !important; }
 
   /* ── Captions & text ── */
-  [data-testid="stCaptionContainer"] p { font-family: 'DM Mono', monospace !important; font-size: 0.82rem !important; color: #888888 !important; }
-  [data-testid="stMarkdownContainer"] p { color: #F5F5F2 !important; }
-  [data-testid="stMainBlockContainer"] p, [data-testid="stMainBlockContainer"] li { color: #F5F5F2 !important; }
-  .stCaptionContainer p { color: #888888 !important; }
-  [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #888888 !important; }
+  [data-testid="stCaptionContainer"] p { font-family: 'JetBrains Mono', monospace !important; font-size: 0.78rem !important; color: #7A8089 !important; letter-spacing: 0.04em !important; }
+  [data-testid="stMarkdownContainer"] p { color: #E8E6E1 !important; }
+  [data-testid="stMainBlockContainer"] p, [data-testid="stMainBlockContainer"] li { color: #E8E6E1 !important; }
+  .stCaptionContainer p { color: #7A8089 !important; }
+  [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #7A8089 !important; font-family: 'JetBrains Mono', monospace !important; font-size: 0.72rem !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
 
   /* ── Inputs ── */
   input, [data-baseweb="input"] input {
-      border-radius: 0 !important; font-family: 'DM Sans', sans-serif !important;
-      background: #1C1C1C !important; border-color: #2A2A2A !important; color: #F5F5F2 !important;
+      border-radius: 4px !important; font-family: 'Inter', sans-serif !important;
+      background: #14171C !important; border-color: #262A31 !important; color: #E8E6E1 !important;
   }
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: #111111; }
-  ::-webkit-scrollbar-thumb { border-radius: 0; background: #2A2A2A; }
-  hr { margin: 24px 0 !important; border-color: #2A2A2A !important; }
+  input:focus, [data-baseweb="input"] input:focus { border-color: #343944 !important; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { border-radius: 10px; background: #262A31; }
+  ::-webkit-scrollbar-thumb:hover { background: #343944; }
+  hr { margin: 24px 0 !important; border-color: #262A31 !important; }
 
   /* ── Buttons ── */
   [data-testid="stButton"] button {
-      background: #1C1C1C !important; color: #F5F5F2 !important;
-      border: 1px solid #2A2A2A !important; border-radius: 0 !important;
-      font-family: 'DM Sans', sans-serif !important;
+      background: #14171C !important; color: #E8E6E1 !important;
+      border: 1px solid #262A31 !important; border-radius: 4px !important;
+      font-family: 'Inter', sans-serif !important; font-weight: 500 !important;
+      transition: border-color 140ms, background 140ms !important;
   }
-  [data-testid="stButton"] button:hover { background: #222222 !important; border-color: #F5F5F2 !important; }
+  [data-testid="stButton"] button:hover { background: #1B1F26 !important; border-color: #343944 !important; }
 
   /* ── Selectbox ── */
-  [data-baseweb="select"] > div { background: #1C1C1C !important; border-color: #2A2A2A !important; }
-  [data-baseweb="select"] span, [data-baseweb="select"] div { color: #F5F5F2 !important; }
-  [data-baseweb="select"] svg { fill: #888888 !important; }
-  [data-baseweb="popover"] { background: #1C1C1C !important; }
-  [data-baseweb="menu"] { background: #1C1C1C !important; border: 1px solid #2A2A2A !important; }
-  [data-baseweb="menu-item"], [role="option"] { color: #F5F5F2 !important; background: #1C1C1C !important; }
-  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #222222 !important; }
+  [data-baseweb="select"] > div { background: #14171C !important; border-color: #262A31 !important; border-radius: 4px !important; }
+  [data-baseweb="select"] span, [data-baseweb="select"] div { color: #E8E6E1 !important; }
+  [data-baseweb="select"] svg { fill: #7A8089 !important; }
+  [data-baseweb="popover"] { background: #14171C !important; }
+  [data-baseweb="menu"] { background: #14171C !important; border: 1px solid #262A31 !important; border-radius: 4px !important; }
+  [data-baseweb="menu-item"], [role="option"] { color: #E8E6E1 !important; background: #14171C !important; }
+  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #1B1F26 !important; }
 
   /* ── Slider ── */
-  [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #2A2A2A !important; }
+  [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #262A31 !important; }
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
-  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #888888 !important; }
+  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #7A8089 !important; }
 
   /* ── Number input ── */
   [data-testid="stNumberInput"] input {
-      background: #1C1C1C !important; color: #F5F5F2 !important;
-      border-color: #2A2A2A !important; border-radius: 0 !important;
-      font-family: 'DM Mono', monospace !important;
+      background: #14171C !important; color: #E8E6E1 !important;
+      border-color: #262A31 !important; border-radius: 4px !important;
+      font-family: 'JetBrains Mono', monospace !important;
   }
-  [data-testid="stNumberInput"] input:focus { border-color: #F5F5F2 !important; box-shadow: none !important; }
-  [data-testid="stNumberInput"] button { background: #1C1C1C !important; border-color: #2A2A2A !important; color: #888888 !important; }
-  [data-testid="stNumberInput"] button svg { fill: #888888 !important; }
-  [data-testid="stNumberInput"] button:hover { border-color: #F5F5F2 !important; color: #F5F5F2 !important; }
-  [data-testid="stNumberInput"] button:hover svg { fill: #F5F5F2 !important; }
+  [data-testid="stNumberInput"] input:focus { border-color: #343944 !important; box-shadow: none !important; }
+  [data-testid="stNumberInput"] button { background: #14171C !important; border-color: #262A31 !important; color: #7A8089 !important; }
+  [data-testid="stNumberInput"] button svg { fill: #7A8089 !important; }
+  [data-testid="stNumberInput"] button:hover { border-color: #343944 !important; color: #E8E6E1 !important; }
+  [data-testid="stNumberInput"] button:hover svg { fill: #E8E6E1 !important; }
 
   /* ── Dataframe ── */
   [data-testid="stDataFrameContainer"], [data-testid="stDataFrame"],
   .stDataFrame { filter: invert(0.88) hue-rotate(180deg) !important; background: #f5f5f2 !important; }
 
   /* ── Tooltip card (value driver) ── */
-  .vd-tip { font-family: 'DM Sans', sans-serif !important; }
+  .vd-tip { font-family: 'Inter', sans-serif !important; }
 
   /* ── Tab icons (inactive gray / active light) ── */
-  [data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); }
+  [data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237A8089' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); }
 
   /* ── Theme toggle button: moon icon (dark mode active) ── */
-  [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23F5F5F2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
+  [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E8E6E1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
 </style>"""
 _LIGHT_CSS = """<style>
-  :root { --font: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; }
+  :root {
+    --font: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+    --ink:#F5F2EC; --panel:#FFFFFF; --panel-2:#F9F6F0;
+    --line:#E4DFD5; --line-2:#CFC9BD;
+    --text:#0B0D10; --text-2:#2A2D33; --muted:#6A6F78; --muted-2:#9EA3AB;
+    --green:#338C5B; --red:#C64525; --ice:#2E6FA8;
+  }
   footer { visibility: hidden; }
   .block-container { padding-top: 2.5rem !important; padding-bottom: 2rem !important; }
 
   /* ── Page surfaces ── */
-  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #FAFAF8 !important; }
+  .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #F5F2EC !important; }
 
   /* ── Base typography ── */
   html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
-  p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'DM Sans', sans-serif !important; }
+  p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'Inter', sans-serif !important; }
   h1, h2, h3,
   [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
-      font-family: 'Instrument Serif', serif !important; font-weight: 400 !important;
-      line-height: 1.1 !important; letter-spacing: 0 !important; color: #111111 !important;
+      font-family: 'Fraunces', serif !important; font-weight: 500 !important;
+      font-variation-settings: "opsz" 144 !important;
+      line-height: 1.06 !important; letter-spacing: -0.02em !important; color: #0B0D10 !important;
   }
 
   /* ── Metric tiles ── */
@@ -739,134 +759,140 @@ _LIGHT_CSS = """<style>
       border-radius: 0 !important; padding: 16px 2px 12px !important; box-shadow: none !important;
   }
   [data-testid="stMetricLabel"] {
-      font-family: 'DM Sans', sans-serif !important; font-size: 0.65rem !important;
-      letter-spacing: 0.15em !important; text-transform: uppercase !important; color: #777777 !important;
+      font-family: 'JetBrains Mono', monospace !important; font-size: 0.66rem !important;
+      letter-spacing: 0.14em !important; text-transform: uppercase !important; color: #6A6F78 !important;
   }
   [data-testid="stMetricValue"] {
-      font-family: 'Instrument Serif', serif !important; font-size: 2.5rem !important;
-      line-height: 1.0 !important; letter-spacing: 0 !important; font-weight: 400 !important; color: #111111 !important;
+      font-family: 'Fraunces', serif !important; font-size: 2.5rem !important;
+      font-variation-settings: "opsz" 144 !important;
+      line-height: 1.0 !important; letter-spacing: -0.02em !important; font-weight: 500 !important; color: #0B0D10 !important;
   }
-  [data-testid="stMetricDelta"] { font-family: 'DM Mono', monospace !important; font-size: 0.78rem !important; }
+  [data-testid="stMetricDelta"] { font-family: 'JetBrains Mono', monospace !important; font-size: 0.78rem !important; }
 
   /* ── Tabs ── */
   [data-baseweb="tab-list"] {
       gap: 0 !important; background: transparent !important; padding-bottom: 0 !important;
-      margin-bottom: 24px !important; border-bottom: 1px solid #E8E8E4 !important;
+      margin-bottom: 24px !important; border-bottom: 1px solid #E4DFD5 !important;
   }
   [data-baseweb="tab"] {
-      font-family: 'DM Sans', sans-serif !important; font-size: 0.8rem !important;
+      font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important;
       letter-spacing: 0.1em !important; text-transform: uppercase !important;
-      padding: 12px 24px !important; border-radius: 0 !important;
+      padding: 12px 22px !important; border-radius: 0 !important;
       background: transparent !important; border-bottom: 2px solid transparent !important;
-      margin-bottom: -1px !important; color: #777777 !important;
+      margin-bottom: -1px !important; color: #6A6F78 !important;
   }
+  [data-baseweb="tab"]:hover { color: #2A2D33 !important; }
   [aria-selected="true"][data-baseweb="tab"] {
-      color: #1A1A2E !important; border-bottom: 2px solid #1A1A2E !important;
-      font-style: italic !important; font-family: 'Instrument Serif', serif !important;
+      color: #0B0D10 !important; border-bottom: 2px solid #0B0D10 !important;
+      font-style: italic !important; font-family: 'Fraunces', serif !important;
+      font-variation-settings: "opsz" 14 !important;
   }
 
   /* ── Cards ── */
-  .player-card { border-radius: 0; padding: 20px 24px; margin-bottom: 14px; background: #FFFFFF; border: 1px solid #E8E8E4; }
-  .kings-card  { border-radius: 0; padding: 18px 22px; margin-bottom: 6px; background: #FFFFFF; border: 1px solid #E8E8E4; transition: background 0.1s; }
-  .kings-card:hover { background: #F5F5F2; }
+  .player-card { border-radius: 8px; padding: 20px 24px; margin-bottom: 14px; background: #FFFFFF; border: 1px solid #E4DFD5; }
+  .kings-card  { border-radius: 4px; padding: 18px 22px; margin-bottom: 6px; background: #FFFFFF; border: 1px solid #E4DFD5; transition: border-color 140ms, background 140ms; }
+  .kings-card:hover { background: #F9F6F0; border-color: #CFC9BD; }
 
   /* ── Typography classes ── */
-  .stat-label { font-family: 'DM Sans', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: #777777; }
-  .stat-value { font-family: 'DM Mono', monospace; font-size: 0.9rem; color: #111111; }
-  .delta-pos  { font-family: 'DM Mono', monospace; font-size: 1.3rem; color: #2A7A4B; }
-  .delta-neg  { font-family: 'DM Mono', monospace; font-size: 1.3rem; color: #C0392B; }
-  .pct-pos    { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #2A7A4B; }
-  .pct-neg    { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: #C0392B; }
-  .section-header { font-family: 'Instrument Serif', serif; font-size: 1.8rem; font-weight: 400; line-height: 1.1; margin-bottom: 8px; color: #111111; }
-  .group-label { font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin: 24px 0 12px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; color: #777777; }
-  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 0; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #fff !important; }
-  .kings-gold { color: #1A1A2E; font-weight: 600; }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #6A6F78; }
+  .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #0B0D10; font-feature-settings: "tnum" 1; }
+  .delta-pos  { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: #338C5B; font-feature-settings: "tnum" 1; }
+  .delta-neg  { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: #C64525; font-feature-settings: "tnum" 1; }
+  .pct-pos    { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #338C5B; }
+  .pct-neg    { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #C64525; }
+  .section-header { font-family: 'Fraunces', serif; font-variation-settings: "opsz" 144; font-size: 1.8rem; font-weight: 500; letter-spacing: -0.015em; line-height: 1.1; margin-bottom: 8px; color: #0B0D10; }
+  .group-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; margin: 24px 0 12px; padding-left: 10px; border-left-width: 2px; border-left-style: solid; color: #6A6F78; }
+  .signal-badge { display: inline-block; padding: 3px 8px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #fff !important; }
+  .kings-gold { color: #2E6FA8; font-weight: 600; }
 
   /* ── Sidebar ── */
-  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #FAFAF8 !important; border-right: 1px solid #E8E8E4 !important; }
-  [data-testid="stSidebar"] * { color: #111111 !important; }
-  [data-testid="stSidebar"] .stCaptionContainer p { color: #777777 !important; }
+  [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #F5F2EC !important; border-right: 1px solid #E4DFD5 !important; }
+  [data-testid="stSidebar"] * { color: #0B0D10 !important; }
+  [data-testid="stSidebar"] .stCaptionContainer p { color: #6A6F78 !important; }
 
   /* ── Expanders ── */
-  [data-testid="stExpander"] { border-radius: 0 !important; border: 1px solid #E8E8E4 !important; background-color: #FFFFFF !important; }
+  [data-testid="stExpander"] { border-radius: 8px !important; border: 1px solid #E4DFD5 !important; background-color: #FFFFFF !important; }
   [data-testid="stExpander"] details { background-color: #FFFFFF !important; }
-  [data-testid="stExpander"] details summary { background-color: #FAFAF8 !important; color: #111111 !important; border: none !important; }
-  details summary p { font-family: 'DM Sans', sans-serif !important; font-size: 0.85rem !important; letter-spacing: 0.05em !important; color: #111111 !important; }
+  [data-testid="stExpander"] details summary { background-color: #F9F6F0 !important; color: #0B0D10 !important; border: none !important; }
+  details summary p { font-family: 'Inter', sans-serif !important; font-size: 0.85rem !important; letter-spacing: 0.04em !important; color: #0B0D10 !important; }
 
-  /* ── Flip inline dark backgrounds to light ── */
-  [style*="background:#1C1C1C"] { background: #FFFFFF !important; }
-  [style*="background: #1C1C1C"] { background: #FFFFFF !important; }
-  [style*="background:#111111"] { background: #FAFAF8 !important; }
-  [style*="border:1px solid #2A2A2A"] { border-color: #E8E8E4 !important; }
-  [style*="border: 1px solid #2A2A2A"] { border-color: #E8E8E4 !important; }
+  /* ── Flip inline dark backgrounds to light (legacy fallbacks) ── */
+  [style*="background:#14171C"] { background: #FFFFFF !important; }
+  [style*="background: #14171C"] { background: #FFFFFF !important; }
+  [style*="background:#0B0D10"] { background: #F5F2EC !important; }
+  [style*="border:1px solid #262A31"] { border-color: #E4DFD5 !important; }
+  [style*="border: 1px solid #262A31"] { border-color: #E4DFD5 !important; }
 
   /* ── Captions & text ── */
-  [data-testid="stCaptionContainer"] p { font-family: 'DM Mono', monospace !important; font-size: 0.82rem !important; color: #777777 !important; }
-  [data-testid="stMarkdownContainer"] p { color: #111111 !important; }
-  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #111111 !important; }
-  [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #777777 !important; }
-  .stCaptionContainer p { color: #777777 !important; }
+  [data-testid="stCaptionContainer"] p { font-family: 'JetBrains Mono', monospace !important; font-size: 0.78rem !important; color: #6A6F78 !important; letter-spacing: 0.04em !important; }
+  [data-testid="stMarkdownContainer"] p { color: #0B0D10 !important; }
+  [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 { color: #0B0D10 !important; }
+  [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] label { color: #6A6F78 !important; font-family: 'JetBrains Mono', monospace !important; font-size: 0.72rem !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
+  .stCaptionContainer p { color: #6A6F78 !important; }
 
   /* ── Inputs ── */
   input, [data-baseweb="input"] input {
-      border-radius: 0 !important; font-family: 'DM Sans', sans-serif !important;
-      background: #FAFAF8 !important; border-color: #E8E8E4 !important; color: #111111 !important;
+      border-radius: 4px !important; font-family: 'Inter', sans-serif !important;
+      background: #FFFFFF !important; border-color: #E4DFD5 !important; color: #0B0D10 !important;
   }
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: #FAFAF8; }
-  ::-webkit-scrollbar-thumb { border-radius: 0; background: #E8E8E4; }
-  hr { margin: 24px 0 !important; border-color: #E8E8E4 !important; }
+  input:focus, [data-baseweb="input"] input:focus { border-color: #CFC9BD !important; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { border-radius: 10px; background: #E4DFD5; }
+  ::-webkit-scrollbar-thumb:hover { background: #CFC9BD; }
+  hr { margin: 24px 0 !important; border-color: #E4DFD5 !important; }
 
   /* ── Buttons ── */
   [data-testid="stButton"] button {
-      background: #FFFFFF !important; color: #111111 !important;
-      border: 1px solid #E8E8E4 !important; border-radius: 0 !important;
-      font-family: 'DM Sans', sans-serif !important;
+      background: #FFFFFF !important; color: #0B0D10 !important;
+      border: 1px solid #E4DFD5 !important; border-radius: 4px !important;
+      font-family: 'Inter', sans-serif !important; font-weight: 500 !important;
+      transition: border-color 140ms, background 140ms !important;
   }
-  [data-testid="stButton"] button:hover { background: #F5F5F2 !important; border-color: #1A1A2E !important; }
+  [data-testid="stButton"] button:hover { background: #F9F6F0 !important; border-color: #CFC9BD !important; }
 
   /* ── Selectbox ── */
-  [data-baseweb="select"] > div { background: #FAFAF8 !important; border-color: #E8E8E4 !important; }
-  [data-baseweb="select"] span { color: #111111 !important; }
-  [data-baseweb="popover"] { background: #FAFAF8 !important; }
-  [data-baseweb="menu"] { background: #FAFAF8 !important; border: 1px solid #E8E8E4 !important; }
-  [data-baseweb="menu-item"], [role="option"] { color: #111111 !important; background: #FAFAF8 !important; }
-  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #F0EFE9 !important; }
+  [data-baseweb="select"] > div { background: #FFFFFF !important; border-color: #E4DFD5 !important; border-radius: 4px !important; }
+  [data-baseweb="select"] span { color: #0B0D10 !important; }
+  [data-baseweb="popover"] { background: #FFFFFF !important; }
+  [data-baseweb="menu"] { background: #FFFFFF !important; border: 1px solid #E4DFD5 !important; border-radius: 4px !important; }
+  [data-baseweb="menu-item"], [role="option"] { color: #0B0D10 !important; background: #FFFFFF !important; }
+  [data-baseweb="menu-item"]:hover, [role="option"]:hover { background: #F9F6F0 !important; }
 
   /* ── Slider ── */
-  [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #E8E8E4 !important; }
+  [data-testid="stSlider"] [data-baseweb="slider"] > div:first-child { background: #E4DFD5 !important; }
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
-  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #777777 !important; }
+  [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #6A6F78 !important; }
 
   /* ── Number input ── */
   [data-testid="stNumberInput"] input {
-      background: #FAFAF8 !important; color: #111111 !important;
-      border-color: #E8E8E4 !important; border-radius: 0 !important;
-      font-family: 'DM Mono', monospace !important;
+      background: #FFFFFF !important; color: #0B0D10 !important;
+      border-color: #E4DFD5 !important; border-radius: 4px !important;
+      font-family: 'JetBrains Mono', monospace !important;
   }
-  [data-testid="stNumberInput"] input:focus { border-color: #1A1A2E !important; box-shadow: none !important; }
-  [data-testid="stNumberInput"] button { background: #FFFFFF !important; border-color: #E8E8E4 !important; }
-  [data-testid="stNumberInput"] button svg { fill: #777777 !important; }
-  [data-testid="stNumberInput"] button:hover { border-color: #1A1A2E !important; }
-  [data-testid="stNumberInput"] button:hover svg { fill: #111111 !important; }
+  [data-testid="stNumberInput"] input:focus { border-color: #CFC9BD !important; box-shadow: none !important; }
+  [data-testid="stNumberInput"] button { background: #FFFFFF !important; border-color: #E4DFD5 !important; }
+  [data-testid="stNumberInput"] button svg { fill: #6A6F78 !important; }
+  [data-testid="stNumberInput"] button:hover { border-color: #CFC9BD !important; }
+  [data-testid="stNumberInput"] button:hover svg { fill: #0B0D10 !important; }
 
   /* ── Tooltip card (value driver) ── */
-  .vd-tip { font-family: 'DM Sans', sans-serif !important; }
+  .vd-tip { font-family: 'Inter', sans-serif !important; }
 
   /* ── Tab icons (inactive gray / active navy) ── */
-  [data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23777777' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); }
-  [aria-selected="true"][data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); }
+  [data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236A6F78' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236A6F78' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236A6F78' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236A6F78' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236A6F78' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); display:inline-block; margin-right:7px; vertical-align:-3px; }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(1)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232E6FA8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='2' y1='12' x2='22' y2='12'/><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(2)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232E6FA8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(3)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232E6FA8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(4)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232E6FA8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); }
+  [aria-selected="true"][data-baseweb="tab"]:nth-child(5)::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232E6FA8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='7' cy='17' r='2'/><circle cx='17' cy='7' r='2'/><circle cx='17' cy='17' r='2'/><line x1='8.7' y1='15.7' x2='15.3' y2='8.3'/><line x1='15' y1='17' x2='9' y2='17'/></svg>"); }
 
   /* ── Theme toggle button: sun icon (light mode active) ── */
-  [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='5'/><line x1='12' y1='1' x2='12' y2='3'/><line x1='12' y1='21' x2='12' y2='23'/><line x1='4.22' y1='4.22' x2='5.64' y2='5.64'/><line x1='18.36' y1='18.36' x2='19.78' y2='19.78'/><line x1='1' y1='12' x2='3' y2='12'/><line x1='21' y1='12' x2='23' y2='12'/><line x1='4.22' y1='19.78' x2='5.64' y2='18.36'/><line x1='18.36' y1='5.64' x2='19.78' y2='4.22'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
+  [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230B0D10' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='5'/><line x1='12' y1='1' x2='12' y2='3'/><line x1='12' y1='21' x2='12' y2='23'/><line x1='4.22' y1='4.22' x2='5.64' y2='5.64'/><line x1='18.36' y1='18.36' x2='19.78' y2='19.78'/><line x1='1' y1='12' x2='3' y2='12'/><line x1='21' y1='12' x2='23' y2='12'/><line x1='4.22' y1='19.78' x2='5.64' y2='18.36'/><line x1='18.36' y1='5.64' x2='19.78' y2='4.22'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
 </style>"""
 
 
@@ -1031,14 +1057,14 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
             f"<div style='background:{_card_bg};padding:14px 8px;"
             f"text-align:center;border:1px solid {_card_bd};border-top:3px solid {clr};'>"
             f"  {hs_html}"
-            f"  <div style='font-family:\"Instrument Serif\",serif;font-weight:400;color:{_card_txt};font-size:.95rem;"
+            f"  <div style='font-family:\"Fraunces\",serif;font-weight:400;color:{_card_txt};font-size:.95rem;"
             f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
             f"    max-width:100%;'>{name}</div>"
             f"  <div style='color:{_card_sub};font-size:.72rem;margin:3px 0;"
-            f"    font-family:\"DM Sans\",sans-serif;letter-spacing:.06em;text-transform:uppercase;'>"
+            f"    font-family:\"Inter\",sans-serif;letter-spacing:.06em;text-transform:uppercase;'>"
             f"    {team} · {pos}</div>"
             f"  <div style='color:{clr};font-size:.85rem;font-weight:400;"
-            f"    margin-top:6px;font-family:\"DM Mono\",monospace;'>{val_str}</div>"
+            f"    margin-top:6px;font-family:\"JetBrains Mono\",monospace;'>{val_str}</div>"
             f"</div>",
             unsafe_allow_html=True,
         )
@@ -1123,7 +1149,7 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         def _sb_section(label):
             _cb = _T["card_border"]
             st.markdown(
-                f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;"
+                f"<div style='font-family:\"Inter\",sans-serif;font-size:.65rem;"
                 f"font-weight:500;letter-spacing:.15em;text-transform:uppercase;"
                 f"color:{_sb_sub};border-top:1px solid {_cb};"
                 f"padding-top:10px;margin-top:4px;margin-bottom:6px;'>{label}</div>",
@@ -1132,7 +1158,7 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
 
         def _sb_mono(text):
             st.markdown(
-                f"<div style='font-family:\"DM Mono\",monospace;font-size:.78rem;"
+                f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.78rem;"
                 f"color:{_sb_txt};line-height:1.7;'>{text}</div>",
                 unsafe_allow_html=True,
             )
@@ -1157,7 +1183,7 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         age_max = math.ceil(df["age"].dropna().max())
         st.markdown(
             f"<div style='font-size:.65rem;color:{_sb_sub};margin-bottom:4px;"
-            f"font-family:\"DM Sans\",sans-serif;letter-spacing:.12em;text-transform:uppercase;'>"
+            f"font-family:\"Inter\",sans-serif;letter-spacing:.12em;text-transform:uppercase;'>"
             f"Age range</div>",
             unsafe_allow_html=True,
         )
@@ -1224,14 +1250,14 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
     # ── A. Hero Section ──────────────────────────────────────────────────────
     st.markdown(
         f"<div style='padding:0 0 24px;'>"
-        f"<div style='font-family:\"Instrument Serif\",serif;font-size:3rem;"
+        f"<div style='font-family:\"Fraunces\",serif;font-size:3rem;"
         f"font-weight:400;color:{_txt};line-height:1.05;margin-bottom:10px;'>"
         f"Predicting NHL Player<br>Market Value</div>"
-        f"<div style='font-family:\"DM Mono\",monospace;font-size:.7rem;"
+        f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.7rem;"
         f"letter-spacing:.12em;text-transform:uppercase;color:{_sub};margin-bottom:16px;'>"
         f"{_season_str(load_season_context())} &nbsp;·&nbsp; "
         f"Comps-Based Valuation &nbsp;·&nbsp; K-Means Clustering &nbsp;·&nbsp; Live Data</div>"
-        f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.82rem;"
+        f"<div style='font-family:\"Inter\",sans-serif;font-size:.82rem;"
         f"color:{_sub};line-height:1.7;max-width:680px;'>"
         f"This model estimates each NHL skater's fair market value by clustering players into "
         f"positional roles, scoring their performance within those roles, and finding the five "
@@ -1251,13 +1277,13 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
             f"<div style='flex:1;min-width:160px;max-width:220px;background:{_abg};"
             f"border:1px solid {_abd};padding:16px 14px;position:relative;'>"
             f"<div style='position:absolute;top:-12px;left:14px;background:{color};"
-            f"color:#fff;font-family:\"DM Mono\",monospace;font-size:.65rem;"
+            f"color:#fff;font-family:\"JetBrains Mono\",monospace;font-size:.65rem;"
             f"padding:2px 8px;letter-spacing:.1em;'>{number}</div>"
-            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.85rem;"
+            f"<div style='font-family:\"Inter\",sans-serif;font-size:.85rem;"
             f"font-weight:600;color:{_atxt};margin-top:6px;'>{title}</div>"
-            f"<div style='font-family:\"DM Mono\",monospace;font-size:.65rem;"
+            f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.65rem;"
             f"color:{_asub};margin-top:4px;letter-spacing:.04em;'>{subtitle}</div>"
-            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.72rem;"
+            f"<div style='font-family:\"Inter\",sans-serif;font-size:.72rem;"
             f"color:{_asub};margin-top:8px;line-height:1.5;'>{detail}</div>"
             f"</div>"
         )
@@ -1301,9 +1327,9 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
     st.markdown(
         f"<div style='background:{_abg};border:1px solid {_abd};border-left:3px solid {_asub};"
         f"padding:10px 16px;margin:8px 0 28px;display:flex;align-items:center;gap:12px;'>"
-        f"<span style='font-size:.68rem;color:{_asub};font-family:\"DM Sans\",sans-serif;"
+        f"<span style='font-size:.68rem;color:{_asub};font-family:\"Inter\",sans-serif;"
         f"letter-spacing:.1em;text-transform:uppercase;'>Validation Benchmark</span>"
-        f"<span style='font-family:\"DM Mono\",monospace;font-size:.8rem;color:{_atxt};'>"
+        f"<span style='font-family:\"JetBrains Mono\",monospace;font-size:.8rem;color:{_atxt};'>"
         f"XGBoost + SHAP &nbsp;·&nbsp; 5-Fold CV R² ≈ 0.83 &nbsp;·&nbsp; RMSE ≈ $1.2M"
         f"</span></div>",
         unsafe_allow_html=True,
@@ -1373,16 +1399,16 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
     if not df_c.empty:
         lo = min(df_c["predicted_value"].min(), df_c["cap_hit"].min()) * 0.95
         hi = max(df_c["predicted_value"].max(), df_c["cap_hit"].max()) * 1.02
-        _fvline_color = "#FFFFFF" if st.session_state.get("dark_mode", True) else "#111111"
+        _fvline_color = "#E8E6E1" if st.session_state.get("dark_mode", True) else "#0B0D10"
         fig.add_shape(type="line", x0=lo, y0=lo, x1=hi, y1=hi,
                       line=dict(dash="dot", color=_fvline_color, width=2))
         fig.add_annotation(x=hi * 0.72, y=hi * 0.78, text="Fair value",
                            showarrow=False, font=dict(color=_fvline_color, size=12,
-                                                      family="'DM Sans', sans-serif"))
+                                                      family="'Inter', sans-serif"))
 
     fig.update_layout(
         paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-        font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+        font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
         xaxis=dict(tickformat="$,.0f", title="Predicted Market Value",
                    gridcolor=_T["grid"], zeroline=False),
         yaxis=dict(tickformat="$,.0f", title="Actual Cap Hit (0 = UFA/Unsigned)",
@@ -1399,7 +1425,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
         st.session_state["overview_show_ufa"] = not show_ufa
         st.rerun()
     st.markdown(
-        f"<div style='font-family:\"DM Mono\",monospace;font-size:0.72rem;color:{_sub};line-height:2;'>"
+        f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:0.72rem;color:{_sub};line-height:2;'>"
         f"<span style='display:inline-block;width:8px;height:8px;background:{_pos};vertical-align:middle;margin-right:5px;'></span>Below dashed line = underpaid"
         f"&nbsp;&nbsp;·&nbsp;&nbsp;"
         f"<span style='display:inline-block;width:8px;height:8px;background:{_neg};vertical-align:middle;margin-right:5px;'></span>Above = overpaid"
@@ -1438,16 +1464,16 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
         with _tbl_left:
             st.markdown(
-                f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.5rem;"
+                f"<div style='font-family:\"Fraunces\",serif;font-size:1.5rem;"
                 f"color:{_txt};margin-bottom:14px;font-weight:400;'>Cluster Economics</div>",
                 unsafe_allow_html=True,
             )
-            _hdr_s = (f"font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.12em;"
+            _hdr_s = (f"font-family:'Inter',sans-serif;font-size:.6rem;letter-spacing:.12em;"
                       f"text-transform:uppercase;color:{_sub};padding:8px 8px;"
                       f"border-bottom:2px solid {_cbd};text-align:right;")
-            _cell_s = (f"font-family:'DM Mono',monospace;font-size:.75rem;color:{_txt};"
+            _cell_s = (f"font-family:'JetBrains Mono',monospace;font-size:.75rem;color:{_txt};"
                        f"padding:7px 8px;border-bottom:1px solid {_cbd};text-align:right;")
-            _name_s = (f"font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:600;"
+            _name_s = (f"font-family:'Inter',sans-serif;font-size:.75rem;font-weight:600;"
                        f"padding:7px 8px;border-bottom:1px solid {_cbd};text-align:left;")
 
             _rows_html = ""
@@ -1493,7 +1519,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
         with _tbl_right:
             st.markdown(
-                f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;font-weight:500;"
+                f"<div style='font-family:\"Inter\",sans-serif;font-size:.65rem;font-weight:500;"
                 f"letter-spacing:.12em;text-transform:uppercase;color:{_pos};margin-bottom:10px;"
                 f"border-left:2px solid {_pos};padding-left:8px;'>Top 5 Underpaid</div>",
                 unsafe_allow_html=True,
@@ -1501,7 +1527,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
             _mini_player_cards(df_c.nlargest(5, "value_delta"))
             st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
             st.markdown(
-                f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;font-weight:500;"
+                f"<div style='font-family:\"Inter\",sans-serif;font-size:.65rem;font-weight:500;"
                 f"letter-spacing:.12em;text-transform:uppercase;color:{_neg};margin-bottom:10px;"
                 f"border-left:2px solid {_neg};padding-left:8px;'>Top 5 Overpaid</div>",
                 unsafe_allow_html=True,
@@ -1511,7 +1537,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
 # ── Tab 2: Leaderboards ────────────────────────────────────────────────────────
 def tab_leaderboards(df: pd.DataFrame):
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Value Leaderboards</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Value Leaderboards</div>", unsafe_allow_html=True)
 
     df_c   = df[df["cap_hit"].notna() & df["value_delta"].notna()].copy()
     df_c   = add_delta_pct(df_c)
@@ -1556,7 +1582,7 @@ def tab_leaderboards(df: pd.DataFrame):
         )
         fig.update_layout(
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]), showlegend=False,
+            font=dict(family="'Inter', sans-serif", color=_T["plot_font"]), showlegend=False,
             coloraxis_showscale=False,
             yaxis=dict(autorange="reversed"),
             xaxis=dict(
@@ -1564,7 +1590,7 @@ def tab_leaderboards(df: pd.DataFrame):
                 title=x_lbl, gridcolor=_T["grid"],
             ),
             margin=dict(l=0, r=10, t=30, b=10),
-            title=dict(text=title, font=dict(family="'DM Sans', sans-serif", size=14, color=_T["plot_font"])),
+            title=dict(text=title, font=dict(family="'Inter', sans-serif", size=14, color=_T["plot_font"])),
         )
         return fig
 
@@ -1584,7 +1610,7 @@ def tab_leaderboards(df: pd.DataFrame):
     hs1, hs2 = st.columns(2)
     with hs1:
         st.markdown(
-            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+            f"<div style='font-family:\"Inter\",sans-serif;font-size:.7rem;font-weight:500;"
             f"letter-spacing:.12em;text-transform:uppercase;color:{_T['positive']};margin-bottom:10px;"
             f"border-left:2px solid {_T['positive']};padding-left:8px;'>Top 5 Underpaid</div>",
             unsafe_allow_html=True,
@@ -1592,7 +1618,7 @@ def tab_leaderboards(df: pd.DataFrame):
         _mini_player_cards(df_c.nlargest(5, sort_col))
     with hs2:
         st.markdown(
-            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+            f"<div style='font-family:\"Inter\",sans-serif;font-size:.7rem;font-weight:500;"
             f"letter-spacing:.12em;text-transform:uppercase;color:{_T['negative']};margin-bottom:10px;"
             f"border-left:2px solid {_T['negative']};padding-left:8px;'>Top 5 Overpaid</div>",
             unsafe_allow_html=True,
@@ -1602,18 +1628,18 @@ def tab_leaderboards(df: pd.DataFrame):
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
     _TABLE_CSS = (
-        f"width:100%;border-collapse:collapse;font-family:'DM Sans',sans-serif;"
+        f"width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;"
         f"font-size:.8rem;background:{_T['card_bg']};"
     )
     _TH_CSS = (
         f"padding:8px 12px;text-align:left;color:{_T['card_subtext']};font-weight:500;"
-        f"font-family:'DM Sans',sans-serif;font-size:.7rem;letter-spacing:.12em;"
+        f"font-family:'Inter',sans-serif;font-size:.7rem;letter-spacing:.12em;"
         f"text-transform:uppercase;border-bottom:1px solid {_T['card_border']};"
         f"background:{_T['card_header']};"
     )
     _TD_CSS = (
         f"padding:8px 12px;color:{_T['card_text']};border-bottom:1px solid {_T['row_divider']};"
-        f"font-family:'DM Sans',sans-serif;"
+        f"font-family:'Inter',sans-serif;"
     )
 
     def _html_table(data, delta_col="value_delta"):
@@ -1643,18 +1669,18 @@ def tab_leaderboards(df: pd.DataFrame):
                     txt = fmt_m(v)
                 elif c == "value_delta":
                     color = _T.get("positive", "#2A7A4B") if (v or 0) >= 0 else _T.get("negative", "#C0392B")
-                    txt = f"<span style='color:{color};font-weight:600;font-family:\"DM Mono\",monospace;'>{fmt_delta(v)}</span>"
+                    txt = f"<span style='color:{color};font-weight:600;font-family:\"JetBrains Mono\",monospace;'>{fmt_delta(v)}</span>"
                 elif c == "value_delta_pct":
                     color = _T.get("positive", "#2A7A4B") if (v or 0) >= 0 else _T.get("negative", "#C0392B")
-                    txt = f"<span style='color:{color};font-family:\"DM Mono\",monospace;'>{fmt_pct(v)}</span>"
+                    txt = f"<span style='color:{color};font-family:\"JetBrains Mono\",monospace;'>{fmt_pct(v)}</span>"
                 elif c == "name":
-                    txt = f"<span style='color:{_ctxt};font-weight:500;font-family:\"DM Sans\",sans-serif;'>{v}</span>"
+                    txt = f"<span style='color:{_ctxt};font-weight:500;font-family:\"Inter\",sans-serif;'>{v}</span>"
                 elif c == "team":
                     _team_accent = _T.get("accent", "#1A1A2E")
-                    txt = f"<span style='color:{_team_accent};font-family:\"DM Mono\",monospace;'>{v}</span>"
+                    txt = f"<span style='color:{_team_accent};font-family:\"JetBrains Mono\",monospace;'>{v}</span>"
                 elif c == "cluster_label":
                     _cl_c = "#888"
-                    txt = f"<span style='color:{_cl_c};font-family:\"DM Sans\",sans-serif;font-size:.72rem;font-weight:600;'>{v}</span>"
+                    txt = f"<span style='color:{_cl_c};font-family:\"Inter\",sans-serif;font-size:.72rem;font-weight:600;'>{v}</span>"
                 else:
                     txt = str(v) if pd.notna(v) else "?"
                 cells += f"<td style='{_TD_CSS}'>{txt}</td>"
@@ -1673,7 +1699,7 @@ def tab_leaderboards(df: pd.DataFrame):
     t1, t2 = st.columns(2)
     with t1:
         st.markdown(
-            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+            f"<div style='font-family:\"Inter\",sans-serif;font-size:.7rem;font-weight:500;"
             f"letter-spacing:.12em;text-transform:uppercase;color:{_T['positive']};margin-bottom:8px;"
             f"border-left:2px solid {_T['positive']};padding-left:8px;'>"
             "Hidden Gems</div>",
@@ -1682,7 +1708,7 @@ def tab_leaderboards(df: pd.DataFrame):
         st.markdown(_html_table(df_c.nlargest(n, sort_col)), unsafe_allow_html=True)
     with t2:
         st.markdown(
-            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+            f"<div style='font-family:\"Inter\",sans-serif;font-size:.7rem;font-weight:500;"
             f"letter-spacing:.12em;text-transform:uppercase;color:{_T['negative']};margin-bottom:8px;"
             f"border-left:2px solid {_T['negative']};padding-left:8px;'>"
             "Overpaid</div>",
@@ -1703,9 +1729,9 @@ def tab_leaderboards(df: pd.DataFrame):
             _ufa_txt = _T["page_text"]; _ufa_sub = _T["card_subtext"]
             st.markdown(
                 f"<div style='margin-bottom:12px;'>"
-                f"<span style='font-family:\"Instrument Serif\",serif;font-size:1.5rem;"
+                f"<span style='font-family:\"Fraunces\",serif;font-size:1.5rem;"
                 f"font-weight:400;color:{_ufa_txt};'>UFA / Unsigned Players</span>"
-                f"<span style='font-family:\"DM Mono\",monospace;font-size:.72rem;"
+                f"<span style='font-family:\"JetBrains Mono\",monospace;font-size:.72rem;"
                 f"color:{_ufa_sub};margin-left:12px;letter-spacing:.06em;'>"
                 f"No current contract — predicted value only</span>"
                 f"</div>",
@@ -1727,13 +1753,13 @@ def tab_leaderboards(df: pd.DataFrame):
                             txt = f"{v:.0f}" if pd.notna(v) else "?"
                         elif c == "predicted_value":
                             _pv_txt = _T["card_text"]
-                            txt = f"<span style='color:{_pv_txt};font-family:\"DM Mono\",monospace;font-weight:500;'>{fmt_m(v)}</span>"
+                            txt = f"<span style='color:{_pv_txt};font-family:\"JetBrains Mono\",monospace;font-weight:500;'>{fmt_m(v)}</span>"
                         elif c == "name":
                             _ct = _T["card_text"]
-                            txt = f"<span style='color:{_ct};font-weight:500;font-family:\"DM Sans\",sans-serif;'>{v}</span>"
+                            txt = f"<span style='color:{_ct};font-weight:500;font-family:\"Inter\",sans-serif;'>{v}</span>"
                         elif c == "team":
                             _ta = _T.get("accent", "#1A1A2E")
-                            txt = f"<span style='color:{_ta};font-family:\"DM Mono\",monospace;'>{v}</span>"
+                            txt = f"<span style='color:{_ta};font-family:\"JetBrains Mono\",monospace;'>{v}</span>"
                         else:
                             txt = str(v) if pd.notna(v) else "?"
                         cells += f"<td style='{_TD_CSS}'>{txt}</td>"
@@ -1761,7 +1787,7 @@ def tab_leaderboards(df: pd.DataFrame):
     if not _vlr_df.empty and "cluster_label" in _vlr_df.columns:
         st.markdown("---")
         st.markdown(
-            f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;"
+            f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;"
             f"color:{_T['page_text']};margin-bottom:14px;font-weight:400;'>"
             f"Value Leaders by Role</div>",
             unsafe_allow_html=True,
@@ -1777,9 +1803,9 @@ def tab_leaderboards(df: pd.DataFrame):
             _v1, _v2, _v3 = st.columns([1.5, 2, 2])
             _v1.markdown(
                 f"<div style='padding:8px 0;'>"
-                f"<span style='color:{cl_clr};font-family:\"DM Sans\",sans-serif;"
+                f"<span style='color:{cl_clr};font-family:\"Inter\",sans-serif;"
                 f"font-size:.82rem;font-weight:600;'>{cl_name}</span>"
-                f"<br><span style='color:{_T['card_subtext']};font-family:\"DM Mono\",monospace;"
+                f"<br><span style='color:{_T['card_subtext']};font-family:\"JetBrains Mono\",monospace;"
                 f"font-size:.68rem;'>{len(cl_sub)} players</span>"
                 f"</div>",
                 unsafe_allow_html=True,
@@ -1789,9 +1815,9 @@ def tab_leaderboards(df: pd.DataFrame):
             _v2.markdown(
                 f"<div style='background:{_T['card_bg']};border:1px solid {_T['card_border']};"
                 f"border-left:3px solid {_pos_c};padding:8px 12px;'>"
-                f"<span style='color:{_T['card_text']};font-family:\"DM Sans\",sans-serif;"
+                f"<span style='color:{_T['card_text']};font-family:\"Inter\",sans-serif;"
                 f"font-size:.82rem;'>{best['name']}</span>"
-                f"<span style='color:{_pos_c};font-family:\"DM Mono\",monospace;"
+                f"<span style='color:{_pos_c};font-family:\"JetBrains Mono\",monospace;"
                 f"font-size:.78rem;margin-left:8px;'>{fmt_delta(best['value_delta'])}</span>"
                 f"</div>",
                 unsafe_allow_html=True,
@@ -1799,9 +1825,9 @@ def tab_leaderboards(df: pd.DataFrame):
             _v3.markdown(
                 f"<div style='background:{_T['card_bg']};border:1px solid {_T['card_border']};"
                 f"border-left:3px solid {_neg_c};padding:8px 12px;'>"
-                f"<span style='color:{_T['card_text']};font-family:\"DM Sans\",sans-serif;"
+                f"<span style='color:{_T['card_text']};font-family:\"Inter\",sans-serif;"
                 f"font-size:.82rem;'>{worst['name']}</span>"
-                f"<span style='color:{_neg_c};font-family:\"DM Mono\",monospace;"
+                f"<span style='color:{_neg_c};font-family:\"JetBrains Mono\",monospace;"
                 f"font-size:.78rem;margin-left:8px;'>{fmt_delta(worst['value_delta'])}</span>"
                 f"</div>",
                 unsafe_allow_html=True,
@@ -1819,11 +1845,11 @@ def tab_team(df: pd.DataFrame, team_code: str):
     _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
     st.markdown(
         f"<div style='padding:0 0 16px 0;'>"
-        f"<div style='font-family:\"Instrument Serif\",serif;font-size:3.5rem;"
+        f"<div style='font-family:\"Fraunces\",serif;font-size:3.5rem;"
         f"font-weight:400;color:{_ktxt};line-height:1;margin-bottom:8px;'>"
         f"{team_name}</div>"
         f"<div style='color:{_ksub};font-size:.72rem;"
-        f"font-family:\"DM Mono\",monospace;letter-spacing:.1em;text-transform:uppercase;'>"
+        f"font-family:\"JetBrains Mono\",monospace;letter-spacing:.1em;text-transform:uppercase;'>"
         f"{_season_str(load_season_context())} &nbsp;·&nbsp; Roster Analysis &nbsp;·&nbsp; Comps Model</div>"
         f"<div style='height:1px;background:{_T['card_border']};margin-top:16px;'></div>"
         f"</div>",
@@ -1863,10 +1889,10 @@ def tab_team(df: pd.DataFrame, team_code: str):
     # ── Team Cluster Composition ─────────────────────────────────────────────
     if "cluster_label" in team.columns:
         st.markdown(
-            f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.8rem;"
+            f"<div style='font-family:\"Fraunces\",serif;font-size:1.8rem;"
             f"font-weight:400;color:{_T['page_text']};margin:16px 0 12px;'>Role Composition</div>"
             f"<div style='color:{_T['card_subtext']};font-size:.72rem;"
-            f"font-family:\"DM Mono\",monospace;letter-spacing:.06em;margin-bottom:12px;'>"
+            f"font-family:\"JetBrains Mono\",monospace;letter-spacing:.06em;margin-bottom:12px;'>"
             f"How this team's roster is distributed across role clusters</div>",
             unsafe_allow_html=True,
         )
@@ -1882,13 +1908,13 @@ def tab_team(df: pd.DataFrame, team_code: str):
                 name=clabel, y=["Roster"], x=[cnt], orientation="h",
                 marker_color="#888",
                 text=[f"{clabel} ({cnt})"], textposition="inside",
-                textfont=dict(size=11, color="#fff", family="'DM Sans', sans-serif"),
+                textfont=dict(size=11, color="#fff", family="'Inter', sans-serif"),
                 hovertemplate=f"{clabel}: {cnt} players<extra></extra>",
             )
         fig_comp.update_layout(
             barmode="stack",
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
             xaxis=dict(title="Players", gridcolor=_T["grid_alt"]),
             yaxis=dict(showticklabels=False),
             showlegend=False, height=120,
@@ -1907,10 +1933,10 @@ def tab_team(df: pd.DataFrame, team_code: str):
 
         if not cluster_spend.empty:
             st.markdown(
-                f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.8rem;"
+                f"<div style='font-family:\"Fraunces\",serif;font-size:1.8rem;"
                 f"font-weight:400;color:{_T['page_text']};margin:20px 0 12px;'>Cluster Spending</div>"
                 f"<div style='color:{_T['card_subtext']};font-size:.72rem;"
-                f"font-family:\"DM Mono\",monospace;letter-spacing:.06em;margin-bottom:12px;'>"
+                f"font-family:\"JetBrains Mono\",monospace;letter-spacing:.06em;margin-bottom:12px;'>"
                 f"Total cap committed vs. predicted market value by role</div>",
                 unsafe_allow_html=True,
             )
@@ -1932,7 +1958,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
             fig_spend.update_layout(
                 barmode="group",
                 paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-                font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+                font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
                 xaxis=dict(tickangle=-20, gridcolor=_T["grid_alt"]),
                 yaxis=dict(tickformat="$,.0f", title="", gridcolor=_T["grid_alt"], zeroline=False),
                 showlegend=True,
@@ -1977,7 +2003,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
     fig.update_layout(
         barmode="group",
         paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-        font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+        font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
         xaxis=dict(tickangle=-40, gridcolor=_T["grid_alt"]),
         yaxis=dict(tickformat="$,.0f", title="", gridcolor=_T["grid_alt"], zeroline=False),
         title=dict(text="Cap Hit vs. Predicted Market Value (grouped by role)",
@@ -1995,7 +2021,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
             st.session_state[ufa_key] = not st.session_state[ufa_key]
             st.rerun()
     st.markdown(
-        f"<div style='font-size:.7rem;color:{_T['card_subtext']};font-family:\"DM Sans\",sans-serif;"
+        f"<div style='font-size:.7rem;color:{_T['card_subtext']};font-family:\"Inter\",sans-serif;"
         f"letter-spacing:.06em;margin-top:4px;'>"
         f"<span style='display:inline-block;width:10px;height:10px;background:{T_SECOND};"
         f"margin-right:5px;vertical-align:middle;'></span>Cap Hit"
@@ -2026,7 +2052,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
         if not expiring.empty:
             _exp_sub = _T["card_subtext"]
             st.markdown(
-                f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;"
+                f"<div style='font-family:\"Inter\",sans-serif;font-size:.65rem;"
                 f"font-weight:500;letter-spacing:.15em;text-transform:uppercase;"
                 f"color:{_exp_sub};margin:12px 0 6px;'>Expiring Contracts</div>",
                 unsafe_allow_html=True,
@@ -2045,7 +2071,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
 
     # ── Roster breakdown ──────────────────────────────────────────────────────
     st.markdown(
-        f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.8rem;"
+        f"<div style='font-family:\"Fraunces\",serif;font-size:1.8rem;"
         f"font-weight:400;color:{_T['page_text']};margin:24px 0 16px;'>Player Breakdown</div>",
         unsafe_allow_html=True,
     )
@@ -2109,7 +2135,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
         _bdg_txt = _T["card_subtext"]
         est_badge = (
             f"<span style='background:{_bdg_bg};color:{_bdg_txt};padding:1px 5px;"
-            f"font-family:\"DM Sans\",sans-serif;font-size:.65rem;letter-spacing:.06em;"
+            f"font-family:\"Inter\",sans-serif;font-size:.65rem;letter-spacing:.06em;"
             f"text-transform:uppercase;margin-left:4px;' "
             f"title='Salary estimated'>est*</span>"
         ) if is_est else ""
@@ -2125,7 +2151,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
             ext_len_s   = f"{int(ext_len_v)}-yr" if ext_len_v else ""
             _ext_sub = _T["card_subtext"]
             ext_note    = (
-                f"<div style='margin-top:5px;font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+                f"<div style='margin-top:5px;font-size:.72rem;font-family:\"Inter\",sans-serif;"
                 f"letter-spacing:.06em;color:{_ext_sub};text-transform:uppercase;'>"
                 f"Extension Signed — {ext_len_s} {ext_ch_s}/yr starting {ext_yr_s}</div>"
             )
@@ -2138,9 +2164,9 @@ def tab_team(df: pd.DataFrame, team_code: str):
             f"  <div style='flex:1;min-width:0;'>"
             f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
             f"      <span style='font-size:1.05rem;font-weight:400;color:{_rtxt};"
-            f"font-family:\"Instrument Serif\",serif;'>{name}</span>"
+            f"font-family:\"Fraunces\",serif;'>{name}</span>"
             f"      {est_badge}"
-            f"      <span style='color:{_rsub};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+            f"      <span style='color:{_rsub};font-size:.72rem;font-family:\"Inter\",sans-serif;"
             f"letter-spacing:.06em;text-transform:uppercase;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
@@ -2149,17 +2175,17 @@ def tab_team(df: pd.DataFrame, team_code: str):
             f"      <div><div class='stat-label'>Pred. Value</div>"
             f"           <div class='stat-value'>{pv_str}</div></div>"
             f"      <div><div class='stat-label'>Value Delta</div>"
-            f"           <div style='font-size:.88rem;font-family:\"DM Mono\",monospace;'>"
+            f"           <div style='font-size:.88rem;font-family:\"JetBrains Mono\",monospace;'>"
             f"             {delta_str} {pct_str}</div></div>"
             f"      <div><div class='stat-label'>Expiry</div>"
             f"           <div class='stat-value'>{exp_str} ({exp_st})</div></div>"
             f"      <div><div class='stat-label'>Yrs Left</div>"
             f"           <div class='stat-value'>{yrs_str}</div></div>"
             f"      <div><div class='stat-label'>Role</div>"
-            f"           <div class='stat-value' style='font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+            f"           <div class='stat-value' style='font-size:.72rem;font-family:\"Inter\",sans-serif;"
             f"letter-spacing:.04em;'>{cluster}</div></div>"
             f"      <div><div class='stat-label'>Perf Score</div>"
-            f"           <div style='font-size:.88rem;font-weight:700;font-family:\"DM Mono\",monospace;"
+            f"           <div style='font-size:.88rem;font-weight:700;font-family:\"JetBrains Mono\",monospace;"
             f"color:{perf_clr};'>{perf_str}</div></div>"
             f"    </div>"
             f"    {ext_note}"
@@ -2203,11 +2229,11 @@ def tab_kings(df: pd.DataFrame):
     _ktxt = _T["card_text"]; _ksub = _T["card_subtext"]
     st.markdown(
         f"<div style='padding:0 0 16px 0;'>"
-        f"<div style='font-family:\"Instrument Serif\",serif;font-size:3.5rem;"
+        f"<div style='font-family:\"Fraunces\",serif;font-size:3.5rem;"
         f"font-weight:400;color:{_ktxt};line-height:1;margin-bottom:8px;'>"
         f"Los Angeles Kings</div>"
         f"<div style='color:{_ksub};font-size:.72rem;"
-        f"font-family:\"DM Mono\",monospace;letter-spacing:.1em;text-transform:uppercase;'>"
+        f"font-family:\"JetBrains Mono\",monospace;letter-spacing:.1em;text-transform:uppercase;'>"
         f"{_season_str(load_season_context())} &nbsp;·&nbsp; Roster Analysis &nbsp;·&nbsp; Comps Model</div>"
         f"<div style='height:1px;background:{_T['card_border']};margin-top:16px;'></div>"
         f"</div>",
@@ -2272,7 +2298,7 @@ def tab_kings(df: pd.DataFrame):
     fig.update_layout(
         barmode="group",
         paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-        font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+        font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
         xaxis=dict(tickangle=-40, gridcolor=_T["grid_alt"]),
         yaxis=dict(tickformat="$,.0f", title="",
                    gridcolor=_T["grid_alt"], zeroline=False),
@@ -2291,7 +2317,7 @@ def tab_kings(df: pd.DataFrame):
             st.session_state["kings_show_ufa"] = not st.session_state["kings_show_ufa"]
             st.rerun()
     st.markdown(
-        f"<div style='font-size:.75rem;color:{_T['card_subtext']};font-family:\"DM Mono\",monospace;"
+        f"<div style='font-size:.75rem;color:{_T['card_subtext']};font-family:\"JetBrains Mono\",monospace;"
         f"letter-spacing:.06em;margin-top:2px;'>"
         f"<span style='display:inline-block;width:12px;height:12px;background:{KINGS_SILVER};"
         f"margin-right:5px;vertical-align:middle;'></span>Cap Hit"
@@ -2321,7 +2347,7 @@ def tab_kings(df: pd.DataFrame):
         if not expiring.empty:
             _kexp_sub = _T["card_subtext"]
             st.markdown(
-                f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;"
+                f"<div style='font-family:\"Inter\",sans-serif;font-size:.65rem;"
                 f"font-weight:500;letter-spacing:.15em;text-transform:uppercase;"
                 f"color:{_kexp_sub};margin:12px 0 6px;'>Expiring Contracts</div>",
                 unsafe_allow_html=True,
@@ -2340,7 +2366,7 @@ def tab_kings(df: pd.DataFrame):
 
     # ── Roster grouped by F / D ──────────────────────────────────────────────
     st.markdown(
-        f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.8rem;"
+        f"<div style='font-family:\"Fraunces\",serif;font-size:1.8rem;"
         f"font-weight:400;color:{_T['page_text']};margin:24px 0 16px;'>Player Breakdown</div>",
         unsafe_allow_html=True,
     )
@@ -2409,7 +2435,7 @@ def tab_kings(df: pd.DataFrame):
         _kbdg_txt = _T["card_subtext"]
         est_badge = (
             f"<span style='background:{_kbdg_bg};color:{_kbdg_txt};padding:1px 5px;"
-            f"font-family:\"DM Sans\",sans-serif;font-size:.65rem;letter-spacing:.06em;"
+            f"font-family:\"Inter\",sans-serif;font-size:.65rem;letter-spacing:.06em;"
             f"text-transform:uppercase;margin-left:4px;' "
             f"title='Salary estimated — contract data pending verification'>est*</span>"
         ) if is_est else ""
@@ -2426,7 +2452,7 @@ def tab_kings(df: pd.DataFrame):
             ext_len_s   = f"{int(ext_len_v)}-yr" if ext_len_v else ""
             _kext_sub = _T["card_subtext"]
             ext_note    = (
-                f"<div style='margin-top:5px;font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+                f"<div style='margin-top:5px;font-size:.72rem;font-family:\"Inter\",sans-serif;"
                 f"letter-spacing:.06em;text-transform:uppercase;color:{_kext_sub};'>"
                 f"Extension Signed — {ext_len_s} {ext_ch_s}/yr starting {ext_yr_s}</div>"
             )
@@ -2439,9 +2465,9 @@ def tab_kings(df: pd.DataFrame):
             f"  <div style='flex:1;min-width:0;'>"
             f"    <div style='display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;'>"
             f"      <span style='font-size:1.05rem;font-weight:400;color:{_T['card_text']};"
-            f"font-family:\"Instrument Serif\",serif;'>{name}</span>"
+            f"font-family:\"Fraunces\",serif;'>{name}</span>"
             f"      {est_badge}"
-            f"      <span style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+            f"      <span style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
             f"letter-spacing:.06em;text-transform:uppercase;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
@@ -2450,17 +2476,17 @@ def tab_kings(df: pd.DataFrame):
             f"      <div><div class='stat-label'>Pred. Value</div>"
             f"           <div class='stat-value'>{pv_str}</div></div>"
             f"      <div><div class='stat-label'>Value Delta</div>"
-            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"DM Mono\",monospace;'>"
+            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"JetBrains Mono\",monospace;'>"
             f"             {delta_str} {pct_str}</div></div>"
             f"      <div><div class='stat-label'>Expiry</div>"
             f"           <div class='stat-value'>{exp_str} ({exp_st})</div></div>"
             f"      <div><div class='stat-label'>Yrs Left</div>"
             f"           <div class='stat-value'>{yrs_str}</div></div>"
             f"      <div><div class='stat-label'>Role</div>"
-            f"           <div class='stat-value' style='font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+            f"           <div class='stat-value' style='font-size:.72rem;font-family:\"Inter\",sans-serif;"
             f"letter-spacing:.04em;'>{cluster}</div></div>"
             f"      <div><div class='stat-label'>Perf Score</div>"
-            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"DM Mono\",monospace;"
+            f"           <div style='font-size:.9rem;font-weight:700;font-family:\"JetBrains Mono\",monospace;"
             f"color:{perf_clr};'>{perf_str}</div></div>"
             f"    </div>"
             f"    {ext_note}"
@@ -2527,19 +2553,19 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     prior_badge = (
         "" if has_prior else
         f"<span style='background:{_bdg_bg};color:{_bdg_txt};padding:1px 6px;"
-        f"font-family:\"DM Sans\",sans-serif;font-size:.68rem;letter-spacing:.08em;"
+        f"font-family:\"Inter\",sans-serif;font-size:.68rem;letter-spacing:.08em;"
         f"margin-left:8px;text-transform:uppercase;'>No Prior Stats</span>"
     )
     if not has_contract and exp_status.upper() == "UFA":
         contract_badge = (
             f"<span style='background:{_bdg_bg};color:{_bdg_txt};padding:1px 6px;"
-            f"font-family:\"DM Sans\",sans-serif;font-size:.68rem;letter-spacing:.08em;"
+            f"font-family:\"Inter\",sans-serif;font-size:.68rem;letter-spacing:.08em;"
             f"margin-left:8px;text-transform:uppercase;'>UFA / Unsigned</span>"
         )
     elif is_estimated:
         contract_badge = (
             f"<span style='background:{_bdg_bg};color:{_bdg_txt};padding:1px 6px;"
-            f"font-family:\"DM Sans\",sans-serif;font-size:.68rem;letter-spacing:.08em;"
+            f"font-family:\"Inter\",sans-serif;font-size:.68rem;letter-spacing:.08em;"
             f"margin-left:8px;text-transform:uppercase;' "
             f"title='Salary estimated — contract data pending verification'>Salary Est.*</span>"
         )
@@ -2567,11 +2593,11 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         f"    {hs_html}"
         f"    <div>"
         f"      <div style='font-size:1.4rem;font-weight:400;color:{_pctxt};"
-        f"font-family:\"Instrument Serif\",serif;line-height:1.1;'>"
+        f"font-family:\"Fraunces\",serif;line-height:1.1;'>"
         f"        {name}{prior_badge}{contract_badge}"
         f"      </div>"
         f"      <div style='color:{_pcsub};margin-top:5px;font-size:.75rem;"
-        f"font-family:\"DM Sans\",sans-serif;letter-spacing:.08em;text-transform:uppercase;'>"
+        f"font-family:\"Inter\",sans-serif;letter-spacing:.08em;text-transform:uppercase;'>"
         f"        {team} &nbsp;·&nbsp; {pos} &nbsp;·&nbsp; Age {age}"
         f"      </div>"
         f"    </div>"
@@ -2635,9 +2661,9 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         st.markdown(
             f"<div style='background:{_extbg};border:1px solid {_extbd};"
             f"padding:10px 14px;margin:8px 0;'>"
-            f"<span style='color:{_exttxt};font-family:\"DM Sans\",sans-serif;"
+            f"<span style='color:{_exttxt};font-family:\"Inter\",sans-serif;"
             f"font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;'>Extension Signed</span>"
-            f"<span style='color:{_extsub};font-family:\"DM Mono\",monospace;"
+            f"<span style='color:{_extsub};font-family:\"JetBrains Mono\",monospace;"
             f"font-size:.82rem;margin-left:10px;'>"
             f"{ext_yrs_str} · {ext_ch_str}/yr · {ext_start_str} → {ext_exp_str}"
             f"{' · ' + ext_stat if ext_stat else ''}"
@@ -2657,20 +2683,20 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         f"<div style='margin:12px 0;display:flex;align-items:center;gap:20px;flex-wrap:wrap;'>"
         f"<div style='display:flex;align-items:center;gap:10px;'>"
         f"<span style='color:{_csub};font-size:.65rem;letter-spacing:.15em;"
-        f"font-family:\"DM Sans\",sans-serif;text-transform:uppercase;'>Re-sign Signal</span>"
+        f"font-family:\"Inter\",sans-serif;text-transform:uppercase;'>Re-sign Signal</span>"
         f"<span class='signal-badge' style='background:{sig_color};color:#fff;'>{signal}</span>"
         f"</div>"
         f"<div style='display:flex;align-items:center;gap:8px;'>"
         f"<span style='color:{_csub};font-size:.65rem;letter-spacing:.15em;"
-        f"font-family:\"DM Sans\",sans-serif;text-transform:uppercase;'>Role</span>"
-        f"<span style='color:{_ctxt};font-size:.82rem;font-family:\"DM Mono\",monospace;"
+        f"font-family:\"Inter\",sans-serif;text-transform:uppercase;'>Role</span>"
+        f"<span style='color:{_ctxt};font-size:.82rem;font-family:\"JetBrains Mono\",monospace;"
         f"font-weight:600;'>{cluster}</span>"
         f"</div>"
         f"<div style='display:flex;align-items:center;gap:8px;'>"
         f"<span style='color:{_csub};font-size:.65rem;letter-spacing:.15em;"
-        f"font-family:\"DM Sans\",sans-serif;text-transform:uppercase;'>Perf Score</span>"
+        f"font-family:\"Inter\",sans-serif;text-transform:uppercase;'>Perf Score</span>"
         f"<span style='color:{perf_clr};font-size:.9rem;font-weight:700;"
-        f"font-family:\"DM Mono\",monospace;'>{perf_str}</span>"
+        f"font-family:\"JetBrains Mono\",monospace;'>{perf_str}</span>"
         f"</div>"
         f"</div>",
         unsafe_allow_html=True,
@@ -2683,11 +2709,11 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     rank_pct = pct_rank(df["predicted_value"], pv or 0)
     _rk_sub = _T["card_subtext"]; _rk_txt = _T["page_text"]
     st.markdown(
-        f"<div style='color:{_rk_sub};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"<div style='color:{_rk_sub};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"letter-spacing:.1em;text-transform:uppercase;'>League Rank by Predicted Value: "
-        f"<span style='color:{_rk_txt};font-family:\"DM Mono\",monospace;'>#{rank} of {total}</span>"
+        f"<span style='color:{_rk_txt};font-family:\"JetBrains Mono\",monospace;'>#{rank} of {total}</span>"
         f"&nbsp;·&nbsp; Top "
-        f"<span style='color:{_rk_txt};font-family:\"DM Mono\",monospace;'>{100-rank_pct}%</span></div>",
+        f"<span style='color:{_rk_txt};font-family:\"JetBrains Mono\",monospace;'>{100-rank_pct}%</span></div>",
         unsafe_allow_html=True,
     )
     st.markdown("")
@@ -2735,11 +2761,11 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
     # ── A. Cluster Placement ──────────────────────────────────────────────────
     st.markdown(
-        f"<div style='margin:32px 0 4px 0;font-family:\"Instrument Serif\",serif;"
+        f"<div style='margin:32px 0 4px 0;font-family:\"Fraunces\",serif;"
         f"font-size:2rem;font-weight:400;color:{_T['page_text']};'>"
         f"How {name}'s value is calculated</div>"
         f"<div style='color:{_T['card_subtext']};font-size:.72rem;margin-bottom:20px;"
-        f"font-family:\"DM Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
+        f"font-family:\"JetBrains Mono\",monospace;letter-spacing:.08em;text-transform:uppercase;'>"
         f"Cluster placement → within-cluster scoring → 5 closest comps → weighted value</div>",
         unsafe_allow_html=True,
     )
@@ -2748,7 +2774,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     _cl_color = "#888"
 
     st.markdown(
-        f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
+        f"<div style='font-family:\"Fraunces\",serif;font-weight:400;font-size:1.5rem;"
         f"color:{_cl_color};margin-bottom:10px;"
         f"border-left:3px solid {_cl_color};padding-left:10px;'>"
         f"Step 1 — Cluster: {cluster}</div>",
@@ -2781,7 +2807,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
         fig_cf.update_layout(
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
             showlegend=True, legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0),
             xaxis=dict(gridcolor=_T["grid"], title=""),
             yaxis=dict(title=""),
@@ -2791,7 +2817,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
     # ── B. Performance Within Cluster ─────────────────────────────────────────
     st.markdown(
-        f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
+        f"<div style='font-family:\"Fraunces\",serif;font-weight:400;font-size:1.5rem;"
         f"color:{_cl_color};margin-bottom:10px;margin-top:20px;"
         f"border-left:3px solid {_cl_color};padding-left:10px;'>"
         f"Step 2 — Performance Score: {perf_str}</div>",
@@ -2824,7 +2850,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         ))
         fig_strip.update_layout(
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
             showlegend=True, legend=dict(orientation="h", yanchor="bottom", y=1.05, xanchor="left", x=0),
             xaxis=dict(title="Performance Score", range=[-110, 110],
                        gridcolor=_T["grid"], zeroline=True,
@@ -2834,7 +2860,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
         st.plotly_chart(fig_strip, use_container_width=True)
         st.markdown(
-            f"<div style='color:{_csub2};font-size:.75rem;font-family:\"DM Mono\",monospace;"
+            f"<div style='color:{_csub2};font-size:.75rem;font-family:\"JetBrains Mono\",monospace;"
             f"text-align:center;margin-top:-8px;'>"
             f"Ranked <strong style='color:{_ctxt2};'>#{cm_rank}</strong> of {cm_total} "
             f"in the {cluster} cluster</div>",
@@ -2843,7 +2869,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
     # ── C. 5 Closest Comps ────────────────────────────────────────────────────
     st.markdown(
-        f"<div style='font-family:\"Instrument Serif\",serif;font-weight:400;font-size:1.5rem;"
+        f"<div style='font-family:\"Fraunces\",serif;font-weight:400;font-size:1.5rem;"
         f"color:{_cl_color};margin-bottom:10px;margin-top:24px;"
         f"border-left:3px solid {_cl_color};padding-left:10px;'>"
         f"Step 3 — 5 Closest Comps</div>",
@@ -2876,10 +2902,10 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 )
 
             same_badge = (
-                f"<div style='font-size:.55rem;color:{_cl_color};font-family:\"DM Sans\",sans-serif;"
+                f"<div style='font-size:.55rem;color:{_cl_color};font-family:\"Inter\",sans-serif;"
                 f"letter-spacing:.1em;text-transform:uppercase;margin-top:4px;'>SAME CLUSTER</div>"
                 if c_same else
-                f"<div style='font-size:.55rem;color:{_csub2};font-family:\"DM Sans\",sans-serif;"
+                f"<div style='font-size:.55rem;color:{_csub2};font-family:\"Inter\",sans-serif;"
                 f"letter-spacing:.1em;text-transform:uppercase;margin-top:4px;'>{c_cl}</div>"
             )
             ch_str = f"${c_ch/1e6:.2f}M" if c_ch and pd.notna(c_ch) else "—"
@@ -2892,17 +2918,17 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 f"border-left:3px solid {_cbd};'>"
                 f"  {c_hs}"
                 f"  <div style='font-weight:400;color:{_ctxt2};margin-top:6px;"
-                f"font-size:.85rem;font-family:\"Instrument Serif\",serif;"
+                f"font-size:.85rem;font-family:\"Fraunces\",serif;"
                 f"white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{c_name}</div>"
                 f"  <div style='color:{_csub2};font-size:.65rem;margin:2px 0;"
-                f"font-family:\"DM Sans\",sans-serif;letter-spacing:.06em;'>"
+                f"font-family:\"Inter\",sans-serif;letter-spacing:.06em;'>"
                 f"    {c_team} · {c_pos} · {age_s}"
                 f"  </div>"
                 f"  {same_badge}"
                 f"  <div style='margin-top:6px;font-size:.82rem;"
-                f"font-family:\"DM Mono\",monospace;color:{_ctxt2};'>{ch_str}</div>"
+                f"font-family:\"JetBrains Mono\",monospace;color:{_ctxt2};'>{ch_str}</div>"
                 f"  <div style='color:{_csub2};font-size:.6rem;"
-                f"font-family:\"DM Mono\",monospace;margin-top:2px;'>wt: {wt_pct}</div>"
+                f"font-family:\"JetBrains Mono\",monospace;margin-top:2px;'>wt: {wt_pct}</div>"
                 f"</div>",
                 unsafe_allow_html=True,
             )
@@ -2926,7 +2952,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         )
         fig_comps.update_layout(
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
             showlegend=False,
             xaxis=dict(title="Cap Hit ($M)", gridcolor=_T["grid"], tickprefix="$"),
             yaxis=dict(title=""),
@@ -2945,16 +2971,22 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
         delta_str = f"+${delta/1e6:.2f}M" if delta >= 0 else f"-${abs(delta)/1e6:.2f}M"
     else:
         delta_str = "—"
+    _mv_bg  = _T["card_bg"]
+    _mv_bd  = _T["card_border"]
+    _mv_sub = _T["card_subtext"]
+    _mv_txt = _T["card_text"]
     st.markdown(
-        f"<div style='background:#1A1A2E;padding:20px 24px;margin-top:20px;width:100%;'>"
-        f"<div style='font-size:.65rem;color:#888888;font-family:\"DM Sans\",sans-serif;"
-        f"letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px;'>"
+        f"<div style='background:{_mv_bg};border:1px solid {_mv_bd};border-radius:8px;"
+        f"padding:20px 24px;margin-top:20px;width:100%;'>"
+        f"<div style='font-size:.66rem;color:{_mv_sub};font-family:\"JetBrains Mono\",monospace;"
+        f"letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;'>"
         f"Estimated Market Value</div>"
-        f"<div style='font-size:2.2rem;font-weight:400;color:#FFFFFF;"
-        f"font-family:\"Instrument Serif\",serif;margin-bottom:10px;'>"
+        f"<div style='font-size:2.2rem;font-weight:500;color:{_mv_txt};"
+        f"font-variation-settings:\"opsz\" 144;letter-spacing:-0.02em;"
+        f"font-family:\"Fraunces\",serif;margin-bottom:10px;'>"
         f"${pv_val/1e6:.2f}M</div>"
-        f"<div style='font-size:.8rem;color:#888888;font-family:\"DM Mono\",monospace;'>"
-        f"Cap Hit: <span style='color:#F5F5F2;'>{cap_str}</span>"
+        f"<div style='font-size:.8rem;color:{_mv_sub};font-family:\"JetBrains Mono\",monospace;'>"
+        f"Cap Hit: <span style='color:{_mv_txt};'>{cap_str}</span>"
         f"&nbsp;&nbsp;·&nbsp;&nbsp;"
         f"Delta: <span style='color:{pv_color};font-weight:600;'>{delta_str}</span>"
         f"</div></div>",
@@ -2983,7 +3015,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
                 )
                 fig_shap.update_layout(
                     paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-                    font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+                    font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
                     showlegend=False, coloraxis_showscale=False,
                     xaxis=dict(title="Dollar Impact", gridcolor=_T["grid"],
                                zeroline=True, zerolinecolor=_T["zero"]),
@@ -2993,7 +3025,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
 
 
 def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame, full_df: pd.DataFrame):
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Player Search</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:2.2rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 20px;font-weight:400;'>Player Search</div>", unsafe_allow_html=True)
 
     # Build comp pool from full (unfiltered) data
     comp_pool = _build_comp_pool(full_df)
@@ -3032,13 +3064,13 @@ def tab_player_search(df: pd.DataFrame, shap_vals: pd.DataFrame, full_df: pd.Dat
 # ── Tab 5: Model Insights ──────────────────────────────────────────────────────
 def tab_insights(df: pd.DataFrame):
     st.markdown(
-        f"<div style='font-family:\"Instrument Serif\",serif;font-size:2.2rem;"
+        f"<div style='font-family:\"Fraunces\",serif;font-size:2.2rem;"
         f"color:{_T['page_text']};letter-spacing:0;margin:0 0 8px;font-weight:400;'>"
         f"Model Deep-Dive</div>",
         unsafe_allow_html=True,
     )
     st.markdown(
-        f"<div style='color:{_T['card_subtext']};font-size:.75rem;font-family:\"DM Sans\",sans-serif;"
+        f"<div style='color:{_T['card_subtext']};font-size:.75rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:20px;line-height:1.6;max-width:700px;'>"
         f"Detailed analysis of the clustering, scoring, and comps engine internals. "
         f"See the League Overview tab for the full pipeline methodology.</div>",
@@ -3047,9 +3079,9 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 1: Cluster Distribution ───────────────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Distribution</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Distribution</div>", unsafe_allow_html=True)
     st.markdown(
-        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:16px;'>K-means groups every skater into one of 7 role clusters. "
         f"Bar heights show how many players fall into each role.</div>",
         unsafe_allow_html=True,
@@ -3069,7 +3101,7 @@ def tab_insights(df: pd.DataFrame):
         )
         fig_cl.update_layout(
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
             showlegend=False,
             xaxis=dict(title="Number of Players", gridcolor=_T["grid"]),
             yaxis=dict(title=""),
@@ -3080,9 +3112,9 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 3: Performance Score Distribution ─────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Performance Score Distribution</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Performance Score Distribution</div>", unsafe_allow_html=True)
     st.markdown(
-        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:16px;'>Each player is scored −100 to +100 within their cluster. "
         f"A score of 0 means cluster-average; +100 is the top performer in that role.</div>",
         unsafe_allow_html=True,
@@ -3100,7 +3132,7 @@ def tab_insights(df: pd.DataFrame):
             )
             fig_ps.update_layout(
                 paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-                font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+                font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
                 showlegend=True,
                 legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0, font=dict(size=10)),
                 xaxis=dict(title="Performance Score", gridcolor=_T["grid"],
@@ -3119,9 +3151,9 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 4: Comps Engine — Distance Weights ────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Comps Engine — Distance Weights</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Comps Engine — Distance Weights</div>", unsafe_allow_html=True)
     st.markdown(
-        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:16px;'>The comps engine finds the 5 most similar players using a weighted distance "
         f"across three dimensions. UFA contracts receive 1.5× weight as freely-negotiated market signals.</div>",
         unsafe_allow_html=True,
@@ -3138,9 +3170,9 @@ def tab_insights(df: pd.DataFrame):
     for i, (wt_name, wt_pct, wt_frac, wt_clr) in enumerate(_wt_data):
         wt_cols[i].markdown(
             f"<div style='background:{_wt_bg};border:1px solid {_wt_bd};padding:16px 14px;'>"
-            f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.65rem;letter-spacing:.12em;"
+            f"<div style='font-family:\"Inter\",sans-serif;font-size:.65rem;letter-spacing:.12em;"
             f"text-transform:uppercase;color:{_wt_sub};'>{wt_name}</div>"
-            f"<div style='font-family:\"DM Mono\",monospace;font-size:1.8rem;color:{_wt_txt};"
+            f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:1.8rem;color:{_wt_txt};"
             f"margin:8px 0 10px;font-weight:400;'>{wt_pct}</div>"
             f"<div style='height:4px;background:{_wt_bd};'>"
             f"<div style='height:4px;background:{wt_clr};width:{int(wt_frac*100)}%;'></div>"
@@ -3148,16 +3180,16 @@ def tab_insights(df: pd.DataFrame):
             unsafe_allow_html=True,
         )
     st.markdown(
-        f"<div style='color:{_wt_sub};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"<div style='color:{_wt_sub};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-top:10px;'>UFA contracts receive 1.5× weight as freely-negotiated market signals.</div>",
         unsafe_allow_html=True,
     )
 
     # ── Section 5: Cross-Cluster Value Map ───────────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cross-Cluster Value Map</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cross-Cluster Value Map</div>", unsafe_allow_html=True)
     st.markdown(
-        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:16px;'>Every player plotted by performance score vs cap hit, colored by cluster. "
         f"Shows how the market prices different roles and performance levels.</div>",
         unsafe_allow_html=True,
@@ -3174,7 +3206,7 @@ def tab_insights(df: pd.DataFrame):
         )
         fig_map.update_layout(
             paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-            font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+            font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
             showlegend=True,
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0, font=dict(size=10)),
             xaxis=dict(gridcolor=_T["grid"], zeroline=True, zerolinecolor=_T["zero"]),
@@ -3186,7 +3218,7 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 6: Cluster Comparison Table ───────────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Comparison</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Comparison</div>", unsafe_allow_html=True)
 
     if "cluster_label" in df.columns:
         _cl_rows = []
@@ -3206,12 +3238,12 @@ def tab_insights(df: pd.DataFrame):
         if _cl_rows:
             _cl_table = pd.DataFrame(_cl_rows)
             # Build HTML table
-            _hdr_style = (f"font-family:'DM Sans',sans-serif;font-size:.65rem;letter-spacing:.1em;"
+            _hdr_style = (f"font-family:'Inter',sans-serif;font-size:.65rem;letter-spacing:.1em;"
                           f"text-transform:uppercase;color:{_T['card_subtext']};padding:8px 10px;"
                           f"border-bottom:2px solid {_T['card_border']};text-align:right;")
-            _cell_style = (f"font-family:'DM Mono',monospace;font-size:.78rem;color:{_T['card_text']};"
+            _cell_style = (f"font-family:'JetBrains Mono',monospace;font-size:.78rem;color:{_T['card_text']};"
                            f"padding:8px 10px;border-bottom:1px solid {_T['card_border']};text-align:right;")
-            _name_style = (f"font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;"
+            _name_style = (f"font-family:'Inter',sans-serif;font-size:.78rem;font-weight:600;"
                            f"padding:8px 10px;border-bottom:1px solid {_T['card_border']};text-align:left;")
 
             _rows_html = ""
@@ -3248,7 +3280,7 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 7: Cluster Deep-Dive ──────────────────────────────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Deep-Dive</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Cluster Deep-Dive</div>", unsafe_allow_html=True)
 
     _dive_opts = [c for c in CLUSTER_ORDER if c in df["cluster_label"].unique()]
     if _dive_opts:
@@ -3282,14 +3314,14 @@ def tab_insights(df: pd.DataFrame):
             )
             fig_dive.update_layout(
                 paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-                font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]),
+                font=dict(family="'Inter', sans-serif", color=_T["plot_font"]),
                 showlegend=False, coloraxis_showscale=True,
                 coloraxis_colorbar=dict(title="Delta ($)", tickformat="$,.0f"),
                 xaxis=dict(gridcolor=_T["grid"], zeroline=True, zerolinecolor=_T["zero"]),
                 yaxis=dict(tickformat="$,.0f", gridcolor=_T["grid"]),
                 margin=dict(l=10, r=10, t=10, b=10),
                 title=dict(text=f"{_dive_sel} — Performance vs. Cap Hit",
-                           font=dict(family="'DM Sans', sans-serif", color=_dive_clr)),
+                           font=dict(family="'Inter', sans-serif", color=_dive_clr)),
             )
             fig_dive.update_traces(marker=dict(size=10, opacity=0.85, line=dict(width=0.5, color="#000")))
             st.plotly_chart(fig_dive, use_container_width=True)
@@ -3300,7 +3332,7 @@ def tab_insights(df: pd.DataFrame):
             _di1, _di2 = st.columns(2)
             with _di1:
                 st.markdown(
-                    f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+                    f"<div style='font-family:\"Inter\",sans-serif;font-size:.7rem;font-weight:500;"
                     f"letter-spacing:.12em;text-transform:uppercase;color:{_T['positive']};margin-bottom:8px;"
                     f"border-left:2px solid {_T['positive']};padding-left:8px;'>"
                     f"Top 3 Underpaid {_dive_sel}</div>",
@@ -3309,7 +3341,7 @@ def tab_insights(df: pd.DataFrame):
                 _mini_player_cards(_dive_ranked.nlargest(3, "value_delta"))
             with _di2:
                 st.markdown(
-                    f"<div style='font-family:\"DM Sans\",sans-serif;font-size:.7rem;font-weight:500;"
+                    f"<div style='font-family:\"Inter\",sans-serif;font-size:.7rem;font-weight:500;"
                     f"letter-spacing:.12em;text-transform:uppercase;color:{_T['negative']};margin-bottom:8px;"
                     f"border-left:2px solid {_T['negative']};padding-left:8px;'>"
                     f"Top 3 Overpaid {_dive_sel}</div>",
@@ -3319,9 +3351,9 @@ def tab_insights(df: pd.DataFrame):
 
     # ── Section 8: SHAP Feature Importance (XGBoost benchmark) ────────────────
     st.markdown("---")
-    st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>XGBoost Benchmark — SHAP Feature Importance</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>XGBoost Benchmark — SHAP Feature Importance</div>", unsafe_allow_html=True)
     st.markdown(
-        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"DM Sans\",sans-serif;"
+        f"<div style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
         f"margin-bottom:16px;'>SHAP values from the XGBoost validation model show which features "
         f"have the largest impact on predicted salary. This validates the comps model's inputs.</div>",
         unsafe_allow_html=True,
@@ -3351,7 +3383,7 @@ def tab_insights(df: pd.DataFrame):
     )
     fig.update_layout(
         paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-        font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]), showlegend=False, coloraxis_showscale=False,
+        font=dict(family="'Inter', sans-serif", color=_T["plot_font"]), showlegend=False, coloraxis_showscale=False,
         xaxis=dict(
             tickvals=tick_vals, ticktext=tick_text,
             title="Avg. Dollar Impact on Prediction", gridcolor=_T["grid"],
@@ -3363,7 +3395,7 @@ def tab_insights(df: pd.DataFrame):
 
     if not shap_vals.empty and "name" in shap_vals.columns:
         st.markdown("---")
-        st.markdown(f"<div style='font-family:\"Instrument Serif\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Player-Level SHAP Breakdown</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-family:\"Fraunces\",serif;font-size:1.7rem;color:{_T['page_text']};letter-spacing:0;margin:0 0 12px;font-weight:400;'>Player-Level SHAP Breakdown</div>", unsafe_allow_html=True)
         chosen = st.selectbox("Select a player",
                                sorted(df["name"].dropna().tolist()),
                                key="insights_player")
@@ -3404,14 +3436,14 @@ def tab_insights(df: pd.DataFrame):
             )
             fig2.update_layout(
                 paper_bgcolor=_T["plot_paper"], plot_bgcolor=_T["plot_bg"],
-                font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"]), showlegend=False, coloraxis_showscale=False,
+                font=dict(family="'Inter', sans-serif", color=_T["plot_font"]), showlegend=False, coloraxis_showscale=False,
                 xaxis=dict(
                     tickvals=tick_vals2, ticktext=tick_text2,
                     title="Dollar Impact on Prediction", gridcolor=_T["grid"],
                     zeroline=True, zerolinecolor=_T["zero"], zerolinewidth=2,
                 ),
                 title=dict(text=f"SHAP Breakdown — {chosen}",
-                           font=dict(family="'DM Sans', sans-serif", color=_T["plot_font"])),
+                           font=dict(family="'Inter', sans-serif", color=_T["plot_font"])),
                 margin=dict(l=10, r=20, t=40, b=10),
             )
             st.plotly_chart(fig2, use_container_width=True)
@@ -3443,7 +3475,7 @@ def render_footer(df: pd.DataFrame):
     _season_info = f" &nbsp;·&nbsp; {_season_str(load_season_context())} &nbsp;·&nbsp; Cap: ${CAP_CEILING/1e6:.0f}M"
     st.markdown(
         f"<div style='color:{_T['card_subtext']};font-size:.72rem;padding:4px 0 8px;"
-        f"font-family:\"DM Mono\",monospace;letter-spacing:.06em;'>"
+        f"font-family:\"JetBrains Mono\",monospace;letter-spacing:.06em;'>"
         f"NHL API &nbsp;·&nbsp; PuckPedia &nbsp;·&nbsp; "
         f"{n_real} contracts &nbsp;·&nbsp; {n_est} estimated"
         f"{_last_updated}{_season_info}"
@@ -3473,11 +3505,11 @@ def main():
     _divider_color = _T["card_border"]
     st.markdown(
         f"<div style='padding:16px 0 0;'>"
-        f"<div style='font-family:\"Instrument Serif\",serif;font-size:3.2rem;"
+        f"<div style='font-family:\"Fraunces\",serif;font-size:3.2rem;"
         f"font-weight:400;color:{_T['page_text']};line-height:1.05;letter-spacing:0;'>"
         f"NHL Player Value Model"
         f"</div>"
-        f"<div style='font-family:\"DM Mono\",monospace;font-size:0.72rem;"
+        f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:0.72rem;"
         f"color:{_T['card_subtext']};letter-spacing:0.08em;margin-top:8px;'>"
         f"{_season_str(load_season_context())} &nbsp;·&nbsp; Comps Model + K-Means Clustering &nbsp;·&nbsp; Live Data"
         f"</div>"
