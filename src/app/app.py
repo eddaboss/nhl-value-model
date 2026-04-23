@@ -762,76 +762,111 @@ _DARK_CSS  = """<style>
   /* ── Theme toggle button: moon icon (dark mode active) ── */
   [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234FD1C5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
 
-  /* ══════════ Word-break normalization (prevents 1-char-per-line) ══════════ */
+  /* ══════════ Word-break normalization ══════════
+     Prevents text from rendering one character per line when Streamlit
+     columns get squeezed. Browsers default to break-all in some locales;
+     this pins to word boundaries everywhere inside the app. */
   [data-testid="stMainBlockContainer"] *,
   [data-testid="stMetric"] *,
-  .rink-card, .rink-card *,
-  .player-card, .player-card *,
-  .kings-card, .kings-card * {
+  .rink-card, .rink-card *, .player-card, .player-card *,
+  .kings-card, .kings-card *, .rink-brand, .rink-brand * {
     word-break: normal !important;
     overflow-wrap: break-word !important;
     hyphens: manual !important;
   }
-  /* Money/stat values should never break character-by-character */
   .stat-value, .delta-pos, .delta-neg, .pct-pos, .pct-neg,
   [data-testid="stMetricValue"], [data-testid="stMetricDelta"] {
     white-space: nowrap !important;
     word-break: keep-all !important;
   }
 
-  /* ══════════ Responsive — narrow viewport column reflow ══════════ */
-  /* Streamlit's st.columns(N) keeps N columns no matter what. At narrow
-     widths (sidebar open + phone + compressed window) this squeezes each
-     column to ~100px and text wraps one character per line. Force the
-     horizontal block to wrap when the viewport can't comfortably fit N
-     columns. */
-  @media (max-width: 1100px) {
+  /* Safe-area padding for iOS (home bar / notch) */
+  .stApp, [data-testid="stAppViewContainer"] {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    padding-left: env(safe-area-inset-left) !important;
+    padding-right: env(safe-area-inset-right) !important;
+  }
+
+  /* ══════════ Responsive breakpoints (from RINK-1 styles.css) ══════════
+     Port of the @media rules shipped in the RINK-1 design bundle
+     (.design-ref/project/styles.css). Selectors adapted from the
+     React class names (.kpi-strip, .lb-row, .player-hero, .comps-grid,
+     .split, .container) to their Streamlit equivalents
+     ([data-testid=stHorizontalBlock], [data-testid=stColumn],
+      .block-container). Breakpoints kept at 900/720/480 to match. */
+
+  /* @900px in RINK-1: kpi-strip 4->2 col, split 1.4fr|1fr -> 1fr, tabs drawer, brand-meta hidden */
+  @media (max-width: 900px) {
+    /* Streamlit st.columns(N) stays N-wide by default; this reflows them. */
     [data-testid="stHorizontalBlock"] {
       flex-wrap: wrap !important;
       gap: 12px !important;
       row-gap: 12px !important;
     }
     [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
-      flex: 1 1 200px !important;
+      flex: 1 1 220px !important;   /* 2-col layout when viewport allows */
       min-width: 0 !important;
       width: auto !important;
     }
-  }
-
-  @media (max-width: 900px) {
-    .block-container { padding-top: 1.25rem !important; padding-bottom: 1.5rem !important; padding-left: 14px !important; padding-right: 14px !important; }
+    /* RINK-1 line 188: .brand-meta { display: none; } */
+    .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; opacity: 0.8; }
     .rink-brand { flex-wrap: wrap; row-gap: 4px; }
-    .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; }
     .rink-footer { flex-direction: column; gap: 6px; }
-    /* Tab icons off, tighter tabs, allow horizontal scroll */
+    /* RINK-1 line 167: .tabs { display: none; } then hamburger drawer.
+       Streamlit can't swap to a drawer; horizontal scroll is the best
+       equivalent that preserves tab switching on touch. */
     [data-baseweb="tab-list"] { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     [data-baseweb="tab-list"]::-webkit-scrollbar { display: none; }
-    [data-baseweb="tab"] { padding: 0 12px !important; font-size: 0.85rem !important; height: 42px !important; flex-shrink: 0 !important; }
+    [data-baseweb="tab"] { padding: 0 14px !important; font-size: 0.9rem !important; height: 44px !important; flex-shrink: 0 !important; }
     [data-baseweb="tab"]::before { display: none !important; margin-right: 0 !important; }
-    [data-testid="stMetric"] { padding: 12px 14px !important; }
-    [data-testid="stMetricValue"] { font-size: 1.5rem !important; }
-    [data-testid="stMetricLabel"] { font-size: 0.64rem !important; }
+  }
+
+  /* @720px in RINK-1: container padding 18px, page-hero 32/24, lb-row 3-col,
+     player-hero 120px portrait + 2-col valueblock, comps-grid 1-col */
+  @media (max-width: 720px) {
+    /* RINK-1 line 95: .container { padding: 0 18px; } */
+    .block-container { padding-top: 1rem !important; padding-bottom: 1.25rem !important; padding-left: 18px !important; padding-right: 18px !important; }
+    /* RINK-1 line 221: .page-hero { padding: 32px 0 24px; } */
+    .rink-brand { padding: 0 0 10px; margin-bottom: 18px; }
+    /* Force single-column for st.columns when we're in phone territory.
+       RINK-1 sets comps-grid, split, and the player-hero's valueblock
+       to 1-col at this breakpoint. Rather than try to detect which block
+       is which, collapse all 3+ col rows to the stricter 160px basis —
+       2 cards per row on a typical phone (390px - 36px padding = 354px). */
     [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 160px !important; }
-    .player-hero { padding: 20px 22px; border-radius: 12px; }
-    .player-hero .name { font-size: 1.9rem; }
+    /* Metrics: RINK-1 kpi-value 34px -> 26px at 480, so at 720 a middle size */
+    [data-testid="stMetric"] { padding: 14px 16px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.6rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.66rem !important; letter-spacing: 0.1em !important; }
+    [data-testid="stMetricDelta"] { font-size: 0.72rem !important; }
+    /* RINK-1 line 522: player-hero gets 120px portrait + tight padding */
+    .player-hero { padding: 22px 20px; border-radius: 12px; }
+    .player-hero .name { font-size: 1.9rem; line-height: 1.1; }
+    .player-hero .meta { font-size: 0.74rem; }
+    /* RINK-1 line 571: valueblock grid-template-columns: 1fr 1fr; value font 22px */
     .rink-card { padding: 14px 16px; }
     .rink-card .value { font-size: 1.25rem; }
     .player-card, .kings-card { padding: 14px 16px; border-radius: 10px; }
-    h1 { font-size: 1.9rem !important; }
-    h2 { font-size: 1.35rem !important; }
-    h3 { font-size: 1.1rem !important; }
+    /* RINK-1 lb-row collapses to rank+name+value only (no bar, no pct) */
+    .lb-bar-wrap, .lb-pct { display: none !important; }
+    h1 { font-size: 1.8rem !important; }
+    h2 { font-size: 1.3rem !important; }
+    h3 { font-size: 1.05rem !important; }
+    /* Fit Plotly charts to the narrow width so they don't horizontal-scroll */
+    .js-plotly-plot, .plot-container { width: 100% !important; }
   }
-  @media (max-width: 600px) {
+
+  /* @480px in RINK-1: kpi-value 26px. Phone-portrait small screens. */
+  @media (max-width: 480px) {
+    .block-container { padding-left: 14px !important; padding-right: 14px !important; }
     .rink-brand .logo { font-size: 1.15rem; }
-    .rink-brand .tag { font-size: 0.66rem; }
-    [data-testid="stMetric"] { padding: 10px 12px !important; }
-    [data-testid="stMetricValue"] { font-size: 1.25rem !important; }
-    [data-testid="stMetricLabel"] { font-size: 0.6rem !important; letter-spacing: 0.1em !important; }
-    [data-testid="stMetricDelta"] { font-size: 0.7rem !important; }
+    .rink-brand .tag { font-size: 0.64rem; }
     [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 100% !important; }
-    .player-hero { padding: 16px 18px; }
+    [data-testid="stMetric"] { padding: 12px 14px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.4rem !important; }  /* RINK-1: 26px ≈ 1.4rem */
+    [data-testid="stMetricLabel"] { font-size: 0.62rem !important; }
+    .player-hero { padding: 18px 18px; }
     .player-hero .name { font-size: 1.55rem; }
-    .player-hero .meta { font-size: 0.72rem; }
     .signal-badge, .verdict-pill { font-size: 0.62rem; padding: 2px 7px; }
   }
 </style>"""
@@ -1003,9 +1038,8 @@ _LIGHT_CSS = """<style>
   /* ══════════ Word-break normalization ══════════ */
   [data-testid="stMainBlockContainer"] *,
   [data-testid="stMetric"] *,
-  .rink-card, .rink-card *,
-  .player-card, .player-card *,
-  .kings-card, .kings-card * {
+  .rink-card, .rink-card *, .player-card, .player-card *,
+  .kings-card, .kings-card *, .rink-brand, .rink-brand * {
     word-break: normal !important;
     overflow-wrap: break-word !important;
     hyphens: manual !important;
@@ -1016,53 +1050,55 @@ _LIGHT_CSS = """<style>
     word-break: keep-all !important;
   }
 
-  /* ══════════ Responsive — narrow viewport column reflow ══════════ */
-  @media (max-width: 1100px) {
-    [data-testid="stHorizontalBlock"] {
-      flex-wrap: wrap !important;
-      gap: 12px !important;
-      row-gap: 12px !important;
-    }
-    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
-      flex: 1 1 200px !important;
-      min-width: 0 !important;
-      width: auto !important;
-    }
+  /* Safe-area padding for iOS */
+  .stApp, [data-testid="stAppViewContainer"] {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    padding-left: env(safe-area-inset-left) !important;
+    padding-right: env(safe-area-inset-right) !important;
   }
 
+  /* ══════════ Responsive (port of RINK-1 styles.css @media rules) ══════════ */
   @media (max-width: 900px) {
-    .block-container { padding-top: 1.25rem !important; padding-bottom: 1.5rem !important; padding-left: 14px !important; padding-right: 14px !important; }
+    [data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; gap: 12px !important; row-gap: 12px !important; }
+    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 220px !important; min-width: 0 !important; width: auto !important; }
+    .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; opacity: 0.8; }
     .rink-brand { flex-wrap: wrap; row-gap: 4px; }
-    .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; }
     .rink-footer { flex-direction: column; gap: 6px; }
     [data-baseweb="tab-list"] { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     [data-baseweb="tab-list"]::-webkit-scrollbar { display: none; }
-    [data-baseweb="tab"] { padding: 0 12px !important; font-size: 0.85rem !important; height: 42px !important; flex-shrink: 0 !important; }
+    [data-baseweb="tab"] { padding: 0 14px !important; font-size: 0.9rem !important; height: 44px !important; flex-shrink: 0 !important; }
     [data-baseweb="tab"]::before { display: none !important; margin-right: 0 !important; }
-    [data-testid="stMetric"] { padding: 12px 14px !important; }
-    [data-testid="stMetricValue"] { font-size: 1.5rem !important; }
-    [data-testid="stMetricLabel"] { font-size: 0.64rem !important; }
+  }
+  @media (max-width: 720px) {
+    .block-container { padding-top: 1rem !important; padding-bottom: 1.25rem !important; padding-left: 18px !important; padding-right: 18px !important; }
+    .rink-brand { padding: 0 0 10px; margin-bottom: 18px; }
     [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 160px !important; }
-    .player-hero { padding: 20px 22px; border-radius: 12px; }
-    .player-hero .name { font-size: 1.9rem; }
+    [data-testid="stMetric"] { padding: 14px 16px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.6rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.66rem !important; letter-spacing: 0.1em !important; }
+    [data-testid="stMetricDelta"] { font-size: 0.72rem !important; }
+    .player-hero { padding: 22px 20px; border-radius: 12px; }
+    .player-hero .name { font-size: 1.9rem; line-height: 1.1; }
+    .player-hero .meta { font-size: 0.74rem; }
     .rink-card { padding: 14px 16px; }
     .rink-card .value { font-size: 1.25rem; }
     .player-card, .kings-card { padding: 14px 16px; border-radius: 10px; }
-    h1 { font-size: 1.9rem !important; }
-    h2 { font-size: 1.35rem !important; }
-    h3 { font-size: 1.1rem !important; }
+    .lb-bar-wrap, .lb-pct { display: none !important; }
+    h1 { font-size: 1.8rem !important; }
+    h2 { font-size: 1.3rem !important; }
+    h3 { font-size: 1.05rem !important; }
+    .js-plotly-plot, .plot-container { width: 100% !important; }
   }
-  @media (max-width: 600px) {
+  @media (max-width: 480px) {
+    .block-container { padding-left: 14px !important; padding-right: 14px !important; }
     .rink-brand .logo { font-size: 1.15rem; }
-    .rink-brand .tag { font-size: 0.66rem; }
-    [data-testid="stMetric"] { padding: 10px 12px !important; }
-    [data-testid="stMetricValue"] { font-size: 1.25rem !important; }
-    [data-testid="stMetricLabel"] { font-size: 0.6rem !important; letter-spacing: 0.1em !important; }
-    [data-testid="stMetricDelta"] { font-size: 0.7rem !important; }
+    .rink-brand .tag { font-size: 0.64rem; }
     [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 100% !important; }
-    .player-hero { padding: 16px 18px; }
+    [data-testid="stMetric"] { padding: 12px 14px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.4rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.62rem !important; }
+    .player-hero { padding: 18px 18px; }
     .player-hero .name { font-size: 1.55rem; }
-    .player-hero .meta { font-size: 0.72rem; }
     .signal-badge, .verdict-pill { font-size: 0.62rem; padding: 2px 7px; }
   }
 </style>"""
