@@ -1861,85 +1861,82 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                 _ps_s = f"{_p_ps:+.1f}" if pd.notna(_p_ps) else "—"
                 mc5.metric("Role / Score", f"{_p_cl} · {_ps_s}")
 
-    # ── E. Cluster Economics Table + Top 5 ───────────────────────────────────
+    # ── E. Cluster Economics + Top 5 (stacked) ──────────────────────────────
     if not df_c.empty and "cluster_label" in df_c.columns:
         st.markdown(f"<div style='height:1px;background:{_cbd};margin:24px 0 20px;'></div>",
                     unsafe_allow_html=True)
 
-        _tbl_left, _tbl_right = st.columns([3, 2])
+        # --- Cluster Economics (full width) ---
+        st.markdown(
+            f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.5rem;"
+            f"color:{_txt};margin-bottom:14px;font-weight:500;'>Cluster Economics</div>",
+            unsafe_allow_html=True,
+        )
+        _cl_dot = _T.get("accent_ice", _T.get("card_subtext", "#8A8F99"))
 
-        with _tbl_left:
-            st.markdown(
-                f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.5rem;"
-                f"color:{_txt};margin-bottom:14px;font-weight:500;'>Cluster Economics</div>",
-                unsafe_allow_html=True,
-            )
-            _cl_dot = _T.get("accent_ice", _T.get("card_subtext", "#8A8F99"))
+        # Column widths: cluster name flexes; numeric cells fixed. Min-width
+        # of the inner table = 520px — below that, outer wrapper scrolls.
+        _grid_cols = "minmax(130px,1.6fr) 44px 54px 72px 72px 82px 60px"
+        _hdr_cell = (f"font-family:\"JetBrains Mono\",monospace;font-size:.66rem;"
+                     f"letter-spacing:.1em;text-transform:uppercase;color:{_txt};"
+                     f"font-weight:500;padding:10px 6px;text-align:right;white-space:nowrap;")
 
-            # Column headers — CSS grid, 7 columns: name | N | Age | Cap | Pred | Δ | Score
-            _grid_cols = "minmax(130px,1.6fr) 44px 54px 72px 72px 82px 60px"
-            _hdr_cell = (f"font-family:\"JetBrains Mono\",monospace;font-size:.66rem;"
-                         f"letter-spacing:.1em;text-transform:uppercase;color:{_txt};"
-                         f"font-weight:500;padding:10px 6px;text-align:right;white-space:nowrap;")
+        _rows = (
+            f"<div style='background:{_cbg};border:1px solid {_cbd};border-radius:8px;"
+            f"overflow-x:auto;overflow-y:hidden;'>"
+            f"<div style='min-width:520px;'>"
+            f"<div style='display:grid;grid-template-columns:{_grid_cols};"
+            f"gap:0;border-bottom:2px solid {_cbd};background:{_T['card_header']};'>"
+            f"<div style='{_hdr_cell}text-align:left;'>Cluster</div>"
+            f"<div style='{_hdr_cell}'>N</div>"
+            f"<div style='{_hdr_cell}'>Age</div>"
+            f"<div style='{_hdr_cell}'>Cap</div>"
+            f"<div style='{_hdr_cell}'>Pred</div>"
+            f"<div style='{_hdr_cell}'>Δ</div>"
+            f"<div style='{_hdr_cell}'>Score</div>"
+            f"</div>"
+        )
 
-            _rows = (
-                f"<div style='background:{_cbg};border:1px solid {_cbd};border-radius:8px;"
-                f"overflow:hidden;'>"
+        _row_cell_val = (f"font-family:\"JetBrains Mono\",monospace;font-size:.78rem;"
+                         f"color:{_txt};padding:11px 6px;text-align:right;"
+                         f"white-space:nowrap;display:flex;align-items:center;justify-content:flex-end;")
+        _row_cell_name = (f"font-family:\"Inter\",sans-serif;font-size:.8rem;font-weight:500;"
+                          f"color:{_txt};padding:11px 10px;text-align:left;"
+                          f"white-space:nowrap;display:flex;align-items:center;gap:8px;"
+                          f"overflow:hidden;text-overflow:ellipsis;")
+
+        for cl in CLUSTER_ORDER:
+            cl_sub = df_c[df_c["cluster_label"] == cl]
+            if cl_sub.empty:
+                continue
+            avg_d = cl_sub["value_delta"].mean()
+            _d_clr = _pos if avg_d >= 0 else _neg
+            avg_ps = cl_sub["performance_score"].dropna().mean()
+            _row_bord = f"border-bottom:1px solid {_cbd};"
+            _rows += (
                 f"<div style='display:grid;grid-template-columns:{_grid_cols};"
-                f"gap:0;border-bottom:2px solid {_cbd};background:{_T['card_header']};'>"
-                f"<div style='{_hdr_cell}text-align:left;'>Cluster</div>"
-                f"<div style='{_hdr_cell}'>N</div>"
-                f"<div style='{_hdr_cell}'>Age</div>"
-                f"<div style='{_hdr_cell}'>Cap</div>"
-                f"<div style='{_hdr_cell}'>Pred</div>"
-                f"<div style='{_hdr_cell}'>Δ</div>"
-                f"<div style='{_hdr_cell}'>Score</div>"
+                f"gap:0;{_row_bord}'>"
+                f"<div style='{_row_cell_name}'>"
+                f"<span style='display:inline-block;width:8px;height:8px;background:{_cl_dot};"
+                f"border-radius:2px;flex-shrink:0;'></span>"
+                f"<span style='overflow:hidden;text-overflow:ellipsis;'>{cl}</span>"
+                f"</div>"
+                f"<div style='{_row_cell_val}'>{len(cl_sub)}</div>"
+                f"<div style='{_row_cell_val}'>{cl_sub['age'].mean():.1f}</div>"
+                f"<div style='{_row_cell_val}'>{fmt_m(cl_sub['cap_hit'].mean())}</div>"
+                f"<div style='{_row_cell_val}'>{fmt_m(cl_sub['predicted_value'].dropna().mean())}</div>"
+                f"<div style='{_row_cell_val}color:{_d_clr};font-weight:600;'>{fmt_delta(avg_d)}</div>"
+                f"<div style='{_row_cell_val}'>{avg_ps:+.1f}</div>"
                 f"</div>"
             )
+        _rows += "</div></div>"
 
-            _row_cell_val = (f"font-family:\"JetBrains Mono\",monospace;font-size:.78rem;"
-                             f"color:{_txt};padding:11px 6px;text-align:right;"
-                             f"white-space:nowrap;display:flex;align-items:center;justify-content:flex-end;")
-            _row_cell_name = (f"font-family:\"Inter\",sans-serif;font-size:.8rem;font-weight:500;"
-                              f"color:{_txt};padding:11px 10px;text-align:left;"
-                              f"white-space:nowrap;display:flex;align-items:center;gap:8px;"
-                              f"overflow:hidden;text-overflow:ellipsis;")
+        st.markdown(_rows, unsafe_allow_html=True)
 
-            _cluster_count = 0
-            for cl in CLUSTER_ORDER:
-                cl_sub = df_c[df_c["cluster_label"] == cl]
-                if cl_sub.empty:
-                    continue
-                avg_d = cl_sub["value_delta"].mean()
-                _d_clr = _pos if avg_d >= 0 else _neg
-                avg_ps = cl_sub["performance_score"].dropna().mean()
-                _is_last = False  # filled in below
-                _row_bord = f"border-bottom:1px solid {_cbd};"
-                _rows += (
-                    f"<div style='display:grid;grid-template-columns:{_grid_cols};"
-                    f"gap:0;{_row_bord}'>"
-                    f"<div style='{_row_cell_name}'>"
-                    f"<span style='display:inline-block;width:8px;height:8px;background:{_cl_dot};"
-                    f"border-radius:2px;flex-shrink:0;'></span>"
-                    f"<span style='overflow:hidden;text-overflow:ellipsis;'>{cl}</span>"
-                    f"</div>"
-                    f"<div style='{_row_cell_val}'>{len(cl_sub)}</div>"
-                    f"<div style='{_row_cell_val}'>{cl_sub['age'].mean():.1f}</div>"
-                    f"<div style='{_row_cell_val}'>{fmt_m(cl_sub['cap_hit'].mean())}</div>"
-                    f"<div style='{_row_cell_val}'>{fmt_m(cl_sub['predicted_value'].dropna().mean())}</div>"
-                    f"<div style='{_row_cell_val}color:{_d_clr};font-weight:600;'>{fmt_delta(avg_d)}</div>"
-                    f"<div style='{_row_cell_val}'>{avg_ps:+.1f}</div>"
-                    f"</div>"
-                )
-                _cluster_count += 1
-            _rows += "</div>"
-
-            st.markdown(
-                _rows,
-                unsafe_allow_html=True,
-            )
-
-        with _tbl_right:
+        # --- Top 5 Underpaid / Overpaid BELOW, side-by-side (wraps on narrow) ---
+        st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+        _top_left, _top_right = st.columns(2)
+        with _top_left:
             st.markdown(
                 f"<div style='font-family:\"Inter\",sans-serif;font-size:.65rem;font-weight:500;"
                 f"letter-spacing:.12em;text-transform:uppercase;color:{_pos};margin-bottom:10px;"
@@ -1947,7 +1944,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                 unsafe_allow_html=True,
             )
             _mini_player_cards(df_c.nlargest(5, "value_delta"))
-            st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
+        with _top_right:
             st.markdown(
                 f"<div style='font-family:\"Inter\",sans-serif;font-size:.65rem;font-weight:500;"
                 f"letter-spacing:.12em;text-transform:uppercase;color:{_neg};margin-bottom:10px;"
