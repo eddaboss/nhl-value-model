@@ -577,6 +577,14 @@ _DARK_CSS  = """<style>
   /* ── Page surfaces ── */
   .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #0E1013 !important; }
 
+  /* ── Base text color (overrides Streamlit's light-theme body color) ── */
+  /* Without this, any element without an explicit color rule inherits
+     Streamlit's default rgb(28,28,28) — near-black on our dark bg = invisible. */
+  body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
+  [data-testid="stSidebar"], [data-testid="stMainBlockContainer"] {
+    color: #F2EEE5;
+  }
+
   /* ── Base typography ── */
   html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
   p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'Inter', sans-serif !important; }
@@ -705,8 +713,25 @@ _DARK_CSS  = """<style>
 
   /* ── Radio ── */
   [data-testid="stRadio"] label,
-  [data-testid="stRadio"] label p,
-  [data-testid="stRadio"] label span { color: #F2EEE5 !important; }
+  [data-testid="stRadio"] label *,
+  [data-baseweb="radio"],
+  [data-baseweb="radio"] * { color: #F2EEE5 !important; }
+
+  /* ── Widget labels (Streamlit uses classes not testids for these) ── */
+  .stSelectbox label, .stMultiSelect label, .stTextInput label,
+  .stNumberInput label, .stCheckbox label, .stRadio label,
+  .stSlider label, .stDateInput label, .stTimeInput label,
+  .stTextArea label, [data-testid="stWidgetLabel"],
+  [data-testid="stWidgetLabel"] * {
+    color: #B8BDC5 !important;
+  }
+
+  /* ── Selectbox / multiselect rendered values + popover options ── */
+  [data-baseweb="select"] *, [data-baseweb="popover"] *,
+  [data-baseweb="menu"] *, ul[role="listbox"] *, [role="option"] {
+    color: #F2EEE5 !important;
+  }
+  [data-baseweb="select"] svg, [role="option"] svg { fill: #8A8F99 !important; }
 
   /* ── Multiselect chips (fallback — we now use checkboxes for Role Cluster) ── */
   [data-baseweb="tag"] { background: #1B1F26 !important; border: 1px solid #343A44 !important; color: #F2EEE5 !important; }
@@ -951,6 +976,12 @@ _LIGHT_CSS = """<style>
   /* ── Page surfaces ── */
   .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #F5F2EC !important; }
 
+  /* ── Base text color ── */
+  body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
+  [data-testid="stSidebar"], [data-testid="stMainBlockContainer"] {
+    color: #0B0D10;
+  }
+
   /* ── Base typography ── */
   html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
   p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'Inter', sans-serif !important; }
@@ -1078,8 +1109,25 @@ _LIGHT_CSS = """<style>
 
   /* ── Radio ── */
   [data-testid="stRadio"] label,
-  [data-testid="stRadio"] label p,
-  [data-testid="stRadio"] label span { color: #0B0D10 !important; }
+  [data-testid="stRadio"] label *,
+  [data-baseweb="radio"],
+  [data-baseweb="radio"] * { color: #0B0D10 !important; }
+
+  /* ── Widget labels ── */
+  .stSelectbox label, .stMultiSelect label, .stTextInput label,
+  .stNumberInput label, .stCheckbox label, .stRadio label,
+  .stSlider label, .stDateInput label, .stTimeInput label,
+  .stTextArea label, [data-testid="stWidgetLabel"],
+  [data-testid="stWidgetLabel"] * {
+    color: #2A2D33 !important;
+  }
+
+  /* ── Selectbox / multiselect rendered values + popover options ── */
+  [data-baseweb="select"] *, [data-baseweb="popover"] *,
+  [data-baseweb="menu"] *, ul[role="listbox"] *, [role="option"] {
+    color: #0B0D10 !important;
+  }
+  [data-baseweb="select"] svg, [role="option"] svg { fill: #6A6F78 !important; }
 
   /* ── Multiselect chips ── */
   [data-baseweb="tag"] { background: #F9F6F0 !important; border: 1px solid #E4DFD5 !important; color: #0B0D10 !important; }
@@ -1539,27 +1587,22 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
             if _cl.startswith("sb_cl_") and _cl[6:] not in cluster_opts:
                 del st.session_state[_cl]
 
-        # Apply pending bulk-toggle BEFORE widgets render (Streamlit forbids
-        # mutating a widget's key after the widget is created in the same run).
-        _bulk = st.session_state.pop("_sb_cl_bulk", None)
-        if _bulk is not None:
-            for _cl in cluster_opts:
-                st.session_state[f"sb_cl_{_cl}"] = (_bulk == "all")
-
         st.markdown(
             f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.72rem;"
             f"color:{_sb_sub};letter-spacing:.08em;text-transform:uppercase;"
             f"margin:8px 0 6px;'>Role Cluster</div>",
             unsafe_allow_html=True,
         )
-        # Quick toggles ABOVE the checkboxes — set a sentinel flag and rerun
+
+        # Quick toggles — use on_click callbacks so state mutations happen
+        # BEFORE the checkboxes re-render on the same run.
+        def _bulk_set(val: bool):
+            for _cl in cluster_opts:
+                st.session_state[f"sb_cl_{_cl}"] = val
+
         _c1, _c2 = st.columns(2)
-        if _c1.button("All", key="sb_cl_all_btn", use_container_width=True):
-            st.session_state["_sb_cl_bulk"] = "all"
-            st.rerun()
-        if _c2.button("None", key="sb_cl_none_btn", use_container_width=True):
-            st.session_state["_sb_cl_bulk"] = "none"
-            st.rerun()
+        _c1.button("All",  key="sb_cl_all_btn",  use_container_width=True, on_click=_bulk_set, args=(True,))
+        _c2.button("None", key="sb_cl_none_btn", use_container_width=True, on_click=_bulk_set, args=(False,))
 
         _cl_cols = st.columns(2)
         cluster_sel = []
@@ -2546,7 +2589,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
             f"font-family:\"Space Grotesk\",sans-serif;'>{name}</span>"
             f"      {est_badge}"
             f"      <span style='color:{_rsub};font-size:.72rem;font-family:\"Inter\",sans-serif;"
-            f"letter-spacing:.06em;text-transform:uppercase;'>{pos} · {age_str}</span>"
+            f"letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
             f"      <div><div class='stat-label'>Cap Hit</div>"
@@ -2847,7 +2890,7 @@ def tab_kings(df: pd.DataFrame):
             f"font-family:\"Space Grotesk\",sans-serif;'>{name}</span>"
             f"      {est_badge}"
             f"      <span style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
-            f"letter-spacing:.06em;text-transform:uppercase;'>{pos} · {age_str}</span>"
+            f"letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
             f"      <div><div class='stat-label'>Cap Hit</div>"
