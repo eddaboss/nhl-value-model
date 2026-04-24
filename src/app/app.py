@@ -1835,7 +1835,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
             # Column headers — CSS grid, 7 columns: name | N | Age | Cap | Pred | Δ | Score
             _grid_cols = "minmax(130px,1.6fr) 44px 54px 72px 72px 82px 60px"
-            _hdr_cell = (f"font-family:'JetBrains Mono',monospace;font-size:.66rem;"
+            _hdr_cell = (f"font-family:\"JetBrains Mono\",monospace;font-size:.66rem;"
                          f"letter-spacing:.1em;text-transform:uppercase;color:{_txt};"
                          f"font-weight:500;padding:10px 6px;text-align:right;white-space:nowrap;")
 
@@ -1854,10 +1854,10 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                 f"</div>"
             )
 
-            _row_cell_val = (f"font-family:'JetBrains Mono',monospace;font-size:.78rem;"
+            _row_cell_val = (f"font-family:\"JetBrains Mono\",monospace;font-size:.78rem;"
                              f"color:{_txt};padding:11px 6px;text-align:right;"
                              f"white-space:nowrap;display:flex;align-items:center;justify-content:flex-end;")
-            _row_cell_name = (f"font-family:'Inter',sans-serif;font-size:.8rem;font-weight:500;"
+            _row_cell_name = (f"font-family:\"Inter\",sans-serif;font-size:.8rem;font-weight:500;"
                               f"color:{_txt};padding:11px 10px;text-align:left;"
                               f"white-space:nowrap;display:flex;align-items:center;gap:8px;"
                               f"overflow:hidden;text-overflow:ellipsis;")
@@ -2007,18 +2007,18 @@ def tab_leaderboards(df: pd.DataFrame):
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
     _TABLE_CSS = (
-        f"width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;"
+        f"width:100%;border-collapse:collapse;font-family:\"Inter\",sans-serif;"
         f"font-size:.8rem;background:{_T['card_bg']};"
     )
     _TH_CSS = (
         f"padding:8px 12px;text-align:left;color:{_T['card_text']};font-weight:500;"
-        f"font-family:'Inter',sans-serif;font-size:.7rem;letter-spacing:.12em;"
+        f"font-family:\"Inter\",sans-serif;font-size:.7rem;letter-spacing:.12em;"
         f"text-transform:uppercase;border-bottom:2px solid {_T['card_border']};"
         f"background:{_T['card_header']};"
     )
     _TD_CSS = (
         f"padding:8px 12px;color:{_T['card_text']};border-bottom:1px solid {_T['row_divider']};"
-        f"font-family:'Inter',sans-serif;"
+        f"font-family:\"Inter\",sans-serif;"
     )
 
     def _html_table(data, delta_col="value_delta"):
@@ -3617,12 +3617,12 @@ def tab_insights(df: pd.DataFrame):
         if _cl_rows:
             _cl_table = pd.DataFrame(_cl_rows)
             # Build HTML table
-            _hdr_style = (f"font-family:'Inter',sans-serif;font-size:.65rem;letter-spacing:.1em;"
-                          f"text-transform:uppercase;color:{_T['card_subtext']};padding:8px 10px;"
+            _hdr_style = (f"font-family:\"Inter\",sans-serif;font-size:.65rem;letter-spacing:.1em;"
+                          f"text-transform:uppercase;color:{_T['card_text']};padding:8px 10px;"
                           f"border-bottom:2px solid {_T['card_border']};text-align:right;")
-            _cell_style = (f"font-family:'JetBrains Mono',monospace;font-size:.78rem;color:{_T['card_text']};"
+            _cell_style = (f"font-family:\"JetBrains Mono\",monospace;font-size:.78rem;color:{_T['card_text']};"
                            f"padding:8px 10px;border-bottom:1px solid {_T['card_border']};text-align:right;")
-            _name_style = (f"font-family:'Inter',sans-serif;font-size:.78rem;font-weight:600;"
+            _name_style = (f"font-family:\"Inter\",sans-serif;font-size:.78rem;font-weight:600;"
                            f"padding:8px 10px;border-bottom:1px solid {_T['card_border']};text-align:left;")
 
             _rows_html = ""
