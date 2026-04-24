@@ -971,10 +971,23 @@ _DARK_CSS  = """<style>
     .signal-badge, .verdict-pill { font-size: 0.62rem; padding: 2px 7px; }
   }
 
-  /* Bottom nav goes icon-only below 640px — label truncation was ugly at 5 tabs */
-  @media (max-width: 640px) {
+  /* Bottom nav: short labels (Overview/Leaders/Teams/Search/Insights)
+     scale smoothly. With 8-char max labels, a floor of 0.58rem (~9px)
+     is comfortable at 360px+, still no truncation. */
+  @media (max-width: 720px) {
+    [data-baseweb="tab"] {
+      font-size: clamp(0.58rem, 1.4vw, 0.78rem) !important;
+      letter-spacing: 0 !important;
+      padding: 0 4px !important;
+      gap: 4px !important;
+      text-transform: none !important;
+    }
+    [data-baseweb="tab"]::before { transform: scale(1.15) !important; margin: 0 !important; }
+  }
+  /* Very narrow phones still fall back to icon-only. */
+  @media (max-width: 340px) {
     [data-baseweb="tab"] { font-size: 0 !important; gap: 0 !important; padding: 0 !important; }
-    [data-baseweb="tab"]::before { display: block !important; transform: scale(1.7) !important; margin: 0 !important; }
+    [data-baseweb="tab"]::before { transform: scale(1.6) !important; }
   }
 </style>"""
 _LIGHT_CSS = """<style>
@@ -1316,10 +1329,25 @@ _LIGHT_CSS = """<style>
     .signal-badge, .verdict-pill { font-size: 0.62rem; padding: 2px 7px; }
   }
 
-  /* Bottom nav goes icon-only below 640px */
-  @media (max-width: 640px) {
+  /* Bottom nav: smooth scaling (light theme mirrors dark) */
+  /* Bottom nav: smooth label scale so it never truncates.
+     5 tabs × viewport/5 gives each ~vw/5 px of width. Longest label is
+     'LEAGUE OVERVIEW' ≈ 9-10 chars at ~0.55em each uppercase, so
+     font-size needs to be ≤ (vw/5 − padding) / 10 ≈ 1.2vw. */
+  @media (max-width: 720px) {
+    [data-baseweb="tab"] {
+      font-size: clamp(0.38rem, 1.18vw, 0.72rem) !important;
+      letter-spacing: 0 !important;
+      padding: 0 2px !important;
+      gap: 3px !important;
+      text-transform: none !important;
+    }
+    [data-baseweb="tab"]::before { transform: scale(1.1) !important; margin: 0 !important; }
+  }
+  /* At true phone widths labels don't fit legibly — icon only. */
+  @media (max-width: 480px) {
     [data-baseweb="tab"] { font-size: 0 !important; gap: 0 !important; padding: 0 !important; }
-    [data-baseweb="tab"]::before { display: block !important; transform: scale(1.7) !important; margin: 0 !important; }
+    [data-baseweb="tab"]::before { transform: scale(1.6) !important; }
   }
 </style>"""
 
@@ -3981,11 +4009,11 @@ def main():
     filtered  = sidebar_filters(df)
 
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "League Overview",
-        "Leaderboards",
+        "Overview",
+        "Leaders",
         "Teams",
-        "Player Search",
-        "Model Insights",
+        "Search",
+        "Insights",
     ])
 
     # Persist active tab across reruns (theme toggle, UFA toggle, etc.) via
