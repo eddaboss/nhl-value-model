@@ -1835,15 +1835,15 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
 
             # Column headers — CSS grid, 7 columns: name | N | Age | Cap | Pred | Δ | Score
             _grid_cols = "minmax(130px,1.6fr) 44px 54px 72px 72px 82px 60px"
-            _hdr_cell = (f"font-family:'JetBrains Mono',monospace;font-size:.62rem;"
-                         f"letter-spacing:.1em;text-transform:uppercase;color:{_sub};"
-                         f"padding:10px 6px;text-align:right;white-space:nowrap;")
+            _hdr_cell = (f"font-family:'JetBrains Mono',monospace;font-size:.66rem;"
+                         f"letter-spacing:.1em;text-transform:uppercase;color:{_txt};"
+                         f"font-weight:500;padding:10px 6px;text-align:right;white-space:nowrap;")
 
             _rows = (
                 f"<div style='background:{_cbg};border:1px solid {_cbd};border-radius:8px;"
                 f"overflow:hidden;'>"
                 f"<div style='display:grid;grid-template-columns:{_grid_cols};"
-                f"gap:0;border-bottom:1px solid {_cbd};background:{_T['card_header']};'>"
+                f"gap:0;border-bottom:2px solid {_cbd};background:{_T['card_header']};'>"
                 f"<div style='{_hdr_cell}text-align:left;'>Cluster</div>"
                 f"<div style='{_hdr_cell}'>N</div>"
                 f"<div style='{_hdr_cell}'>Age</div>"
@@ -2011,9 +2011,9 @@ def tab_leaderboards(df: pd.DataFrame):
         f"font-size:.8rem;background:{_T['card_bg']};"
     )
     _TH_CSS = (
-        f"padding:8px 12px;text-align:left;color:{_T['card_subtext']};font-weight:500;"
+        f"padding:8px 12px;text-align:left;color:{_T['card_text']};font-weight:500;"
         f"font-family:'Inter',sans-serif;font-size:.7rem;letter-spacing:.12em;"
-        f"text-transform:uppercase;border-bottom:1px solid {_T['card_border']};"
+        f"text-transform:uppercase;border-bottom:2px solid {_T['card_border']};"
         f"background:{_T['card_header']};"
     )
     _TD_CSS = (
