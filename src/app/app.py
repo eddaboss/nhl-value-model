@@ -652,6 +652,15 @@ _DARK_CSS  = """<style>
   [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #F2EEE5 !important; }
   [data-testid="stSidebar"] .stCaptionContainer p { color: #8A8F99 !important; }
 
+  /* ── Sidebar expand / collapse buttons (Streamlit hardcodes icon to near-black) ── */
+  [data-testid="stExpandSidebarButton"],
+  [data-testid="stSidebarCollapseButton"],
+  [data-testid="stExpandSidebarButton"] button,
+  [data-testid="stSidebarCollapseButton"] button { background: #14171C !important; border: 1px solid #262B33 !important; border-radius: 8px !important; }
+  [data-testid="stExpandSidebarButton"] *,
+  [data-testid="stSidebarCollapseButton"] *,
+  [data-testid="stIconMaterial"] { color: #F2EEE5 !important; fill: #F2EEE5 !important; }
+
   /* ── Expanders ── */
   [data-testid="stExpander"],
   [data-testid="stExpander"] > *,
@@ -961,6 +970,12 @@ _DARK_CSS  = """<style>
     .player-hero .name { font-size: 1.55rem; }
     .signal-badge, .verdict-pill { font-size: 0.62rem; padding: 2px 7px; }
   }
+
+  /* Bottom nav goes icon-only below 640px — label truncation was ugly at 5 tabs */
+  @media (max-width: 640px) {
+    [data-baseweb="tab"] { font-size: 0 !important; gap: 0 !important; padding: 0 !important; }
+    [data-baseweb="tab"]::before { display: block !important; transform: scale(1.7) !important; margin: 0 !important; }
+  }
 </style>"""
 _LIGHT_CSS = """<style>
   :root {
@@ -1048,6 +1063,15 @@ _LIGHT_CSS = """<style>
   [data-testid="stSidebar"], section[data-testid="stSidebar"] { background-color: #F5F2EC !important; border-right: 1px solid #E4DFD5 !important; }
   [data-testid="stSidebar"] * { color: #0B0D10 !important; }
   [data-testid="stSidebar"] .stCaptionContainer p { color: #6A6F78 !important; }
+
+  /* ── Sidebar expand / collapse buttons ── */
+  [data-testid="stExpandSidebarButton"],
+  [data-testid="stSidebarCollapseButton"],
+  [data-testid="stExpandSidebarButton"] button,
+  [data-testid="stSidebarCollapseButton"] button { background: #FFFFFF !important; border: 1px solid #E4DFD5 !important; border-radius: 8px !important; }
+  [data-testid="stExpandSidebarButton"] *,
+  [data-testid="stSidebarCollapseButton"] *,
+  [data-testid="stIconMaterial"] { color: #0B0D10 !important; fill: #0B0D10 !important; }
 
   /* ── Expanders ── */
   [data-testid="stExpander"] { border-radius: 8px !important; border: 1px solid #E4DFD5 !important; background-color: #FFFFFF !important; }
@@ -1290,6 +1314,12 @@ _LIGHT_CSS = """<style>
     .player-hero { padding: 18px 18px; }
     .player-hero .name { font-size: 1.55rem; }
     .signal-badge, .verdict-pill { font-size: 0.62rem; padding: 2px 7px; }
+  }
+
+  /* Bottom nav goes icon-only below 640px */
+  @media (max-width: 640px) {
+    [data-baseweb="tab"] { font-size: 0 !important; gap: 0 !important; padding: 0 !important; }
+    [data-baseweb="tab"]::before { display: block !important; transform: scale(1.7) !important; margin: 0 !important; }
   }
 </style>"""
 
