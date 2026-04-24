@@ -577,6 +577,14 @@ _DARK_CSS  = """<style>
   /* ── Page surfaces ── */
   .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #0E1013 !important; }
 
+  /* ── Base text color (overrides Streamlit's light-theme body color) ── */
+  /* Without this, any element without an explicit color rule inherits
+     Streamlit's default rgb(28,28,28) — near-black on our dark bg = invisible. */
+  body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
+  [data-testid="stSidebar"], [data-testid="stMainBlockContainer"] {
+    color: #F2EEE5;
+  }
+
   /* ── Base typography ── */
   html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
   p, label, [data-testid="stMarkdownContainer"], [class*="css"] { font-family: 'Inter', sans-serif !important; }
@@ -644,6 +652,15 @@ _DARK_CSS  = """<style>
   [data-testid="stSidebar"] [data-testid="stWidgetLabel"] { color: #F2EEE5 !important; }
   [data-testid="stSidebar"] .stCaptionContainer p { color: #8A8F99 !important; }
 
+  /* ── Sidebar expand / collapse buttons (Streamlit hardcodes icon to near-black) ── */
+  [data-testid="stExpandSidebarButton"],
+  [data-testid="stSidebarCollapseButton"],
+  [data-testid="stExpandSidebarButton"] button,
+  [data-testid="stSidebarCollapseButton"] button { background: #14171C !important; border: 1px solid #262B33 !important; border-radius: 8px !important; }
+  [data-testid="stExpandSidebarButton"] *,
+  [data-testid="stSidebarCollapseButton"] *,
+  [data-testid="stIconMaterial"] { color: #F2EEE5 !important; fill: #F2EEE5 !important; }
+
   /* ── Expanders ── */
   [data-testid="stExpander"],
   [data-testid="stExpander"] > *,
@@ -698,6 +715,36 @@ _DARK_CSS  = """<style>
   [data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] { background: #4FD1C5 !important; border-color: #4FD1C5 !important; }
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #8A8F99 !important; }
+
+  /* ── Checkbox ── text only; let Streamlit handle the box visual ── */
+  [data-testid="stCheckbox"] label p,
+  [data-testid="stCheckbox"] label > div { color: #F2EEE5 !important; font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; letter-spacing: 0 !important; text-transform: none !important; }
+
+  /* ── Radio ── */
+  [data-testid="stRadio"] label,
+  [data-testid="stRadio"] label *,
+  [data-baseweb="radio"],
+  [data-baseweb="radio"] * { color: #F2EEE5 !important; }
+
+  /* ── Widget labels (Streamlit uses classes not testids for these) ── */
+  .stSelectbox label, .stMultiSelect label, .stTextInput label,
+  .stNumberInput label, .stCheckbox label, .stRadio label,
+  .stSlider label, .stDateInput label, .stTimeInput label,
+  .stTextArea label, [data-testid="stWidgetLabel"],
+  [data-testid="stWidgetLabel"] * {
+    color: #B8BDC5 !important;
+  }
+
+  /* ── Selectbox / multiselect rendered values + popover options ── */
+  [data-baseweb="select"] *, [data-baseweb="popover"] *,
+  [data-baseweb="menu"] *, ul[role="listbox"] *, [role="option"] {
+    color: #F2EEE5 !important;
+  }
+  [data-baseweb="select"] svg, [role="option"] svg { fill: #8A8F99 !important; }
+
+  /* ── Multiselect chips (fallback — we now use checkboxes for Role Cluster) ── */
+  [data-baseweb="tag"] { background: #1B1F26 !important; border: 1px solid #343A44 !important; color: #F2EEE5 !important; }
+  [data-baseweb="tag"] span, [data-baseweb="tag"] svg { color: #F2EEE5 !important; fill: #F2EEE5 !important; }
 
   /* ── Number input ── */
   [data-testid="stNumberInput"] input {
@@ -762,40 +809,185 @@ _DARK_CSS  = """<style>
   /* ── Theme toggle button: moon icon (dark mode active) ── */
   [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234FD1C5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
 
-  /* ══════════ Responsive ══════════ */
+  /* ══════════ Word-break normalization ══════════
+     Prevents text from rendering one character per line when Streamlit
+     columns get squeezed. Browsers default to break-all in some locales;
+     this pins to word boundaries everywhere inside the app. */
+  [data-testid="stMainBlockContainer"] *,
+  [data-testid="stMetric"] *,
+  .rink-card, .rink-card *, .player-card, .player-card *,
+  .kings-card, .kings-card *, .rink-brand, .rink-brand * {
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    hyphens: manual !important;
+  }
+  .stat-value, .delta-pos, .delta-neg, .pct-pos, .pct-neg,
+  [data-testid="stMetricValue"], [data-testid="stMetricDelta"] {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+
+  /* Safe-area padding for iOS (home bar / notch) */
+  .stApp, [data-testid="stAppViewContainer"] {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    padding-left: env(safe-area-inset-left) !important;
+    padding-right: env(safe-area-inset-right) !important;
+  }
+
+  /* ══════════ Responsive breakpoints (from RINK-1 styles.css) ══════════
+     Port of the @media rules shipped in the RINK-1 design bundle
+     (.design-ref/project/styles.css). Selectors adapted from the
+     React class names (.kpi-strip, .lb-row, .player-hero, .comps-grid,
+     .split, .container) to their Streamlit equivalents
+     ([data-testid=stHorizontalBlock], [data-testid=stColumn],
+      .block-container). Breakpoints kept at 900/720/480 to match. */
+
+  /* @900px in RINK-1: kpi-strip 4->2 col, split 1.4fr|1fr -> 1fr, tabs drawer, brand-meta hidden */
   @media (max-width: 900px) {
-    .block-container { padding-top: 1.25rem !important; padding-bottom: 1.5rem !important; padding-left: 14px !important; padding-right: 14px !important; }
+    /* Streamlit st.columns(N) stays N-wide by default; this reflows them. */
+    [data-testid="stHorizontalBlock"] {
+      flex-wrap: wrap !important;
+      gap: 12px !important;
+      row-gap: 12px !important;
+    }
+    [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+      flex: 1 1 220px !important;   /* 2-col layout when viewport allows */
+      min-width: 0 !important;
+      width: auto !important;
+    }
+    /* RINK-1 line 188: .brand-meta { display: none; } */
+    .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; opacity: 0.8; }
     .rink-brand { flex-wrap: wrap; row-gap: 4px; }
-    .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; }
     .rink-footer { flex-direction: column; gap: 6px; }
-    /* Tab icons off, tighter tabs, allow horizontal scroll */
+    /* RINK-1 line 167: .tabs { display: none; } then hamburger drawer.
+       Streamlit can't swap to a drawer; horizontal scroll is the best
+       equivalent that preserves tab switching on touch. */
     [data-baseweb="tab-list"] { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     [data-baseweb="tab-list"]::-webkit-scrollbar { display: none; }
-    [data-baseweb="tab"] { padding: 0 12px !important; font-size: 0.85rem !important; height: 42px !important; flex-shrink: 0 !important; }
+    [data-baseweb="tab"] { padding: 0 14px !important; font-size: 0.9rem !important; height: 44px !important; flex-shrink: 0 !important; }
     [data-baseweb="tab"]::before { display: none !important; margin-right: 0 !important; }
-    [data-testid="stMetric"] { padding: 12px 14px !important; }
-    [data-testid="stMetricValue"] { font-size: 1.5rem !important; }
-    [data-testid="stMetricLabel"] { font-size: 0.64rem !important; }
-    .player-hero { padding: 20px 22px; border-radius: 12px; }
-    .player-hero .name { font-size: 1.9rem; }
+  }
+
+  /* @720px: phone. Reposition st.tabs as a fixed bottom nav. */
+  @media (max-width: 720px) {
+    /* RINK-1 line 95: .container { padding: 0 18px; } + bottom-nav clearance */
+    .block-container { padding-top: 1rem !important; padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; padding-left: 18px !important; padding-right: 18px !important; }
+    .rink-brand { padding: 0 0 10px; margin-bottom: 18px; }
+
+    /* ── Bottom tab nav (replaces st.tabs top strip) ── */
+    [data-baseweb="tab-list"] {
+      position: fixed !important;
+      bottom: 0 !important; left: 0 !important; right: 0 !important;
+      z-index: 100 !important;
+      background: #0E1013 !important;
+      border-top: 1px solid #262B33 !important;
+      border-bottom: none !important;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.4) !important;
+      height: calc(62px + env(safe-area-inset-bottom)) !important;
+      padding: 0 4px env(safe-area-inset-bottom) !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      justify-content: space-around !important;
+      align-items: stretch !important;
+      gap: 0 !important;
+      overflow: visible !important;
+    }
+    [data-baseweb="tab"] {
+      flex: 1 1 0 !important;
+      min-width: 0 !important;
+      height: 62px !important;
+      padding: 6px 2px 4px !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 0.62rem !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: uppercase !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 5px !important;
+      color: #8A8F99 !important;
+      border-bottom: none !important;
+      border-top: 2px solid transparent !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      text-overflow: ellipsis !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+    }
+    /* Restore tab icons — stacked above label, enlarged */
+    [data-baseweb="tab"]::before {
+      display: block !important;
+      margin: 0 !important;
+      transform: scale(1.3) !important;
+      vertical-align: baseline !important;
+      line-height: 0 !important;
+    }
+    [aria-selected="true"][data-baseweb="tab"] {
+      color: #4FD1C5 !important;
+      border-top: 2px solid #4FD1C5 !important;
+      border-bottom: none !important;
+      background: rgba(79,209,197,0.07) !important;
+      font-family: 'Inter', sans-serif !important;
+      font-style: normal !important;
+    }
+
+    /* Column reflow — 2 per row at phone width */
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 160px !important; }
+    [data-testid="stMetric"] { padding: 14px 16px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.6rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.66rem !important; letter-spacing: 0.1em !important; }
+    [data-testid="stMetricDelta"] { font-size: 0.72rem !important; }
+    .player-hero { padding: 22px 20px; border-radius: 12px; }
+    .player-hero .name { font-size: 1.9rem; line-height: 1.1; }
+    .player-hero .meta { font-size: 0.74rem; }
     .rink-card { padding: 14px 16px; }
     .rink-card .value { font-size: 1.25rem; }
     .player-card, .kings-card { padding: 14px 16px; border-radius: 10px; }
-    h1 { font-size: 1.9rem !important; }
-    h2 { font-size: 1.35rem !important; }
-    h3 { font-size: 1.1rem !important; }
+    .lb-bar-wrap, .lb-pct { display: none !important; }
+    h1 { font-size: 1.8rem !important; }
+    h2 { font-size: 1.3rem !important; }
+    h3 { font-size: 1.05rem !important; }
+    .js-plotly-plot, .plot-container { width: 100% !important; }
+    /* Sidebar collapse nudge on mobile — Streamlit's default is open. Hide the
+       toggle-arrow shadow that lingers over content. */
+    section[data-testid="stSidebar"] { z-index: 99 !important; }
   }
-  @media (max-width: 600px) {
+
+  /* @480px in RINK-1: kpi-value 26px. Phone-portrait small screens. */
+  @media (max-width: 480px) {
+    .block-container { padding-left: 14px !important; padding-right: 14px !important; }
     .rink-brand .logo { font-size: 1.15rem; }
-    .rink-brand .tag { font-size: 0.66rem; }
-    [data-testid="stMetric"] { padding: 10px 12px !important; }
-    [data-testid="stMetricValue"] { font-size: 1.25rem !important; }
-    [data-testid="stMetricLabel"] { font-size: 0.6rem !important; letter-spacing: 0.1em !important; }
-    [data-testid="stMetricDelta"] { font-size: 0.7rem !important; }
-    .player-hero { padding: 16px 18px; }
+    .rink-brand .tag { font-size: 0.64rem; }
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 100% !important; }
+    [data-testid="stMetric"] { padding: 12px 14px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.4rem !important; }  /* RINK-1: 26px ≈ 1.4rem */
+    [data-testid="stMetricLabel"] { font-size: 0.62rem !important; }
+    .player-hero { padding: 18px 18px; }
     .player-hero .name { font-size: 1.55rem; }
-    .player-hero .meta { font-size: 0.72rem; }
     .signal-badge, .verdict-pill { font-size: 0.62rem; padding: 2px 7px; }
+  }
+
+  /* Bottom nav: short labels (Overview/Leaders/Teams/Search/Insights)
+     scale smoothly. With 8-char max labels, a floor of 0.58rem (~9px)
+     is comfortable at 360px+, still no truncation. */
+  @media (max-width: 720px) {
+    [data-baseweb="tab"] {
+      font-size: clamp(0.58rem, 1.4vw, 0.78rem) !important;
+      letter-spacing: 0 !important;
+      padding: 0 4px !important;
+      gap: 4px !important;
+      text-transform: none !important;
+    }
+    [data-baseweb="tab"]::before { transform: scale(1.15) !important; margin: 0 !important; }
+  }
+  /* Very narrow phones still fall back to icon-only. */
+  @media (max-width: 340px) {
+    [data-baseweb="tab"] { font-size: 0 !important; gap: 0 !important; padding: 0 !important; }
+    [data-baseweb="tab"]::before { transform: scale(1.6) !important; }
   }
 </style>"""
 _LIGHT_CSS = """<style>
@@ -811,6 +1003,12 @@ _LIGHT_CSS = """<style>
 
   /* ── Page surfaces ── */
   .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], [data-testid="stHeader"] { background-color: #F5F2EC !important; }
+
+  /* ── Base text color ── */
+  body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
+  [data-testid="stSidebar"], [data-testid="stMainBlockContainer"] {
+    color: #0B0D10;
+  }
 
   /* ── Base typography ── */
   html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"],
@@ -879,6 +1077,15 @@ _LIGHT_CSS = """<style>
   [data-testid="stSidebar"] * { color: #0B0D10 !important; }
   [data-testid="stSidebar"] .stCaptionContainer p { color: #6A6F78 !important; }
 
+  /* ── Sidebar expand / collapse buttons ── */
+  [data-testid="stExpandSidebarButton"],
+  [data-testid="stSidebarCollapseButton"],
+  [data-testid="stExpandSidebarButton"] button,
+  [data-testid="stSidebarCollapseButton"] button { background: #FFFFFF !important; border: 1px solid #E4DFD5 !important; border-radius: 8px !important; }
+  [data-testid="stExpandSidebarButton"] *,
+  [data-testid="stSidebarCollapseButton"] *,
+  [data-testid="stIconMaterial"] { color: #0B0D10 !important; fill: #0B0D10 !important; }
+
   /* ── Expanders ── */
   [data-testid="stExpander"] { border-radius: 8px !important; border: 1px solid #E4DFD5 !important; background-color: #FFFFFF !important; }
   [data-testid="stExpander"] details { background-color: #FFFFFF !important; }
@@ -933,6 +1140,36 @@ _LIGHT_CSS = """<style>
   [data-testid="stSlider"] [data-testid="stTickBarMin"],
   [data-testid="stSlider"] [data-testid="stTickBarMax"] { color: #6A6F78 !important; }
 
+  /* ── Checkbox ── text only; let Streamlit handle the box visual ── */
+  [data-testid="stCheckbox"] label p,
+  [data-testid="stCheckbox"] label > div { color: #0B0D10 !important; font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; letter-spacing: 0 !important; text-transform: none !important; }
+
+  /* ── Radio ── */
+  [data-testid="stRadio"] label,
+  [data-testid="stRadio"] label *,
+  [data-baseweb="radio"],
+  [data-baseweb="radio"] * { color: #0B0D10 !important; }
+
+  /* ── Widget labels ── */
+  .stSelectbox label, .stMultiSelect label, .stTextInput label,
+  .stNumberInput label, .stCheckbox label, .stRadio label,
+  .stSlider label, .stDateInput label, .stTimeInput label,
+  .stTextArea label, [data-testid="stWidgetLabel"],
+  [data-testid="stWidgetLabel"] * {
+    color: #2A2D33 !important;
+  }
+
+  /* ── Selectbox / multiselect rendered values + popover options ── */
+  [data-baseweb="select"] *, [data-baseweb="popover"] *,
+  [data-baseweb="menu"] *, ul[role="listbox"] *, [role="option"] {
+    color: #0B0D10 !important;
+  }
+  [data-baseweb="select"] svg, [role="option"] svg { fill: #6A6F78 !important; }
+
+  /* ── Multiselect chips ── */
+  [data-baseweb="tag"] { background: #F9F6F0 !important; border: 1px solid #E4DFD5 !important; color: #0B0D10 !important; }
+  [data-baseweb="tag"] span, [data-baseweb="tag"] svg { color: #0B0D10 !important; fill: #0B0D10 !important; }
+
   /* ── Number input ── */
   [data-testid="stNumberInput"] input {
       background: #FFFFFF !important; color: #0B0D10 !important;
@@ -963,39 +1200,154 @@ _LIGHT_CSS = """<style>
   /* ── Theme toggle button: sun icon (light mode active) ── */
   [data-testid="stSidebar"] [data-testid="stButton"]:first-child button::before { content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230B0D10' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='5'/><line x1='12' y1='1' x2='12' y2='3'/><line x1='12' y1='21' x2='12' y2='23'/><line x1='4.22' y1='4.22' x2='5.64' y2='5.64'/><line x1='18.36' y1='18.36' x2='19.78' y2='19.78'/><line x1='1' y1='12' x2='3' y2='12'/><line x1='21' y1='12' x2='23' y2='12'/><line x1='4.22' y1='19.78' x2='5.64' y2='18.36'/><line x1='18.36' y1='5.64' x2='19.78' y2='4.22'/></svg>"); display:inline-block; margin-right:8px; vertical-align:-2px; }
 
-  /* ══════════ Responsive ══════════ */
+  /* ══════════ Word-break normalization ══════════ */
+  [data-testid="stMainBlockContainer"] *,
+  [data-testid="stMetric"] *,
+  .rink-card, .rink-card *, .player-card, .player-card *,
+  .kings-card, .kings-card *, .rink-brand, .rink-brand * {
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    hyphens: manual !important;
+  }
+  .stat-value, .delta-pos, .delta-neg, .pct-pos, .pct-neg,
+  [data-testid="stMetricValue"], [data-testid="stMetricDelta"] {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+  }
+
+  /* Safe-area padding for iOS */
+  .stApp, [data-testid="stAppViewContainer"] {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    padding-left: env(safe-area-inset-left) !important;
+    padding-right: env(safe-area-inset-right) !important;
+  }
+
+  /* ══════════ Responsive (port of RINK-1 styles.css @media rules) ══════════ */
   @media (max-width: 900px) {
-    .block-container { padding-top: 1.25rem !important; padding-bottom: 1.5rem !important; padding-left: 14px !important; padding-right: 14px !important; }
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; gap: 12px !important; row-gap: 12px !important; }
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 220px !important; min-width: 0 !important; width: auto !important; }
+    .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; opacity: 0.8; }
     .rink-brand { flex-wrap: wrap; row-gap: 4px; }
-    .rink-brand .season { margin-left: 0; flex-basis: 100%; font-size: 0.68rem; }
     .rink-footer { flex-direction: column; gap: 6px; }
     [data-baseweb="tab-list"] { overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     [data-baseweb="tab-list"]::-webkit-scrollbar { display: none; }
-    [data-baseweb="tab"] { padding: 0 12px !important; font-size: 0.85rem !important; height: 42px !important; flex-shrink: 0 !important; }
+    [data-baseweb="tab"] { padding: 0 14px !important; font-size: 0.9rem !important; height: 44px !important; flex-shrink: 0 !important; }
     [data-baseweb="tab"]::before { display: none !important; margin-right: 0 !important; }
-    [data-testid="stMetric"] { padding: 12px 14px !important; }
-    [data-testid="stMetricValue"] { font-size: 1.5rem !important; }
-    [data-testid="stMetricLabel"] { font-size: 0.64rem !important; }
-    .player-hero { padding: 20px 22px; border-radius: 12px; }
-    .player-hero .name { font-size: 1.9rem; }
+  }
+  @media (max-width: 720px) {
+    .block-container { padding-top: 1rem !important; padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; padding-left: 18px !important; padding-right: 18px !important; }
+    .rink-brand { padding: 0 0 10px; margin-bottom: 18px; }
+
+    /* Bottom tab nav (light) */
+    [data-baseweb="tab-list"] {
+      position: fixed !important;
+      bottom: 0 !important; left: 0 !important; right: 0 !important;
+      z-index: 100 !important;
+      background: #F5F2EC !important;
+      border-top: 1px solid #E4DFD5 !important;
+      border-bottom: none !important;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.08) !important;
+      height: calc(62px + env(safe-area-inset-bottom)) !important;
+      padding: 0 4px env(safe-area-inset-bottom) !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      justify-content: space-around !important;
+      align-items: stretch !important;
+      gap: 0 !important;
+      overflow: visible !important;
+    }
+    [data-baseweb="tab"] {
+      flex: 1 1 0 !important;
+      min-width: 0 !important;
+      height: 62px !important;
+      padding: 6px 2px 4px !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 0.62rem !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: uppercase !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 5px !important;
+      color: #6A6F78 !important;
+      border-bottom: none !important;
+      border-top: 2px solid transparent !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      text-overflow: ellipsis !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+    }
+    [data-baseweb="tab"]::before {
+      display: block !important;
+      margin: 0 !important;
+      transform: scale(1.3) !important;
+      vertical-align: baseline !important;
+      line-height: 0 !important;
+    }
+    [aria-selected="true"][data-baseweb="tab"] {
+      color: #2E6FA8 !important;
+      border-top: 2px solid #2E6FA8 !important;
+      border-bottom: none !important;
+      background: rgba(46,111,168,0.07) !important;
+      font-family: 'Inter', sans-serif !important;
+      font-style: normal !important;
+    }
+
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 160px !important; }
+    [data-testid="stMetric"] { padding: 14px 16px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.6rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.66rem !important; letter-spacing: 0.1em !important; }
+    [data-testid="stMetricDelta"] { font-size: 0.72rem !important; }
+    .player-hero { padding: 22px 20px; border-radius: 12px; }
+    .player-hero .name { font-size: 1.9rem; line-height: 1.1; }
+    .player-hero .meta { font-size: 0.74rem; }
     .rink-card { padding: 14px 16px; }
     .rink-card .value { font-size: 1.25rem; }
     .player-card, .kings-card { padding: 14px 16px; border-radius: 10px; }
-    h1 { font-size: 1.9rem !important; }
-    h2 { font-size: 1.35rem !important; }
-    h3 { font-size: 1.1rem !important; }
+    .lb-bar-wrap, .lb-pct { display: none !important; }
+    h1 { font-size: 1.8rem !important; }
+    h2 { font-size: 1.3rem !important; }
+    h3 { font-size: 1.05rem !important; }
+    .js-plotly-plot, .plot-container { width: 100% !important; }
+    section[data-testid="stSidebar"] { z-index: 99 !important; }
   }
-  @media (max-width: 600px) {
+  @media (max-width: 480px) {
+    .block-container { padding-left: 14px !important; padding-right: 14px !important; }
     .rink-brand .logo { font-size: 1.15rem; }
-    .rink-brand .tag { font-size: 0.66rem; }
-    [data-testid="stMetric"] { padding: 10px 12px !important; }
-    [data-testid="stMetricValue"] { font-size: 1.25rem !important; }
-    [data-testid="stMetricLabel"] { font-size: 0.6rem !important; letter-spacing: 0.1em !important; }
-    [data-testid="stMetricDelta"] { font-size: 0.7rem !important; }
-    .player-hero { padding: 16px 18px; }
+    .rink-brand .tag { font-size: 0.64rem; }
+    [data-testid="stMainBlockContainer"] [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { flex: 1 1 100% !important; }
+    [data-testid="stMetric"] { padding: 12px 14px !important; }
+    [data-testid="stMetricValue"] { font-size: 1.4rem !important; }
+    [data-testid="stMetricLabel"] { font-size: 0.62rem !important; }
+    .player-hero { padding: 18px 18px; }
     .player-hero .name { font-size: 1.55rem; }
-    .player-hero .meta { font-size: 0.72rem; }
     .signal-badge, .verdict-pill { font-size: 0.62rem; padding: 2px 7px; }
+  }
+
+  /* Bottom nav: smooth scaling (light theme mirrors dark) */
+  /* Bottom nav: smooth label scale so it never truncates.
+     5 tabs × viewport/5 gives each ~vw/5 px of width. Longest label is
+     'LEAGUE OVERVIEW' ≈ 9-10 chars at ~0.55em each uppercase, so
+     font-size needs to be ≤ (vw/5 − padding) / 10 ≈ 1.2vw. */
+  @media (max-width: 720px) {
+    [data-baseweb="tab"] {
+      font-size: clamp(0.38rem, 1.18vw, 0.72rem) !important;
+      letter-spacing: 0 !important;
+      padding: 0 2px !important;
+      gap: 3px !important;
+      text-transform: none !important;
+    }
+    [data-baseweb="tab"]::before { transform: scale(1.1) !important; margin: 0 !important; }
+  }
+  /* At true phone widths labels don't fit legibly — icon only. */
+  @media (max-width: 480px) {
+    [data-baseweb="tab"] { font-size: 0 !important; gap: 0 !important; padding: 0 !important; }
+    [data-baseweb="tab"]::before { transform: scale(1.6) !important; }
   }
 </style>"""
 
@@ -1129,9 +1481,17 @@ def team_logo_url(team_abbrev: str) -> str:
 
 def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
                        show_pred: bool = False) -> None:
-    """Horizontal row of mini headshot cards — used in top-5 lists."""
-    cols = st.columns(len(players_df))
-    for i, (_, row) in enumerate(players_df.iterrows()):
+    """Responsive grid of mini headshot cards — auto-wraps when container narrows.
+    Uses CSS grid (minmax 140px) instead of st.columns() so the cards reflow based
+    on available width regardless of sidebar state or viewport — prevents the
+    one-character-per-line collapse when space is tight."""
+    _card_bg  = _T["card_bg"]
+    _card_bd  = _T["card_border"]
+    _card_txt = _T["card_text"]
+    _card_sub = _T["card_subtext"]
+
+    cards_html = ""
+    for _, row in players_df.iterrows():
         pid   = row.get("player_id")
         name  = row.get("name", "?")
         team  = row.get("team", "?")
@@ -1142,36 +1502,38 @@ def _mini_player_cards(players_df: pd.DataFrame, delta_col: str = "value_delta",
 
         clr     = _T.get("positive", "#2A7A4B") if (delta or 0) >= 0 else _T.get("negative", "#C0392B")
         val_str = fmt_delta(delta) if not show_pred else fmt_m(pv)
-        age_str = f"Age {age:.0f}" if pd.notna(age) else ""
 
         hs_html = ""
         if pid and pd.notna(pid):
             hs_url  = headshot_url(pid, team)
             hs_html = (
                 f"<img src='{hs_url}' width='56' height='56' "
-                f"style='object-fit:cover;display:block;margin:0 auto 8px;' "
+                f"style='object-fit:cover;display:block;margin:0 auto 8px;border-radius:4px;' "
                 f"onerror=\"this.style.display='none'\">"
             )
 
-        _card_bg  = _T["card_bg"]
-        _card_bd  = _T["card_border"]
-        _card_txt = _T["card_text"]
-        _card_sub = _T["card_subtext"]
-        cols[i].markdown(
-            f"<div style='background:{_card_bg};padding:14px 8px;"
-            f"text-align:center;border:1px solid {_card_bd};border-top:3px solid {clr};'>"
+        cards_html += (
+            f"<div style='background:{_card_bg};padding:14px 10px;"
+            f"text-align:center;border:1px solid {_card_bd};border-top:3px solid {clr};"
+            f"border-radius:8px;min-width:0;'>"
             f"  {hs_html}"
-            f"  <div style='font-family:\"Space Grotesk\",sans-serif;font-weight:400;color:{_card_txt};font-size:.95rem;"
-            f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
-            f"    max-width:100%;'>{name}</div>"
-            f"  <div style='color:{_card_sub};font-size:.72rem;margin:3px 0;"
-            f"    font-family:\"Inter\",sans-serif;letter-spacing:.06em;text-transform:uppercase;'>"
+            f"  <div style='font-family:\"Space Grotesk\",sans-serif;font-weight:500;color:{_card_txt};font-size:.95rem;"
+            f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{name}</div>"
+            f"  <div style='color:{_card_sub};font-size:.7rem;margin:4px 0;"
+            f"    font-family:\"Inter\",sans-serif;letter-spacing:.06em;text-transform:uppercase;"
+            f"    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>"
             f"    {team} · {pos}</div>"
-            f"  <div style='color:{clr};font-size:.85rem;font-weight:400;"
-            f"    margin-top:6px;font-family:\"JetBrains Mono\",monospace;'>{val_str}</div>"
-            f"</div>",
-            unsafe_allow_html=True,
+            f"  <div style='color:{clr};font-size:.85rem;font-weight:500;"
+            f"    margin-top:6px;font-family:\"JetBrains Mono\",monospace;"
+            f"    white-space:nowrap;'>{val_str}</div>"
+            f"</div>"
         )
+
+    st.markdown(
+        f"<div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));"
+        f"gap:10px;margin-bottom:12px;'>{cards_html}</div>",
+        unsafe_allow_html=True,
+    )
 
 
 def signal_badge(signal: str, palette: dict) -> str:
@@ -1276,13 +1638,37 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         pos_sel  = st.selectbox("Position", positions, key="sb_pos")
         teams_list = ["All"] + sorted(df["team"].dropna().unique().tolist())
         team_sel = st.selectbox("Team", teams_list, key="sb_team")
-        # Cluster filter — clear stale session state if cluster names changed
+        # Cluster filter — checkbox list instead of cramped multiselect chips.
         cluster_opts = [c for c in CLUSTER_ORDER if c in df["cluster_label"].unique()]
-        if "sb_cluster" in st.session_state:
-            stale = [c for c in st.session_state["sb_cluster"] if c not in cluster_opts]
-            if stale:
-                del st.session_state["sb_cluster"]
-        cluster_sel = st.multiselect("Role Cluster", cluster_opts, default=cluster_opts, key="sb_cluster")
+        # Clear stale session-state keys if cluster labels changed
+        for _cl in list(st.session_state.keys()):
+            if _cl.startswith("sb_cl_") and _cl[6:] not in cluster_opts:
+                del st.session_state[_cl]
+
+        st.markdown(
+            f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.72rem;"
+            f"color:{_sb_sub};letter-spacing:.08em;text-transform:uppercase;"
+            f"margin:8px 0 6px;'>Role Cluster</div>",
+            unsafe_allow_html=True,
+        )
+
+        # Quick toggles — use on_click callbacks so state mutations happen
+        # BEFORE the checkboxes re-render on the same run.
+        def _bulk_set(val: bool):
+            for _cl in cluster_opts:
+                st.session_state[f"sb_cl_{_cl}"] = val
+
+        _c1, _c2 = st.columns(2)
+        _c1.button("All",  key="sb_cl_all_btn",  use_container_width=True, on_click=_bulk_set, args=(True,))
+        _c2.button("None", key="sb_cl_none_btn", use_container_width=True, on_click=_bulk_set, args=(False,))
+
+        _cl_cols = st.columns(2)
+        cluster_sel = []
+        for _i, _cl in enumerate(cluster_opts):
+            _key = f"sb_cl_{_cl}"
+            _default = st.session_state.get(_key, True)
+            if _cl_cols[_i % 2].checkbox(_cl, value=_default, key=_key):
+                cluster_sel.append(_cl)
 
         import math
         age_min = math.floor(df["age"].dropna().min())
@@ -1374,60 +1760,32 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
         unsafe_allow_html=True,
     )
 
-    # ── B. Pipeline Methodology ──────────────────────────────────────────────
+    # ── B. Methodology (collapsed by default) ───────────────────────────────
     _abg = _cbg; _abd = _cbd; _atxt = _T["card_text"]; _asub = _sub
     _pos_clr = _pos
-
-    def _arch_step(number, title, subtitle, detail, color=_accent):
-        return (
-            f"<div style='flex:1;min-width:160px;max-width:220px;background:{_abg};"
-            f"border:1px solid {_abd};padding:16px 14px;position:relative;'>"
-            f"<div style='position:absolute;top:-12px;left:14px;background:{color};"
-            f"color:#fff;font-family:\"JetBrains Mono\",monospace;font-size:.65rem;"
-            f"padding:2px 8px;letter-spacing:.1em;'>{number}</div>"
-            f"<div style='font-family:\"Inter\",sans-serif;font-size:.85rem;"
-            f"font-weight:600;color:{_atxt};margin-top:6px;'>{title}</div>"
-            f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.65rem;"
-            f"color:{_asub};margin-top:4px;letter-spacing:.04em;'>{subtitle}</div>"
-            f"<div style='font-family:\"Inter\",sans-serif;font-size:.72rem;"
-            f"color:{_asub};margin-top:8px;line-height:1.5;'>{detail}</div>"
-            f"</div>"
-        )
-
-    _arrow = (
-        f"<div style='display:flex;align-items:center;padding:0 4px;'>"
-        f"<svg width='24' height='24' viewBox='0 0 24 24' fill='none' "
-        f"xmlns='http://www.w3.org/2000/svg'>"
-        f"<path d='M5 12h14M13 6l6 6-6 6' stroke='{_asub}' stroke-width='2' "
-        f"stroke-linecap='round' stroke-linejoin='round'/></svg></div>"
-    )
-
-    st.markdown(
-        f"<div style='display:flex;align-items:stretch;flex-wrap:wrap;gap:8px;"
-        f"margin:0 0 8px;overflow-x:auto;'>"
-        + _arch_step("01", "Data Ingestion", "NHL API + PuckPedia",
-                     "Roster stats, contract data, prior-season stats. "
-                     "All stats normalized to 82-game pace.")
-        + _arrow
-        + _arch_step("02", "K-Means Clustering", "k=7 · Unsupervised",
-                     "Groups players by deployment: TOI, PP pts, ±, faceoff%, position. "
-                     "Auto-labels roles (Elite, Top-Line F, Top-Four D, etc).")
-        + _arrow
-        + _arch_step("03", "Performance Scoring", "−100 → +100 · Per Cluster",
-                     "FWD: G/60, P/60, PP pts, shots, shoot%, ±. "
-                     "DEF: TOI, PP pts, ±, shoot%. Z-scores within cluster.")
-        + _arrow
-        + _arch_step("04", "Comps Engine", "5 Nearest Comps",
-                     "Weighted distance: P/60 (45%) + Score (30%) + Age (25%). "
-                     "UFA contracts weighted 1.5×. Same-cluster priority.")
-        + _arrow
-        + _arch_step("05", "Predicted Value", "Weighted Avg AAV",
-                     "Final value = weighted average of 5 comps' AAVs. "
-                     "Delta = Predicted − Actual Cap Hit.",
-                     color=_pos_clr)
-        + f"</div>",
-        unsafe_allow_html=True,
-    )
+    with st.expander("How the model works", expanded=False):
+        _steps = [
+            ("Data Ingestion", "NHL API + PuckPedia — roster stats, contracts, prior-season stats; all normalized to 82-game pace."),
+            ("K-Means Clustering", "k=7 unsupervised groups players by deployment (TOI, PP pts, ±, faceoff%, position). Auto-labels roles."),
+            ("Performance Scoring", "Z-scored within each cluster. FWD: G/60 · P/60 · PPP · shots · sh% · ±. DEF: TOI · PPP · ± · sh%."),
+            ("Comps Engine", "5 nearest neighbors. Weighted distance: P/60 (45%) + Score (30%) + Age (25%). UFAs weighted 1.5×; same-cluster priority."),
+            ("Predicted Value", "Weighted average of 5 comps' AAVs. Delta = predicted − actual cap hit."),
+        ]
+        _rows = ""
+        for _i, (_t, _d) in enumerate(_steps, start=1):
+            _rows += (
+                f"<div style='display:grid;grid-template-columns:32px 1fr;gap:14px;"
+                f"padding:10px 0;border-bottom:1px solid {_abd};'>"
+                f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.7rem;"
+                f"color:{_asub};letter-spacing:.08em;padding-top:2px;'>0{_i}</div>"
+                f"<div>"
+                f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:.95rem;"
+                f"font-weight:600;color:{_atxt};margin-bottom:2px;'>{_t}</div>"
+                f"<div style='font-family:\"Inter\",sans-serif;font-size:.8rem;"
+                f"color:{_asub};line-height:1.55;'>{_d}</div>"
+                f"</div></div>"
+            )
+        st.markdown(f"<div>{_rows}</div>", unsafe_allow_html=True)
 
     # Validation benchmark bar
     st.markdown(
@@ -1561,69 +1919,82 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                 _ps_s = f"{_p_ps:+.1f}" if pd.notna(_p_ps) else "—"
                 mc5.metric("Role / Score", f"{_p_cl} · {_ps_s}")
 
-    # ── E. Cluster Economics Table + Top 5 ───────────────────────────────────
+    # ── E. Cluster Economics + Top 5 (stacked) ──────────────────────────────
     if not df_c.empty and "cluster_label" in df_c.columns:
         st.markdown(f"<div style='height:1px;background:{_cbd};margin:24px 0 20px;'></div>",
                     unsafe_allow_html=True)
 
-        _tbl_left, _tbl_right = st.columns([3, 2])
+        # --- Cluster Economics (full width) ---
+        st.markdown(
+            f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.5rem;"
+            f"color:{_txt};margin-bottom:14px;font-weight:500;'>Cluster Economics</div>",
+            unsafe_allow_html=True,
+        )
+        _cl_dot = _T.get("accent_ice", _T.get("card_subtext", "#8A8F99"))
 
-        with _tbl_left:
-            st.markdown(
-                f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:1.5rem;"
-                f"color:{_txt};margin-bottom:14px;font-weight:400;'>Cluster Economics</div>",
-                unsafe_allow_html=True,
+        # Column widths: cluster name flexes; numeric cells fixed. Min-width
+        # of the inner table = 520px — below that, outer wrapper scrolls.
+        _grid_cols = "minmax(130px,1.6fr) 44px 54px 72px 72px 82px 60px"
+        _hdr_cell = (f"font-family:\"JetBrains Mono\",monospace;font-size:.66rem;"
+                     f"letter-spacing:.1em;text-transform:uppercase;color:{_txt};"
+                     f"font-weight:500;padding:10px 6px;text-align:right;white-space:nowrap;")
+
+        _rows = (
+            f"<div style='background:{_cbg};border:1px solid {_cbd};border-radius:8px;"
+            f"overflow-x:auto;overflow-y:hidden;'>"
+            f"<div style='min-width:520px;'>"
+            f"<div style='display:grid;grid-template-columns:{_grid_cols};"
+            f"gap:0;border-bottom:2px solid {_cbd};background:{_T['card_header']};'>"
+            f"<div style='{_hdr_cell}text-align:left;'>Cluster</div>"
+            f"<div style='{_hdr_cell}'>N</div>"
+            f"<div style='{_hdr_cell}'>Age</div>"
+            f"<div style='{_hdr_cell}'>Cap</div>"
+            f"<div style='{_hdr_cell}'>Pred</div>"
+            f"<div style='{_hdr_cell}'>Δ</div>"
+            f"<div style='{_hdr_cell}'>Score</div>"
+            f"</div>"
+        )
+
+        _row_cell_val = (f"font-family:\"JetBrains Mono\",monospace;font-size:.78rem;"
+                         f"color:{_txt};padding:11px 6px;text-align:right;"
+                         f"white-space:nowrap;display:flex;align-items:center;justify-content:flex-end;")
+        _row_cell_name = (f"font-family:\"Inter\",sans-serif;font-size:.8rem;font-weight:500;"
+                          f"color:{_txt};padding:11px 10px;text-align:left;"
+                          f"white-space:nowrap;display:flex;align-items:center;gap:8px;"
+                          f"overflow:hidden;text-overflow:ellipsis;")
+
+        for cl in CLUSTER_ORDER:
+            cl_sub = df_c[df_c["cluster_label"] == cl]
+            if cl_sub.empty:
+                continue
+            avg_d = cl_sub["value_delta"].mean()
+            _d_clr = _pos if avg_d >= 0 else _neg
+            avg_ps = cl_sub["performance_score"].dropna().mean()
+            _row_bord = f"border-bottom:1px solid {_cbd};"
+            _rows += (
+                f"<div style='display:grid;grid-template-columns:{_grid_cols};"
+                f"gap:0;{_row_bord}'>"
+                f"<div style='{_row_cell_name}'>"
+                f"<span style='display:inline-block;width:8px;height:8px;background:{_cl_dot};"
+                f"border-radius:2px;flex-shrink:0;'></span>"
+                f"<span style='overflow:hidden;text-overflow:ellipsis;'>{cl}</span>"
+                f"</div>"
+                f"<div style='{_row_cell_val}'>{len(cl_sub)}</div>"
+                f"<div style='{_row_cell_val}'>{cl_sub['age'].mean():.1f}</div>"
+                f"<div style='{_row_cell_val}'>{fmt_m(cl_sub['cap_hit'].mean())}</div>"
+                f"<div style='{_row_cell_val}'>{fmt_m(cl_sub['predicted_value'].dropna().mean())}</div>"
+                f"<div style='{_row_cell_val}color:{_d_clr};font-weight:600;'>{fmt_delta(avg_d)}</div>"
+                f"<div style='{_row_cell_val}'>{avg_ps:+.1f}</div>"
+                f"</div>"
             )
-            _hdr_s = (f"font-family:'Inter',sans-serif;font-size:.6rem;letter-spacing:.12em;"
-                      f"text-transform:uppercase;color:{_sub};padding:8px 8px;"
-                      f"border-bottom:2px solid {_cbd};text-align:right;")
-            _cell_s = (f"font-family:'JetBrains Mono',monospace;font-size:.75rem;color:{_txt};"
-                       f"padding:7px 8px;border-bottom:1px solid {_cbd};text-align:right;")
-            _name_s = (f"font-family:'Inter',sans-serif;font-size:.75rem;font-weight:600;"
-                       f"padding:7px 8px;border-bottom:1px solid {_cbd};text-align:left;")
+        _rows += "</div></div>"
 
-            _rows_html = ""
-            for cl in CLUSTER_ORDER:
-                cl_sub = df_c[df_c["cluster_label"] == cl]
-                if cl_sub.empty:
-                    continue
-                cl_clr = "#888"
-                avg_d = cl_sub["value_delta"].mean()
-                _d_clr = _pos if avg_d >= 0 else _neg
-                avg_ps = cl_sub["performance_score"].dropna().mean()
-                _rows_html += (
-                    f"<tr>"
-                    f"<td style='{_name_s}'>"
-                    f"<span style='display:inline-block;width:8px;height:8px;background:{cl_clr};"
-                    f"vertical-align:middle;margin-right:6px;'></span>"
-                    f"<span style='color:{cl_clr};'>{cl}</span></td>"
-                    f"<td style='{_cell_s}'>{len(cl_sub)}</td>"
-                    f"<td style='{_cell_s}'>{cl_sub['age'].mean():.1f}</td>"
-                    f"<td style='{_cell_s}'>{fmt_m(cl_sub['cap_hit'].mean())}</td>"
-                    f"<td style='{_cell_s}'>{fmt_m(cl_sub['predicted_value'].dropna().mean())}</td>"
-                    f"<td style='{_cell_s}color:{_d_clr};'>{fmt_delta(avg_d)}</td>"
-                    f"<td style='{_cell_s}'>{avg_ps:+.1f}</td>"
-                    f"</tr>"
-                )
+        st.markdown(_rows, unsafe_allow_html=True)
 
-            st.markdown(
-                f"<div style='overflow-x:auto;'>"
-                f"<table style='width:100%;border-collapse:collapse;background:{_cbg};'>"
-                f"<thead><tr>"
-                f"<th style='{_hdr_s}text-align:left;'>Cluster</th>"
-                f"<th style='{_hdr_s}'>N</th>"
-                f"<th style='{_hdr_s}'>Avg Age</th>"
-                f"<th style='{_hdr_s}'>Avg Cap</th>"
-                f"<th style='{_hdr_s}'>Avg Pred</th>"
-                f"<th style='{_hdr_s}'>Avg Delta</th>"
-                f"<th style='{_hdr_s}'>Avg Score</th>"
-                f"</tr></thead>"
-                f"<tbody>{_rows_html}</tbody>"
-                f"</table></div>",
-                unsafe_allow_html=True,
-            )
-
-        with _tbl_right:
+        # --- Top 5 Underpaid / Overpaid BELOW, side-by-side (wraps on narrow) ---
+        st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
+        _top_left, _top_right = st.columns(2)
+        with _top_left:
             st.markdown(
                 f"<div style='font-family:\"Inter\",sans-serif;font-size:.65rem;font-weight:500;"
                 f"letter-spacing:.12em;text-transform:uppercase;color:{_pos};margin-bottom:10px;"
@@ -1631,7 +2002,7 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
                 unsafe_allow_html=True,
             )
             _mini_player_cards(df_c.nlargest(5, "value_delta"))
-            st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
+        with _top_right:
             st.markdown(
                 f"<div style='font-family:\"Inter\",sans-serif;font-size:.65rem;font-weight:500;"
                 f"letter-spacing:.12em;text-transform:uppercase;color:{_neg};margin-bottom:10px;"
@@ -1734,18 +2105,18 @@ def tab_leaderboards(df: pd.DataFrame):
     st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
     _TABLE_CSS = (
-        f"width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;"
+        f"width:100%;border-collapse:collapse;font-family:\"Inter\",sans-serif;"
         f"font-size:.8rem;background:{_T['card_bg']};"
     )
     _TH_CSS = (
-        f"padding:8px 12px;text-align:left;color:{_T['card_subtext']};font-weight:500;"
-        f"font-family:'Inter',sans-serif;font-size:.7rem;letter-spacing:.12em;"
-        f"text-transform:uppercase;border-bottom:1px solid {_T['card_border']};"
+        f"padding:8px 12px;text-align:left;color:{_T['card_text']};font-weight:500;"
+        f"font-family:\"Inter\",sans-serif;font-size:.7rem;letter-spacing:.12em;"
+        f"text-transform:uppercase;border-bottom:2px solid {_T['card_border']};"
         f"background:{_T['card_header']};"
     )
     _TD_CSS = (
         f"padding:8px 12px;color:{_T['card_text']};border-bottom:1px solid {_T['row_divider']};"
-        f"font-family:'Inter',sans-serif;"
+        f"font-family:\"Inter\",sans-serif;"
     )
 
     def _html_table(data, delta_col="value_delta"):
@@ -1785,8 +2156,8 @@ def tab_leaderboards(df: pd.DataFrame):
                     _team_accent = _T.get("accent", "#1A1A2E")
                     txt = f"<span style='color:{_team_accent};font-family:\"JetBrains Mono\",monospace;'>{v}</span>"
                 elif c == "cluster_label":
-                    _cl_c = "#888"
-                    txt = f"<span style='color:{_cl_c};font-family:\"Inter\",sans-serif;font-size:.72rem;font-weight:600;'>{v}</span>"
+                    _cl_c = _T.get("card_text", "#F2EEE5")
+                    txt = f"<span style='color:{_cl_c};font-family:\"Inter\",sans-serif;font-size:.72rem;font-weight:500;'>{v}</span>"
                 else:
                     txt = str(v) if pd.notna(v) else "?"
                 cells += f"<td style='{_TD_CSS}'>{txt}</td>"
@@ -1903,7 +2274,7 @@ def tab_leaderboards(df: pd.DataFrame):
             cl_sub = _vlr_df[_vlr_df["cluster_label"] == cl_name]
             if len(cl_sub) < 2:
                 continue
-            cl_clr = "#888"
+            cl_clr = _T.get("card_text", "#F2EEE5")
             best = cl_sub.nlargest(1, "value_delta").iloc[0]
             worst = cl_sub.nsmallest(1, "value_delta").iloc[0]
             _v1, _v2, _v3 = st.columns([1.5, 2, 2])
@@ -2273,7 +2644,7 @@ def tab_team(df: pd.DataFrame, team_code: str):
             f"font-family:\"Space Grotesk\",sans-serif;'>{name}</span>"
             f"      {est_badge}"
             f"      <span style='color:{_rsub};font-size:.72rem;font-family:\"Inter\",sans-serif;"
-            f"letter-spacing:.06em;text-transform:uppercase;'>{pos} · {age_str}</span>"
+            f"letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
             f"      <div><div class='stat-label'>Cap Hit</div>"
@@ -2574,7 +2945,7 @@ def tab_kings(df: pd.DataFrame):
             f"font-family:\"Space Grotesk\",sans-serif;'>{name}</span>"
             f"      {est_badge}"
             f"      <span style='color:{_T['card_subtext']};font-size:.72rem;font-family:\"Inter\",sans-serif;"
-            f"letter-spacing:.06em;text-transform:uppercase;'>{pos} · {age_str}</span>"
+            f"letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;'>{pos} · {age_str}</span>"
             f"    </div>"
             f"    <div style='display:flex;gap:22px;margin-top:8px;flex-wrap:wrap;'>"
             f"      <div><div class='stat-label'>Cap Hit</div>"
@@ -2877,7 +3248,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     )
 
     _cbg = _T["card_bg"]; _cbd = _T["card_border"]; _csub2 = _T["card_subtext"]; _ctxt2 = _T["card_text"]
-    _cl_color = "#888"
+    _cl_color = _T.get("card_text", "#F2EEE5")
 
     st.markdown(
         f"<div style='font-family:\"Space Grotesk\",sans-serif;font-weight:400;font-size:1.5rem;"
@@ -3344,17 +3715,17 @@ def tab_insights(df: pd.DataFrame):
         if _cl_rows:
             _cl_table = pd.DataFrame(_cl_rows)
             # Build HTML table
-            _hdr_style = (f"font-family:'Inter',sans-serif;font-size:.65rem;letter-spacing:.1em;"
-                          f"text-transform:uppercase;color:{_T['card_subtext']};padding:8px 10px;"
+            _hdr_style = (f"font-family:\"Inter\",sans-serif;font-size:.65rem;letter-spacing:.1em;"
+                          f"text-transform:uppercase;color:{_T['card_text']};padding:8px 10px;"
                           f"border-bottom:2px solid {_T['card_border']};text-align:right;")
-            _cell_style = (f"font-family:'JetBrains Mono',monospace;font-size:.78rem;color:{_T['card_text']};"
+            _cell_style = (f"font-family:\"JetBrains Mono\",monospace;font-size:.78rem;color:{_T['card_text']};"
                            f"padding:8px 10px;border-bottom:1px solid {_T['card_border']};text-align:right;")
-            _name_style = (f"font-family:'Inter',sans-serif;font-size:.78rem;font-weight:600;"
+            _name_style = (f"font-family:\"Inter\",sans-serif;font-size:.78rem;font-weight:600;"
                            f"padding:8px 10px;border-bottom:1px solid {_T['card_border']};text-align:left;")
 
             _rows_html = ""
             for _, r in _cl_table.iterrows():
-                _cl_c = "#888"
+                _cl_c = _T.get("card_text", "#F2EEE5")
                 _d_c = _T.get("positive") if r["Avg Delta"] >= 0 else _T.get("negative")
                 _rows_html += (
                     f"<tr>"
@@ -3392,7 +3763,7 @@ def tab_insights(df: pd.DataFrame):
     if _dive_opts:
         _dive_sel = st.selectbox("Select a cluster to explore", _dive_opts, key="insights_cluster_dive")
         _dive_df = df[df["cluster_label"] == _dive_sel].copy()
-        _dive_clr = "#888"
+        _dive_clr = _T.get("card_text", "#F2EEE5")
 
         # Summary metrics
         dc1, dc2, dc3, dc4, dc5 = st.columns(5)
@@ -3638,11 +4009,11 @@ def main():
     filtered  = sidebar_filters(df)
 
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "League Overview",
-        "Leaderboards",
+        "Overview",
+        "Leaders",
         "Teams",
-        "Player Search",
-        "Model Insights",
+        "Search",
+        "Insights",
     ])
 
     # Persist active tab across reruns (theme toggle, UFA toggle, etc.) via
