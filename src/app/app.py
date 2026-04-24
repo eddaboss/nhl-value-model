@@ -1539,12 +1539,28 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
             if _cl.startswith("sb_cl_") and _cl[6:] not in cluster_opts:
                 del st.session_state[_cl]
 
+        # Apply pending bulk-toggle BEFORE widgets render (Streamlit forbids
+        # mutating a widget's key after the widget is created in the same run).
+        _bulk = st.session_state.pop("_sb_cl_bulk", None)
+        if _bulk is not None:
+            for _cl in cluster_opts:
+                st.session_state[f"sb_cl_{_cl}"] = (_bulk == "all")
+
         st.markdown(
             f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.72rem;"
             f"color:{_sb_sub};letter-spacing:.08em;text-transform:uppercase;"
             f"margin:8px 0 6px;'>Role Cluster</div>",
             unsafe_allow_html=True,
         )
+        # Quick toggles ABOVE the checkboxes — set a sentinel flag and rerun
+        _c1, _c2 = st.columns(2)
+        if _c1.button("All", key="sb_cl_all_btn", use_container_width=True):
+            st.session_state["_sb_cl_bulk"] = "all"
+            st.rerun()
+        if _c2.button("None", key="sb_cl_none_btn", use_container_width=True):
+            st.session_state["_sb_cl_bulk"] = "none"
+            st.rerun()
+
         _cl_cols = st.columns(2)
         cluster_sel = []
         for _i, _cl in enumerate(cluster_opts):
@@ -1552,16 +1568,6 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
             _default = st.session_state.get(_key, True)
             if _cl_cols[_i % 2].checkbox(_cl, value=_default, key=_key):
                 cluster_sel.append(_cl)
-        # Quick toggle
-        _c1, _c2 = st.columns(2)
-        if _c1.button("All", key="sb_cl_all", use_container_width=True):
-            for _cl in cluster_opts:
-                st.session_state[f"sb_cl_{_cl}"] = True
-            st.rerun()
-        if _c2.button("None", key="sb_cl_none", use_container_width=True):
-            for _cl in cluster_opts:
-                st.session_state[f"sb_cl_{_cl}"] = False
-            st.rerun()
 
         import math
         age_min = math.floor(df["age"].dropna().min())
@@ -1653,60 +1659,32 @@ def tab_overview(df: pd.DataFrame, full_df: pd.DataFrame):
         unsafe_allow_html=True,
     )
 
-    # ── B. Pipeline Methodology ──────────────────────────────────────────────
+    # ── B. Methodology (collapsed by default) ───────────────────────────────
     _abg = _cbg; _abd = _cbd; _atxt = _T["card_text"]; _asub = _sub
     _pos_clr = _pos
-
-    def _arch_step(number, title, subtitle, detail, color=_accent):
-        return (
-            f"<div style='flex:1;min-width:160px;max-width:220px;background:{_abg};"
-            f"border:1px solid {_abd};padding:16px 14px;position:relative;'>"
-            f"<div style='position:absolute;top:-12px;left:14px;background:{color};"
-            f"color:#fff;font-family:\"JetBrains Mono\",monospace;font-size:.65rem;"
-            f"padding:2px 8px;letter-spacing:.1em;'>{number}</div>"
-            f"<div style='font-family:\"Inter\",sans-serif;font-size:.85rem;"
-            f"font-weight:600;color:{_atxt};margin-top:6px;'>{title}</div>"
-            f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.65rem;"
-            f"color:{_asub};margin-top:4px;letter-spacing:.04em;'>{subtitle}</div>"
-            f"<div style='font-family:\"Inter\",sans-serif;font-size:.72rem;"
-            f"color:{_asub};margin-top:8px;line-height:1.5;'>{detail}</div>"
-            f"</div>"
-        )
-
-    _arrow = (
-        f"<div style='display:flex;align-items:center;padding:0 4px;'>"
-        f"<svg width='24' height='24' viewBox='0 0 24 24' fill='none' "
-        f"xmlns='http://www.w3.org/2000/svg'>"
-        f"<path d='M5 12h14M13 6l6 6-6 6' stroke='{_asub}' stroke-width='2' "
-        f"stroke-linecap='round' stroke-linejoin='round'/></svg></div>"
-    )
-
-    st.markdown(
-        f"<div style='display:flex;align-items:stretch;flex-wrap:wrap;gap:8px;"
-        f"margin:0 0 8px;overflow-x:auto;'>"
-        + _arch_step("01", "Data Ingestion", "NHL API + PuckPedia",
-                     "Roster stats, contract data, prior-season stats. "
-                     "All stats normalized to 82-game pace.")
-        + _arrow
-        + _arch_step("02", "K-Means Clustering", "k=7 · Unsupervised",
-                     "Groups players by deployment: TOI, PP pts, ±, faceoff%, position. "
-                     "Auto-labels roles (Elite, Top-Line F, Top-Four D, etc).")
-        + _arrow
-        + _arch_step("03", "Performance Scoring", "−100 → +100 · Per Cluster",
-                     "FWD: G/60, P/60, PP pts, shots, shoot%, ±. "
-                     "DEF: TOI, PP pts, ±, shoot%. Z-scores within cluster.")
-        + _arrow
-        + _arch_step("04", "Comps Engine", "5 Nearest Comps",
-                     "Weighted distance: P/60 (45%) + Score (30%) + Age (25%). "
-                     "UFA contracts weighted 1.5×. Same-cluster priority.")
-        + _arrow
-        + _arch_step("05", "Predicted Value", "Weighted Avg AAV",
-                     "Final value = weighted average of 5 comps' AAVs. "
-                     "Delta = Predicted − Actual Cap Hit.",
-                     color=_pos_clr)
-        + f"</div>",
-        unsafe_allow_html=True,
-    )
+    with st.expander("How the model works", expanded=False):
+        _steps = [
+            ("Data Ingestion", "NHL API + PuckPedia — roster stats, contracts, prior-season stats; all normalized to 82-game pace."),
+            ("K-Means Clustering", "k=7 unsupervised groups players by deployment (TOI, PP pts, ±, faceoff%, position). Auto-labels roles."),
+            ("Performance Scoring", "Z-scored within each cluster. FWD: G/60 · P/60 · PPP · shots · sh% · ±. DEF: TOI · PPP · ± · sh%."),
+            ("Comps Engine", "5 nearest neighbors. Weighted distance: P/60 (45%) + Score (30%) + Age (25%). UFAs weighted 1.5×; same-cluster priority."),
+            ("Predicted Value", "Weighted average of 5 comps' AAVs. Delta = predicted − actual cap hit."),
+        ]
+        _rows = ""
+        for _i, (_t, _d) in enumerate(_steps, start=1):
+            _rows += (
+                f"<div style='display:grid;grid-template-columns:32px 1fr;gap:14px;"
+                f"padding:10px 0;border-bottom:1px solid {_abd};'>"
+                f"<div style='font-family:\"JetBrains Mono\",monospace;font-size:.7rem;"
+                f"color:{_asub};letter-spacing:.08em;padding-top:2px;'>0{_i}</div>"
+                f"<div>"
+                f"<div style='font-family:\"Space Grotesk\",sans-serif;font-size:.95rem;"
+                f"font-weight:600;color:{_atxt};margin-bottom:2px;'>{_t}</div>"
+                f"<div style='font-family:\"Inter\",sans-serif;font-size:.8rem;"
+                f"color:{_asub};line-height:1.55;'>{_d}</div>"
+                f"</div></div>"
+            )
+        st.markdown(f"<div>{_rows}</div>", unsafe_allow_html=True)
 
     # Validation benchmark bar
     st.markdown(
@@ -2065,8 +2043,8 @@ def tab_leaderboards(df: pd.DataFrame):
                     _team_accent = _T.get("accent", "#1A1A2E")
                     txt = f"<span style='color:{_team_accent};font-family:\"JetBrains Mono\",monospace;'>{v}</span>"
                 elif c == "cluster_label":
-                    _cl_c = "#888"
-                    txt = f"<span style='color:{_cl_c};font-family:\"Inter\",sans-serif;font-size:.72rem;font-weight:600;'>{v}</span>"
+                    _cl_c = _T.get("card_text", "#F2EEE5")
+                    txt = f"<span style='color:{_cl_c};font-family:\"Inter\",sans-serif;font-size:.72rem;font-weight:500;'>{v}</span>"
                 else:
                     txt = str(v) if pd.notna(v) else "?"
                 cells += f"<td style='{_TD_CSS}'>{txt}</td>"
@@ -2183,7 +2161,7 @@ def tab_leaderboards(df: pd.DataFrame):
             cl_sub = _vlr_df[_vlr_df["cluster_label"] == cl_name]
             if len(cl_sub) < 2:
                 continue
-            cl_clr = "#888"
+            cl_clr = _T.get("card_text", "#F2EEE5")
             best = cl_sub.nlargest(1, "value_delta").iloc[0]
             worst = cl_sub.nsmallest(1, "value_delta").iloc[0]
             _v1, _v2, _v3 = st.columns([1.5, 2, 2])
@@ -3157,7 +3135,7 @@ def _player_card(player: pd.Series, df: pd.DataFrame, shap_vals: pd.DataFrame,
     )
 
     _cbg = _T["card_bg"]; _cbd = _T["card_border"]; _csub2 = _T["card_subtext"]; _ctxt2 = _T["card_text"]
-    _cl_color = "#888"
+    _cl_color = _T.get("card_text", "#F2EEE5")
 
     st.markdown(
         f"<div style='font-family:\"Space Grotesk\",sans-serif;font-weight:400;font-size:1.5rem;"
@@ -3634,7 +3612,7 @@ def tab_insights(df: pd.DataFrame):
 
             _rows_html = ""
             for _, r in _cl_table.iterrows():
-                _cl_c = "#888"
+                _cl_c = _T.get("card_text", "#F2EEE5")
                 _d_c = _T.get("positive") if r["Avg Delta"] >= 0 else _T.get("negative")
                 _rows_html += (
                     f"<tr>"
@@ -3672,7 +3650,7 @@ def tab_insights(df: pd.DataFrame):
     if _dive_opts:
         _dive_sel = st.selectbox("Select a cluster to explore", _dive_opts, key="insights_cluster_dive")
         _dive_df = df[df["cluster_label"] == _dive_sel].copy()
-        _dive_clr = "#888"
+        _dive_clr = _T.get("card_text", "#F2EEE5")
 
         # Summary metrics
         dc1, dc2, dc3, dc4, dc5 = st.columns(5)
